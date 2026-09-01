@@ -1,0 +1,3053 @@
+<!doctype html>
+<html lang="fr" data-theme="light">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>DungeonCrawlerSheet</title>
+    <link
+      rel="icon"
+      href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' fill='%23231f20'/%3E%3Ctext x='16' y='23' font-size='20' text-anchor='middle' fill='%23fff' font-family='monospace'%3ED%3C/text%3E%3C/svg%3E"
+    />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700&family=Barlow:wght@400;500&family=JetBrains+Mono:wght@400;600&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      :root {
+        --bg: #dedbd5;
+        --panel: #ffffff;
+        --panel-2: #f1efeb;
+        --panel-3: #f6f5f2;
+        --header-bg: #ffffff;
+        --ink: #231f20;
+        --muted: #55524f;
+        --faint: #a29e98;
+        --line: #cfccc7;
+        --hair: #d1d3d4;
+        --chip-bg: #231f20;
+        --chip-ink: #ffffff;
+        --acc: #231f20;
+        --acc-ink: #ffffff;
+        --focus-bg: #f1efeb;
+        --c-bg: #e7e5e0;
+        --mana: #2f6fb0;
+        --mana-track: #e2e0da;
+        --hp-lost: #b3261e;
+        --card-border: 1.5px solid #231f20;
+        --card-radius: 0px;
+        --f-disp: "Barlow Condensed", "Arial Narrow", system-ui, sans-serif;
+        --f-body: "Barlow", system-ui, -apple-system, sans-serif;
+        --f-mono:
+          "JetBrains Mono", ui-monospace, "Cascadia Mono", Consolas, monospace;
+      }
+      :root[data-theme="dark"] {
+        --bg: #100f0d;
+        --panel: #191714;
+        --panel-2: #14120f;
+        --panel-3: #1b1815;
+        --header-bg: #14120f;
+        --ink: #e8e1d5;
+        --muted: #8d857a;
+        --faint: #5b544b;
+        --line: #35302a;
+        --hair: #2a2622;
+        --chip-bg: #201d19;
+        --chip-ink: #e8e1d5;
+        --acc: #e0a33e;
+        --acc-ink: #100f0d;
+        --focus-bg: #221f1a;
+        --c-bg: transparent;
+        --mana: #4b9fe0;
+        --mana-track: #14120f;
+        --hp-lost: #c8382b;
+        --card-border: 1px solid #35302a;
+        --card-radius: 3px;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+      html,
+      body {
+        margin: 0;
+      }
+      body {
+        background: var(--bg);
+        color: var(--ink);
+        font-family: var(--f-body);
+        -webkit-text-size-adjust: 100%;
+        min-height: 100vh;
+      }
+      .page {
+        min-height: 100vh;
+        padding: 0 0 92px;
+      }
+
+      /* ---------- header ---------- */
+      header.bar {
+        position: sticky;
+        top: 0;
+        z-index: 20;
+        display: flex;
+        align-items: center;
+        gap: 16px;
+        flex-wrap: wrap;
+        padding: 12px 20px;
+        background: var(--header-bg);
+        border-bottom: 1.5px solid var(--acc);
+      }
+      .bar .title {
+        flex: 1;
+        min-width: 180px;
+      }
+      .bar .kicker {
+        font-family: var(--f-disp);
+        font-size: 11px;
+        letter-spacing: 0.22em;
+        text-transform: uppercase;
+        color: var(--muted);
+      }
+      .bar .who {
+        font-family: var(--f-disp);
+        font-size: 22px;
+        font-weight: 700;
+        line-height: 1.15;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+      .bar .sub {
+        font-family: var(--f-mono);
+        font-size: 12px;
+        color: var(--muted);
+        text-align: right;
+        white-space: nowrap;
+      }
+      .bar .tools {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        flex-wrap: wrap;
+      }
+      button.btn {
+        font-family: var(--f-disp);
+        cursor: pointer;
+        background: transparent;
+        border: 1px solid var(--line);
+        color: var(--ink);
+        font-size: 12px;
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+        padding: 9px 13px;
+        border-radius: 3px;
+      }
+      button.btn.primary {
+        background: var(--acc);
+        border-color: var(--acc);
+        color: var(--acc-ink);
+        font-weight: 700;
+      }
+      button.btn:hover {
+        border-color: var(--acc);
+      }
+      button.btn.addrow {
+        margin-top: 12px;
+      }
+      #langSel {
+        font-family: var(--f-disp);
+        cursor: pointer;
+        background: transparent;
+        border: 1px solid var(--line);
+        color: var(--ink);
+        font-size: 12px;
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+        padding: 9px 13px;
+        border-radius: 3px;
+        appearance: none;
+      }
+      #langSel:hover {
+        border-color: var(--acc);
+      }
+
+      /* ---------- saved toast ---------- */
+      .saved {
+        position: fixed;
+        right: 20px;
+        bottom: 104px;
+        z-index: 30;
+        font-family: var(--f-mono);
+        font-size: 11px;
+        color: var(--muted);
+        background: var(--panel);
+        border: 1px solid var(--line);
+        padding: 6px 10px;
+        border-radius: 3px;
+        opacity: 0;
+        transition: opacity 0.4s;
+        pointer-events: none;
+      }
+
+      main {
+        max-width: 1180px;
+        margin: 0 auto;
+        padding: 20px;
+      }
+
+      /* ---------- cards / chips ---------- */
+      .card {
+        background: var(--panel);
+        border: var(--card-border);
+        border-radius: var(--card-radius);
+        padding: 16px;
+      }
+      .chip {
+        display: inline-block;
+        font-family: var(--f-disp);
+        font-size: 11px;
+        letter-spacing: 0.16em;
+        text-transform: uppercase;
+        font-weight: 700;
+        color: var(--chip-ink);
+        background: var(--chip-bg);
+        padding: 5px 9px;
+      }
+      .hint {
+        font-family: var(--f-disp);
+        font-size: 11px;
+        letter-spacing: 0.1em;
+        text-transform: uppercase;
+        color: var(--muted);
+      }
+      .sub-rule {
+        font-family: var(--f-disp);
+        font-size: 10px;
+        font-weight: 700;
+        letter-spacing: 0.2em;
+        text-transform: uppercase;
+        color: var(--ink);
+        border-bottom: 1px solid var(--ink);
+        padding-bottom: 4px;
+        margin-bottom: 10px;
+      }
+
+      /* ---------- fields ---------- */
+      .lbl {
+        display: grid;
+        gap: 3px;
+      }
+      .lbl > span {
+        font-family: var(--f-disp);
+        font-size: 10px;
+        letter-spacing: 0.18em;
+        text-transform: uppercase;
+        color: var(--muted);
+      }
+      .lbl.sm > span {
+        font-size: 9px;
+        letter-spacing: 0.14em;
+      }
+      .lbl.def > span {
+        font-size: 10px;
+        letter-spacing: 0.16em;
+      }
+      .lbl.acc > span {
+        color: var(--acc);
+      }
+
+      input[data-k],
+      textarea[data-k],
+      select[data-k],
+      input[data-mirror] {
+        background: transparent;
+        border: 0;
+        border-bottom: 1px solid var(--line);
+        color: var(--ink);
+        font-family: var(--f-mono);
+        font-size: 14px;
+        width: 100%;
+        padding: 7px 6px;
+        outline: none;
+        border-radius: 0;
+        min-height: 34px;
+      }
+      textarea[data-k] {
+        border: 1px solid var(--line);
+        resize: vertical;
+        font-family: var(--f-body);
+        font-size: 15px;
+        line-height: 1.55;
+      }
+      input[data-k]:focus,
+      textarea[data-k]:focus,
+      select[data-k]:focus,
+      input[data-mirror]:focus {
+        border-color: var(--acc);
+        background: var(--focus-bg);
+      }
+      input[data-c] {
+        color: var(--ink);
+        font-weight: 700;
+        background: var(--c-bg);
+      }
+      :root[data-theme="dark"] input[data-c] {
+        color: var(--acc);
+        font-weight: 600;
+      }
+      input[readonly] {
+        cursor: default;
+        caret-color: transparent;
+      }
+      input[type="checkbox"] {
+        accent-color: var(--acc);
+        width: 18px;
+        height: 18px;
+        margin: 0;
+      }
+      select[data-k] {
+        appearance: none;
+        cursor: pointer;
+      }
+      option {
+        background: var(--panel);
+        color: var(--ink);
+      }
+      ::placeholder {
+        color: var(--faint);
+      }
+      .center {
+        text-align: center;
+      }
+
+      /* ---------- layout helpers ---------- */
+      .grid {
+        display: grid;
+        gap: 16px;
+      }
+      .mt {
+        margin-top: 16px;
+      }
+      .mb {
+        margin-bottom: 16px;
+      }
+      .stack {
+        display: grid;
+        gap: 16px;
+        align-items: start;
+      }
+      .identity-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(172px, 1fr));
+        gap: 14px;
+      }
+      .two-start {
+        display: grid;
+        grid-template-columns: minmax(280px, 1fr) minmax(150px, 200px);
+        gap: 16px;
+        align-items: start;
+      }
+      .stats-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(178px, 1fr));
+        gap: 12px;
+      }
+      .def-cols {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(84px, 1fr));
+        gap: 10px;
+        align-items: start;
+      }
+      .cards-340 {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
+        gap: 16px;
+        align-items: start;
+      }
+      .cards-320 {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+        gap: 16px;
+        align-items: start;
+      }
+      .cards-300 {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 16px;
+      }
+      .cards-280 {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+        gap: 14px;
+      }
+      .inset {
+        border: 1px solid var(--line);
+        padding: 10px;
+      }
+
+      .portrait {
+        position: relative;
+        overflow: hidden;
+        aspect-ratio: 3 / 4;
+        border: 1px dashed var(--line);
+        border-radius: 2px;
+        background: repeating-linear-gradient(
+          135deg,
+          var(--panel-3) 0 6px,
+          var(--panel) 6px 12px
+        );
+        display: flex;
+        align-items: flex-end;
+        justify-content: center;
+        padding: 10px;
+        cursor: pointer;
+      }
+      .portrait.wide {
+        aspect-ratio: 4 / 3;
+      }
+      .portrait span {
+        font-family: var(--f-mono);
+        font-size: 10px;
+        color: var(--faint);
+        text-align: center;
+      }
+      .portrait img {
+        position: absolute;
+        inset: 0;
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+      }
+      .portrait.has-img {
+        border-style: solid;
+        border-color: var(--ink);
+      }
+      .portrait.drop {
+        border-style: solid;
+        border-color: var(--acc);
+        background: var(--focus-bg);
+      }
+
+      /* ---------- health ---------- */
+      .hp-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(72px, 1fr));
+        gap: 4px;
+      }
+      .hp-cell {
+        display: grid;
+        gap: 0;
+        border: 1px solid var(--ink);
+        border-radius: 0;
+        overflow: hidden;
+      }
+      .hp-cell .cap {
+        padding: 5px 4px;
+        text-align: center;
+        font-family: var(--f-disp);
+        font-size: 13px;
+        font-weight: 700;
+        letter-spacing: 0.08em;
+        color: #ffffff;
+        text-shadow: 0 1px 2px rgba(0, 0, 0, 0.45);
+      }
+      .hp-cell .box {
+        display: flex;
+        align-items: stretch;
+        min-height: 44px;
+        border-bottom: 1px solid var(--line);
+        cursor: pointer;
+      }
+      .hp-cell .box input[type="checkbox"] {
+        appearance: none;
+        -webkit-appearance: none;
+        margin: 0;
+        width: 100%;
+        height: auto;
+        min-height: 44px;
+        border: 0;
+        border-radius: 0;
+        cursor: pointer;
+        background-color: var(--panel-3);
+        transition: background-color 0.12s ease;
+      }
+      .hp-cell .box input[type="checkbox"]:checked {
+        background-color: var(--hp-lost);
+        background-image:
+          linear-gradient(
+            45deg,
+            transparent 43%,
+            #fff 43%,
+            #fff 57%,
+            transparent 57%
+          ),
+          linear-gradient(
+            -45deg,
+            transparent 43%,
+            #fff 43%,
+            #fff 57%,
+            transparent 57%
+          );
+        background-size: 58% 58%;
+        background-position: center;
+        background-repeat: no-repeat;
+      }
+      .hp-cell input[data-k$=".hp"] {
+        text-align: center;
+        font-size: 12px;
+        min-height: 34px;
+        border-bottom: 0;
+        padding: 2px;
+      }
+
+      /* ---------- stat card ---------- */
+      .stat-card .top {
+        display: flex;
+        align-items: baseline;
+        justify-content: space-between;
+        gap: 10px;
+        margin-bottom: 10px;
+      }
+      .stat-card .name {
+        font-family: var(--f-disp);
+        font-size: 15px;
+        font-weight: 700;
+        letter-spacing: 0.1em;
+        text-transform: uppercase;
+      }
+      .stat-card .mini {
+        font-family: var(--f-disp);
+        font-size: 10px;
+        letter-spacing: 0.18em;
+        color: var(--muted);
+      }
+      .stat-card input[data-k$=".mod"] {
+        font-size: 26px;
+        font-weight: 700;
+        text-align: center;
+        min-height: 52px;
+        border: 1px solid var(--acc);
+        background: var(--panel-2);
+      }
+      .stat-card .pair {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 8px;
+        margin-top: 10px;
+      }
+
+      .total-input {
+        border: 1px solid var(--acc) !important;
+        font-size: 18px;
+      }
+
+      /* ---------- mana gauge ---------- */
+      .mana {
+        margin-top: 16px;
+        display: grid;
+        gap: 8px;
+      }
+      .mana-head {
+        display: flex;
+        align-items: baseline;
+        justify-content: space-between;
+        gap: 10px;
+      }
+      .mana-head .lbl-inline {
+        font-family: var(--f-disp);
+        font-size: 10px;
+        letter-spacing: 0.18em;
+        text-transform: uppercase;
+        color: var(--muted);
+      }
+      .mana-num {
+        font-family: var(--f-mono);
+        font-size: 13px;
+        font-weight: 600;
+        color: var(--mana);
+      }
+      .mana-track {
+        height: 16px;
+        border: 1px solid var(--line);
+        background: var(--mana-track);
+        border-radius: 2px;
+        overflow: hidden;
+      }
+      .mana-fill {
+        height: 100%;
+        width: 0;
+        background: var(--mana);
+        transition: width 0.18s ease;
+      }
+      .mana-inputs {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 10px;
+        max-width: 260px;
+      }
+
+      /* ---------- tables (attacks / skills / inventory) ---------- */
+      .scrollx {
+        overflow-x: auto;
+      }
+      .tbl .head,
+      .tbl .row {
+        display: grid;
+        gap: 6px;
+        align-items: center;
+      }
+      .tbl .head {
+        padding: 8px 0;
+        font-family: var(--f-disp);
+        font-size: 9px;
+        letter-spacing: 0.14em;
+        text-transform: uppercase;
+        color: var(--muted);
+      }
+      .tbl .head .acc {
+        color: var(--acc);
+      }
+      .cols-attacks {
+        grid-template-columns: 2fr 0.6fr 0.85fr 0.75fr 1.6fr 2fr;
+      }
+      .cols-skills {
+        grid-template-columns: 34px 1.6fr 0.6fr 0.85fr 0.55fr 1fr 2.2fr;
+      }
+      .cols-inv {
+        grid-template-columns: 2fr 0.6fr 3fr;
+      }
+      .dmg-cell {
+        display: flex;
+        align-items: center;
+        gap: 4px;
+      }
+      .dmg-cell select {
+        flex: 1;
+        min-width: 0;
+      }
+      .dmg-cell input {
+        width: 52px;
+        flex: none;
+        text-align: center;
+      }
+
+      .hotlist {
+        display: grid;
+        grid-template-columns: repeat(5, 1fr);
+        gap: 12px;
+      }
+      .hotlist input {
+        border: 1px solid var(--ink);
+        background: transparent;
+        color: var(--ink);
+        font-family: var(--f-mono);
+        font-size: 16px;
+        min-width: 0;
+        width: 100%;
+        padding: 18px 14px;
+        border-radius: 0;
+        outline: none;
+      }
+      .hotlist input:focus {
+        border-color: var(--acc);
+        background: var(--focus-bg);
+      }
+      @media (max-width: 720px) {
+        .hotlist {
+          grid-template-columns: repeat(3, 1fr);
+        }
+      }
+      @media (max-width: 480px) {
+        .hotlist {
+          grid-template-columns: repeat(2, 1fr);
+        }
+      }
+
+      .acc-row {
+        display: grid;
+        grid-template-columns: 26px 1fr;
+        gap: 6px;
+        align-items: center;
+      }
+      .acc-row .n {
+        font-family: var(--f-mono);
+        font-size: 11px;
+        color: var(--faint);
+        text-align: right;
+      }
+
+      /* ---------- journal ---------- */
+      .jnav {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 6px;
+        margin-bottom: 16px;
+      }
+      .jtab {
+        background: var(--panel);
+        border: 1px solid var(--line);
+        color: var(--muted);
+        font-family: var(--f-disp);
+        font-size: 10px;
+        letter-spacing: 0.14em;
+        text-transform: uppercase;
+        padding: 8px 12px;
+        border-radius: 3px;
+        cursor: pointer;
+      }
+      .jtab.is-active {
+        background: var(--acc);
+        color: var(--acc-ink);
+        border-color: var(--acc);
+      }
+      .jsection-lbl {
+        font-family: var(--f-disp);
+        font-size: 11px;
+        letter-spacing: 0.22em;
+        text-transform: uppercase;
+        color: var(--muted);
+      }
+      .bio-q {
+        display: grid;
+        gap: 5px;
+        align-content: start;
+      }
+      .bio-q > span {
+        font-family: var(--f-body);
+        font-size: 14px;
+        font-weight: 500;
+        color: var(--ink);
+        text-wrap: pretty;
+      }
+      .note-card {
+        display: grid;
+        gap: 8px;
+      }
+      .note-card .tag {
+        font-family: var(--f-mono);
+        font-size: 10px;
+        color: var(--faint);
+      }
+      [hidden] {
+        display: none !important;
+      }
+
+      /* ---------- bottom nav ---------- */
+      nav.tabbar {
+        position: fixed;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        z-index: 25;
+        display: flex;
+        gap: 4px;
+        justify-content: center;
+        padding: 8px 12px;
+        background: var(--header-bg);
+        border-top: 1.5px solid var(--acc);
+      }
+      nav.tabbar .tab {
+        flex: 1;
+        max-width: 180px;
+        background: transparent;
+        border: 1px solid transparent;
+        color: var(--muted);
+        font-family: var(--f-disp);
+        font-size: 11px;
+        font-weight: 600;
+        letter-spacing: 0.16em;
+        text-transform: uppercase;
+        padding: 14px 8px;
+        border-radius: 3px;
+        cursor: pointer;
+      }
+      nav.tabbar .tab.is-active {
+        color: var(--acc-ink);
+        background: var(--acc);
+      }
+
+      @media (max-width: 640px) {
+        .bar .sub {
+          text-align: left;
+          width: 100%;
+        }
+        main {
+          padding: 14px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="page">
+      <header class="bar">
+        <div class="title">
+          <div class="kicker" data-i18n="hdr.kicker">Crawler Dossier</div>
+          <div class="who" data-hdr="name">Unnamed Crawler</div>
+        </div>
+        <div class="sub" data-hdr="sub"></div>
+        <div class="tools">
+          <select id="langSel" title="Language / Langue">
+            <option value="fr">FR</option>
+            <option value="es">ES</option>
+            <option value="de">DE</option>
+            <option value="pt">PT</option>
+          </select>
+          <button
+            class="btn"
+            id="themeBtn"
+            type="button"
+            data-i18n-title="title.theme"
+          >
+            Dark
+          </button>
+          <button class="btn" data-act="import" type="button" data-i18n="btn.import">Import</button>
+          <button class="btn primary" data-act="export" type="button" data-i18n="btn.export">
+            Export JSON
+          </button>
+          <button
+            class="btn"
+            data-act="reset"
+            type="button"
+            data-i18n-title="title.reset"
+            data-i18n="btn.reset"
+          >
+            Reset
+          </button>
+        </div>
+        <input
+          type="file"
+          accept="application/json,.json"
+          data-file="1"
+          hidden
+        />
+        <input type="file" accept="image/*" id="imgFile" hidden />
+      </header>
+
+      <div class="saved" data-saved="1" data-i18n="toast.saved">saved</div>
+
+      <main>
+        <!-- ============ SHEET ============ -->
+        <section data-pane="sheet">
+          <div class="card mb">
+            <div
+              style="
+                display: flex;
+                align-items: baseline;
+                gap: 12px;
+                margin-bottom: 12px;
+                flex-wrap: wrap;
+              "
+            >
+              <span class="chip" data-i18n="chip.health">Health</span>
+              <span class="hint" data-i18n="hint.health"
+                >Tick a segment as it is lost — note the HP it covers</span
+              >
+            </div>
+            <div class="hp-grid" id="hpGrid"></div>
+          </div>
+
+          <div class="two-start">
+            <div class="card">
+              <div class="chip mb" data-i18n="chip.identity">Identity</div>
+              <div class="identity-grid">
+                <label class="lbl"
+                  ><span data-i18n="f.name">Name</span><input data-k="identity.name"
+                /></label>
+                <label class="lbl"
+                  ><span data-i18n="f.race">Race</span><input data-k="identity.race"
+                /></label>
+                <label class="lbl"
+                  ><span data-i18n="f.pronouns">Gender / Pronouns</span
+                  ><input data-k="identity.pronouns"
+                /></label>
+                <label class="lbl"
+                  ><span data-i18n="f.level">Level</span><input data-k="identity.level"
+                /></label>
+                <label class="lbl"
+                  ><span data-i18n="f.crawlerNumber">Crawler Number</span
+                  ><input data-k="identity.crawlerNumber"
+                /></label>
+                <label class="lbl"
+                  ><span data-i18n="f.class">Class</span><input data-k="identity.class"
+                /></label>
+                <label class="lbl"
+                  ><span data-i18n="f.floor">Floor</span><input data-k="identity.floor"
+                /></label>
+                <label class="lbl"
+                  ><span data-i18n="f.aiFavor">AI Favor</span><input data-k="def.aiFavor"
+                /></label>
+                <label class="lbl"
+                  ><span data-i18n="f.size">Size</span
+                  ><select data-k="def.size">
+                    <option value=""></option>
+                    <option value="1" data-i18n="size.1">1 Tiny</option>
+                    <option value="2" data-i18n="size.2">2 Small</option>
+                    <option value="3" data-i18n="size.3">3 Petite</option>
+                    <option value="4" data-i18n="size.4">4 Medium (Human)</option>
+                    <option value="5" data-i18n="size.5">5 Large</option>
+                    <option value="6" data-i18n="size.6">6 Huge</option>
+                    <option value="7" data-i18n="size.7">7 Colossal</option>
+                    <option value="8" data-i18n="size.8">8 Gargantuan</option>
+                  </select></label
+                >
+              </div>
+              <div class="mana">
+                <div class="mana-head">
+                  <span class="lbl-inline">Mana</span>
+                  <span class="mana-num"
+                    ><span data-mana="cur">0</span> /
+                    <span data-mana="max">0</span></span
+                  >
+                </div>
+                <div class="mana-track">
+                  <div class="mana-fill" data-mana="fill"></div>
+                </div>
+                <div class="mana-inputs">
+                  <label class="lbl sm"
+                    ><span data-i18n="f.current">Current</span
+                    ><input
+                      data-k="mana.current"
+                      class="center"
+                      inputmode="numeric"
+                  /></label>
+                  <label class="lbl sm"
+                    ><span data-i18n="f.max">Max</span
+                    ><input
+                      data-k="mana.max"
+                      class="center"
+                      inputmode="numeric"
+                  /></label>
+                </div>
+              </div>
+            </div>
+            <div class="card">
+              <div class="chip mb" data-i18n="chip.portrait">Portrait</div>
+              <div
+                class="portrait"
+                data-imgbox="identity.portrait"
+                role="button"
+                tabindex="0"
+                data-i18n-title="title.imgbox"
+              >
+                <img data-imgbox-img data-i18n-alt="alt.portrait" alt="Portrait" hidden />
+                <span data-imgbox-ph data-i18n="ph.portraitBox">portrait — cliquer ou déposer une image</span>
+              </div>
+              <input type="hidden" data-k="identity.portrait" />
+              <button
+                class="btn"
+                data-imgbox-clear="identity.portrait"
+                type="button"
+                hidden
+                style="margin-top: 8px"
+                data-i18n="btn.removeImg"
+              >
+                Retirer l'image
+              </button>
+            </div>
+          </div>
+
+          <div class="stats-grid mt" id="statsGrid"></div>
+
+          <div class="cards-340 mt">
+            <div class="card">
+              <div class="chip mb" data-i18n="chip.defense">Defense</div>
+              <div class="grid" style="gap: 12px">
+                <div class="inset">
+                  <div class="sub-rule" data-i18n="rule.dr">Damage Resistance</div>
+                  <div class="def-cols">
+                    <label class="lbl def"
+                      ><span data-i18n="f.armor">Armor</span
+                      ><input data-k="def.armor" class="center"
+                    /></label>
+                    <label class="lbl def"
+                      ><span data-i18n="f.dexMod">DEX Mod</span
+                      ><input
+                        data-k="def.dexMod"
+                        data-c="def.dexMod"
+                        class="center"
+                        readonly
+                    /></label>
+                    <label class="lbl def"
+                      ><span data-i18n="f.buffs">Buffs</span
+                      ><input data-k="def.drBuffs" class="center"
+                    /></label>
+                    <label class="lbl def acc"
+                      ><span data-i18n="f.drTotal">DR Total</span
+                      ><input
+                        data-k="def.drTotal"
+                        data-c="def.drTotal"
+                        class="center total-input"
+                        readonly
+                    /></label>
+                  </div>
+                </div>
+                <div class="inset">
+                  <div class="sub-rule" data-i18n="rule.evade">Evade</div>
+                  <div class="def-cols">
+                    <label class="lbl def"
+                      ><span data-i18n="f.armor">Armor</span
+                      ><input
+                        data-mirror="def.armor"
+                        class="center"
+                        inputmode="numeric"
+                        data-i18n-title="title.mirrorDR"
+                    /></label>
+                    <label class="lbl def"
+                      ><span data-i18n="f.buffs">Buffs</span
+                      ><input data-k="def.evadeBuffs" class="center"
+                    /></label>
+                    <label class="lbl def acc"
+                      ><span data-i18n="f.evadeTotal">Evade Total</span
+                      ><input
+                        data-k="def.evadeTotal"
+                        data-c="def.evadeTotal"
+                        class="center total-input"
+                        readonly
+                    /></label>
+                  </div>
+                </div>
+                <div class="inset">
+                  <div class="sub-rule" data-i18n="rule.movement">Movement</div>
+                  <div class="def-cols">
+                    <label class="lbl def"
+                      ><span data-i18n="f.move">Move</span><input data-k="def.move" class="center"
+                    /></label>
+                    <label class="lbl def"
+                      ><span data-i18n="f.step">Step</span><input data-k="def.step" class="center"
+                    /></label>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="stack">
+              <div class="card">
+                <div class="chip mb" data-i18n="chip.extBuffs">External Buffs (Max 3)</div>
+                <div class="grid" style="gap: 8px">
+                  <input data-k="buffs.ext.0" placeholder="1." />
+                  <input data-k="buffs.ext.1" placeholder="2." />
+                  <input data-k="buffs.ext.2" placeholder="3." />
+                </div>
+              </div>
+              <div class="card">
+                <div class="chip mb" data-i18n="chip.debuffs">Debuffs</div>
+                <textarea data-k="buffs.debuffs" rows="4"></textarea>
+              </div>
+            </div>
+          </div>
+
+          <div class="card mt">
+            <div class="chip mb" data-i18n="chip.hotlist">Hotlist</div>
+            <div class="hotlist" id="hotlist"></div>
+          </div>
+        </section>
+
+        <!-- ============ ATTACKS ============ -->
+        <section data-pane="combat" hidden>
+          <div class="card scrollx">
+            <div class="chip" style="margin-bottom: 6px" data-i18n="chip.attacks">Attacks</div>
+            <div class="tbl" style="min-width: 760px">
+              <div class="head cols-attacks">
+                <span data-i18n="f.name">Name</span><span data-i18n="col.rank">Rank</span><span data-i18n="col.stat">Stat</span
+                ><span class="acc" data-i18n="col.toHit">To Hit</span><span data-i18n="col.damage">Damage</span
+                ><span data-i18n="col.effects">Effects</span>
+              </div>
+              <div id="attackRows"></div>
+            </div>
+            <button class="btn addrow" data-add="attacks" type="button" data-i18n="btn.addRow">
+              + Add row
+            </button>
+          </div>
+        </section>
+
+        <!-- ============ SKILLS ============ -->
+        <section data-pane="skills" hidden>
+          <div class="card scrollx">
+            <div class="chip" style="margin-bottom: 6px" data-i18n="chip.skills">Skills</div>
+            <div class="tbl" style="min-width: 860px">
+              <div class="head cols-skills">
+                <span>✔</span><span data-i18n="f.name">Name</span><span data-i18n="col.rank">Rank</span><span data-i18n="col.stat">Stat</span
+                ><span>Mod</span><span data-i18n="col.check">Check Type</span
+                ><span data-i18n="col.notesUpgrades">Notes &amp; Upgrades</span>
+              </div>
+              <div id="skillRows"></div>
+            </div>
+            <button class="btn addrow" data-add="skills" type="button" data-i18n="btn.addRow">
+              + Add row
+            </button>
+          </div>
+        </section>
+
+        <!-- ============ INVENTORY ============ -->
+        <section data-pane="inventory" hidden>
+          <div class="card">
+            <div class="chip" style="margin-bottom: 6px" data-i18n="chip.inventory">Inventory</div>
+            <div class="tbl">
+              <div class="head cols-inv">
+                <span data-i18n="col.item">Item</span><span data-i18n="col.qty">Qty</span><span data-i18n="col.notes">Notes</span>
+              </div>
+              <div id="invRows"></div>
+            </div>
+            <button class="btn addrow" data-add="inv" type="button" data-i18n="btn.addRow">
+              + Add row
+            </button>
+          </div>
+        </section>
+
+        <!-- ============ GEAR ============ -->
+        <section data-pane="gear" hidden>
+          <div class="cards-320">
+            <div class="card">
+              <div class="chip mb" data-i18n="chip.gearSlots">Gear Slots / Tattoos / Patches</div>
+              <div class="grid" style="gap: 12px" id="gearSlots"></div>
+            </div>
+            <div class="card">
+              <div class="chip mb" data-i18n="chip.accessories">Accessories (Max 10)</div>
+              <div class="grid" style="gap: 8px" id="accRows"></div>
+            </div>
+          </div>
+        </section>
+
+        <!-- ============ JOURNAL ============ -->
+        <section data-pane="journal" hidden>
+          <div class="jnav" id="jnav"></div>
+
+          <div data-jpane="popularity">
+            <div class="card grid" id="popFields"></div>
+          </div>
+
+          <div data-jpane="race" hidden>
+            <div class="cards-320">
+              <div class="card grid" style="gap: 12px">
+                <div class="jsection-lbl" data-i18n="f.race">Race</div>
+                <label class="lbl"
+                  ><span data-i18n="f.raceName">Name of Race</span><input data-k="race.name"
+                /></label>
+                <label class="lbl"
+                  ><span data-i18n="f.racialBenefits">Racial Benefits</span
+                  ><textarea data-k="race.benefits" rows="10"></textarea>
+                </label>
+              </div>
+              <div class="card grid" style="gap: 12px">
+                <div class="jsection-lbl" data-i18n="f.class">Class</div>
+                <label class="lbl"
+                  ><span data-i18n="f.className">Name of Class</span><input data-k="class.name"
+                /></label>
+                <label class="lbl"
+                  ><span data-i18n="f.classBenefits">Class Benefits</span
+                  ><textarea data-k="class.benefits" rows="10"></textarea>
+                </label>
+              </div>
+            </div>
+          </div>
+
+          <div data-jpane="affiliations" hidden>
+            <div class="card grid">
+              <label class="lbl"
+                ><span class="jsection-lbl" data-i18n="f.clubs">Clubs, Societies, Guilds, Gods</span
+                ><textarea data-k="journal.clubs" rows="8"></textarea>
+              </label>
+              <label class="lbl"
+                ><span class="jsection-lbl" data-i18n="f.kills">Important Things I've Killed</span
+                ><textarea data-k="journal.kills" rows="8"></textarea>
+              </label>
+            </div>
+          </div>
+
+          <div data-jpane="crawlers" hidden>
+            <div class="grid" style="gap: 14px" id="crawlerRows"></div>
+          </div>
+
+          <div data-jpane="biography" hidden>
+            <div class="card cards-300" id="bioQs"></div>
+          </div>
+
+          <div data-jpane="space" hidden>
+            <div class="cards-320">
+              <div class="card grid" style="gap: 12px">
+                <div class="jsection-lbl" data-i18n="jnav.space">Personal Space</div>
+                <div
+                  style="
+                    display: grid;
+                    grid-template-columns: 1fr 1fr;
+                    gap: 12px;
+                  "
+                >
+                  <label class="lbl"
+                    ><span data-i18n="f.tier">Tier</span><input data-k="space.tier"
+                  /></label>
+                  <label class="lbl"
+                    ><span data-i18n="f.size">Size</span><input data-k="space.size"
+                  /></label>
+                </div>
+                <label class="lbl"
+                  ><span data-i18n="f.amenities">Amenities</span
+                  ><textarea data-k="space.amenities" rows="8"></textarea>
+                </label>
+              </div>
+              <div class="card grid" style="gap: 10px">
+                <div class="jsection-lbl" data-i18n="sec.spaceDiagram">Personal Space Diagram</div>
+                <div
+                  class="portrait wide"
+                  data-imgbox="space.diagramImg"
+                  role="button"
+                  tabindex="0"
+                  data-i18n-title="title.imgbox"
+                >
+                  <img data-imgbox-img data-i18n-alt="alt.spaceDiagram" alt="Personal space diagram" hidden />
+                  <span data-imgbox-ph data-i18n="ph.diagramBox"
+                    >diagram — cliquer ou déposer une image</span
+                  >
+                </div>
+                <input type="hidden" data-k="space.diagramImg" />
+                <button
+                  class="btn"
+                  data-imgbox-clear="space.diagramImg"
+                  type="button"
+                  hidden
+                  data-i18n="btn.removeImg"
+                >
+                  Retirer l'image
+                </button>
+                <textarea
+                  data-k="space.diagram"
+                  rows="4"
+                  data-i18n-ph="ph.layoutNotes"
+                  placeholder="Layout notes"
+                ></textarea>
+              </div>
+            </div>
+          </div>
+
+          <div data-jpane="notes" hidden>
+            <div class="cards-280" id="notePages"></div>
+          </div>
+        </section>
+      </main>
+
+      <nav class="tabbar" id="tabbar"></nav>
+    </div>
+
+    <script>
+      (function () {
+        "use strict";
+
+        /* ---------------- config ---------------- */
+        var STORE = "dcsheet.v1",
+          TKEY = "dcsheet.theme";
+        var STATS = ["STR", "INT", "CON", "DEX", "CHA"];
+        var STAT_LIST = [
+          { key: "STR", label: "Strength" },
+          { key: "INT", label: "Intelligence" },
+          { key: "CON", label: "Constitution" },
+          { key: "DEX", label: "Dexterity" },
+          { key: "CHA", label: "Charisma" },
+        ];
+        var GEAR_SLOTS = [
+          { key: "head", label: "Head" },
+          { key: "torso", label: "Torso" },
+          { key: "arms", label: "Arms" },
+          { key: "hands", label: "Hands / Holding" },
+          { key: "legs", label: "Legs" },
+          { key: "feet", label: "Feet" },
+        ];
+        var POP_FIELDS = [
+          { key: "popularity", label: "Popularity and Sponsors" },
+          { key: "pastTrauma", label: "Past Trauma" },
+          { key: "looseEnds", label: "Loose Ends" },
+          { key: "regrets", label: "Regrets" },
+        ];
+        var TABS = [
+          { key: "sheet", label: "Sheet" },
+          { key: "combat", label: "Attacks" },
+          { key: "skills", label: "Skills" },
+          { key: "gear", label: "Gear" },
+          { key: "inventory", label: "Inventory" },
+          { key: "journal", label: "Journal" },
+        ];
+        var JOURNAL_NAV = [
+          { key: "popularity", label: "Popularity & Trauma" },
+          { key: "race", label: "Race & Class" },
+          { key: "affiliations", label: "Clubs & Kills" },
+          { key: "crawlers", label: "Other Crawlers" },
+          { key: "biography", label: "Biography" },
+          { key: "space", label: "Personal Space" },
+          { key: "notes", label: "Notes" },
+        ];
+        var HP_COLORS = [
+          "#8f2f22",
+          "#a4452a",
+          "#b7692c",
+          "#c28c30",
+          "#b7a033",
+          "#9aa632",
+          "#7d9e33",
+          "#619438",
+          "#46883c",
+          "#2f7a3c",
+        ];
+        var BIO = [
+          "Does your name have any special significance? Do you have any nicknames?",
+          "Why did you enter the dungeon?",
+          "Where are you from?",
+          "What was your occupation before entering the dungeon?",
+          "What was your childhood like?",
+          "What is your relationship like with your parents/guardians?",
+          "Who are your closest friends/family members?",
+          "Did they enter the dungeon? Are they with you?",
+          "What 3 words would you use to describe yourself?",
+          "What 3 words would your friends use to describe you?",
+          "Are you more of a leader or a follower?",
+          "If you had a chance to give your party a name/rename it, what would it be?",
+          "What is your mantra?",
+          "Do you have any hobbies?",
+          "Before entering the dungeon, how would you spend a normal Saturday night?",
+          "What do you miss most about Earth as you knew it?",
+          "What are your core moral beliefs?",
+          "Are you religious? If so, what religion do you practice?",
+          "What is your greatest strength?",
+          "What is your biggest flaw?",
+          "If you could go back and change one thing about your life, what would it be?",
+          "Who is the one character you care about the most? Why?",
+          "How do you deal with conflict?",
+          "How do you feel about killing other crawlers?",
+          "What is your theme song?",
+          "What's your signature color?",
+          "What is your favorite food?",
+          "What's your favorite TV show?",
+          "What is your greatest fear?",
+          "What is your biggest insecurity?",
+          "What is your guilty pleasure?",
+          "What is your greatest achievement?",
+          "What makes you happy?",
+          "What makes you sad?",
+          "What makes you angry?",
+          "Describe the biggest mistake you've ever made.",
+          "Are you a risk-taker?",
+          "What does success look like to you?",
+          "What does failure look like to you?",
+          "If you could take a deal at a later floor, would you?",
+        ];
+
+        /* stat score -> modifier (Dungeon Crawler table) */
+        var MOD_TABLE = [
+          [2, 1],
+          [5, 2],
+          [9, 3],
+          [19, 4],
+          [49, 5],
+          [99, 6],
+          [149, 7],
+          [199, 8],
+          [299, 9],
+        ];
+        function scoreToMod(raw) {
+          var s = String(raw == null ? "" : raw).trim();
+          if (s === "") return "";
+          var n = parseFloat(s.replace(/[^0-9.\-]/g, ""));
+          if (!isFinite(n) || n < 1) return "";
+          for (var i = 0; i < MOD_TABLE.length; i++) {
+            if (n <= MOD_TABLE[i][0]) return MOD_TABLE[i][1];
+          }
+          return 10;
+        }
+
+        /* ---------------- i18n ---------------- */
+        var LKEY = "dcsheet.lang";
+        var LANGS = ["fr", "es", "de", "pt"];
+        var lang = "fr";
+
+        var I18N = {
+          fr: {
+            "hdr.kicker": "Dossier Crawler",
+            "hdr.unnamed": "Crawler sans nom",
+            "hdr.lvl": "NIV",
+            "hdr.floor": "ÉTAGE",
+            "btn.import": "Importer",
+            "btn.export": "Exporter JSON",
+            "btn.reset": "Réinitialiser",
+            "btn.addRow": "+ Ajouter une ligne",
+            "btn.removeImg": "Retirer l'image",
+            "btn.theme.dark": "Sombre",
+            "btn.theme.light": "Clair",
+            "title.theme": "Basculer clair / sombre",
+            "title.reset": "Remettre toute la fiche à zéro",
+            "title.imgbox": "Cliquer ou déposer une image",
+            "title.mirrorDR": "Identique à la résistance aux dégâts",
+            "title.modFromStat": "Mod de la caractéristique choisie",
+            "toast.saved": "enregistré",
+            "chip.health": "Santé",
+            "hint.health":
+              "Cochez un segment quand il est perdu — notez les PV qu'il couvre",
+            "chip.identity": "Identité",
+            "f.name": "Nom",
+            "f.race": "Race",
+            "f.pronouns": "Genre / Pronoms",
+            "f.level": "Niveau",
+            "f.crawlerNumber": "Numéro de Crawler",
+            "f.class": "Classe",
+            "f.floor": "Étage",
+            "f.aiFavor": "Faveur de l'IA",
+            "f.size": "Taille",
+            "size.1": "1 Minuscule",
+            "size.2": "2 Petit",
+            "size.3": "3 Menu",
+            "size.4": "4 Moyen (Humain)",
+            "size.5": "5 Grand",
+            "size.6": "6 Énorme",
+            "size.7": "7 Colossal",
+            "size.8": "8 Gigantesque",
+            "f.current": "Actuel",
+            "f.max": "Max",
+            "chip.portrait": "Portrait",
+            "ph.portraitBox": "portrait — cliquer ou déposer une image",
+            "ph.diagramBox": "schéma — cliquer ou déposer une image",
+            "ph.hp": "PV",
+            "ph.layoutNotes": "Notes de disposition",
+            "alt.portrait": "Portrait",
+            "alt.spaceDiagram": "Schéma de l'espace personnel",
+            "chip.defense": "Défense",
+            "rule.dr": "Résistance aux dégâts",
+            "f.armor": "Armure",
+            "f.dexMod": "Mod DEX",
+            "f.buffs": "Buffs",
+            "f.drTotal": "Total RD",
+            "rule.evade": "Esquive",
+            "f.evadeTotal": "Total esquive",
+            "rule.movement": "Déplacement",
+            "f.move": "Vitesse",
+            "f.step": "Pas",
+            "chip.extBuffs": "Buffs externes (max 3)",
+            "chip.debuffs": "Debuffs",
+            "chip.hotlist": "Hotlist",
+            "chip.attacks": "Attaques",
+            "col.rank": "Rang",
+            "col.stat": "Carac.",
+            "col.toHit": "Toucher",
+            "col.damage": "Dégâts",
+            "col.effects": "Effets",
+            "chip.skills": "Compétences",
+            "col.check": "Type de test",
+            "col.notesUpgrades": "Notes et améliorations",
+            "check.Unopposed": "Non opposé",
+            "check.Opposed": "Opposé",
+            "check.Passive": "Passif",
+            "check.Evade": "Esquive",
+            "chip.inventory": "Inventaire",
+            "col.item": "Objet",
+            "col.qty": "Qté",
+            "col.notes": "Notes",
+            "chip.gearSlots": "Emplacements d'équipement / Tatouages / Patchs",
+            "chip.accessories": "Accessoires (max 10)",
+            "gear.head": "Tête",
+            "gear.torso": "Torse",
+            "gear.arms": "Bras",
+            "gear.hands": "Mains / Tenu",
+            "gear.legs": "Jambes",
+            "gear.feet": "Pieds",
+            "jnav.popularity": "Popularité et traumatismes",
+            "jnav.race": "Race et classe",
+            "jnav.affiliations": "Clubs et éliminations",
+            "jnav.crawlers": "Autres Crawlers",
+            "jnav.biography": "Biographie",
+            "jnav.space": "Espace personnel",
+            "jnav.notes": "Notes",
+            "pop.popularity": "Popularité et sponsors",
+            "pop.pastTrauma": "Traumatismes passés",
+            "pop.looseEnds": "Affaires en suspens",
+            "pop.regrets": "Regrets",
+            "f.raceName": "Nom de la race",
+            "f.racialBenefits": "Avantages raciaux",
+            "f.className": "Nom de la classe",
+            "f.classBenefits": "Avantages de classe",
+            "f.clubs": "Clubs, sociétés, guildes, dieux",
+            "f.kills": "Choses importantes que j'ai tuées",
+            "crawler.title": "Autre Crawler {n}",
+            "crawler.relationship": "Quelle est ta relation avec ce Crawler ?",
+            "f.tier": "Palier",
+            "f.amenities": "Équipements",
+            "sec.spaceDiagram": "Schéma de l'espace personnel",
+            "note.tag": "NOTES / {n}",
+            "tab.sheet": "Fiche",
+            "tab.combat": "Attaques",
+            "tab.skills": "Compétences",
+            "tab.gear": "Équipement",
+            "tab.inventory": "Inventaire",
+            "tab.journal": "Journal",
+            "stat.STR": "Force",
+            "stat.INT": "Intelligence",
+            "stat.CON": "Constitution",
+            "stat.DEX": "Dextérité",
+            "stat.CHA": "Charisme",
+            "f.enhanced": "Amélioré",
+            "f.unenhanced": "Non amélioré",
+            "alert.badImage": "Impossible de lire cette image.",
+            "alert.badImport": "Ce fichier n'est pas un export de fiche valide.",
+            "confirm.reset":
+              "Remettre toute la fiche à zéro ? Cette action est irréversible.",
+          },
+          es: {
+            "hdr.kicker": "Expediente Crawler",
+            "hdr.unnamed": "Crawler sin nombre",
+            "hdr.lvl": "NVL",
+            "hdr.floor": "PISO",
+            "btn.import": "Importar",
+            "btn.export": "Exportar JSON",
+            "btn.reset": "Reiniciar",
+            "btn.addRow": "+ Añadir fila",
+            "btn.removeImg": "Quitar la imagen",
+            "btn.theme.dark": "Oscuro",
+            "btn.theme.light": "Claro",
+            "title.theme": "Cambiar claro / oscuro",
+            "title.reset": "Reiniciar toda la hoja",
+            "title.imgbox": "Haz clic o suelta una imagen",
+            "title.mirrorDR": "Igual que la resistencia al daño",
+            "title.modFromStat": "Mod de la característica elegida",
+            "toast.saved": "guardado",
+            "chip.health": "Salud",
+            "hint.health":
+              "Marca un segmento cuando se pierde — anota los PG que cubre",
+            "chip.identity": "Identidad",
+            "f.name": "Nombre",
+            "f.race": "Raza",
+            "f.pronouns": "Género / Pronombres",
+            "f.level": "Nivel",
+            "f.crawlerNumber": "Número de Crawler",
+            "f.class": "Clase",
+            "f.floor": "Piso",
+            "f.aiFavor": "Favor de la IA",
+            "f.size": "Tamaño",
+            "size.1": "1 Diminuto",
+            "size.2": "2 Pequeño",
+            "size.3": "3 Menudo",
+            "size.4": "4 Mediano (Humano)",
+            "size.5": "5 Grande",
+            "size.6": "6 Enorme",
+            "size.7": "7 Colosal",
+            "size.8": "8 Gigantesco",
+            "f.current": "Actual",
+            "f.max": "Máx",
+            "chip.portrait": "Retrato",
+            "ph.portraitBox": "retrato — haz clic o suelta una imagen",
+            "ph.diagramBox": "diagrama — haz clic o suelta una imagen",
+            "ph.hp": "PG",
+            "ph.layoutNotes": "Notas de distribución",
+            "alt.portrait": "Retrato",
+            "alt.spaceDiagram": "Diagrama del espacio personal",
+            "chip.defense": "Defensa",
+            "rule.dr": "Resistencia al daño",
+            "f.armor": "Armadura",
+            "f.dexMod": "Mod DEX",
+            "f.buffs": "Buffs",
+            "f.drTotal": "Total RD",
+            "rule.evade": "Evasión",
+            "f.evadeTotal": "Total evasión",
+            "rule.movement": "Movimiento",
+            "f.move": "Velocidad",
+            "f.step": "Paso",
+            "chip.extBuffs": "Buffs externos (máx 3)",
+            "chip.debuffs": "Debuffs",
+            "chip.hotlist": "Hotlist",
+            "chip.attacks": "Ataques",
+            "col.rank": "Rango",
+            "col.stat": "Car.",
+            "col.toHit": "Impacto",
+            "col.damage": "Daño",
+            "col.effects": "Efectos",
+            "chip.skills": "Habilidades",
+            "col.check": "Tipo de tirada",
+            "col.notesUpgrades": "Notas y mejoras",
+            "check.Unopposed": "Sin oposición",
+            "check.Opposed": "Con oposición",
+            "check.Passive": "Pasiva",
+            "check.Evade": "Evasión",
+            "chip.inventory": "Inventario",
+            "col.item": "Objeto",
+            "col.qty": "Cant.",
+            "col.notes": "Notas",
+            "chip.gearSlots": "Ranuras de equipo / Tatuajes / Parches",
+            "chip.accessories": "Accesorios (máx 10)",
+            "gear.head": "Cabeza",
+            "gear.torso": "Torso",
+            "gear.arms": "Brazos",
+            "gear.hands": "Manos / Sostenido",
+            "gear.legs": "Piernas",
+            "gear.feet": "Pies",
+            "jnav.popularity": "Popularidad y traumas",
+            "jnav.race": "Raza y clase",
+            "jnav.affiliations": "Clubes y muertes",
+            "jnav.crawlers": "Otros Crawlers",
+            "jnav.biography": "Biografía",
+            "jnav.space": "Espacio personal",
+            "jnav.notes": "Notas",
+            "pop.popularity": "Popularidad y patrocinadores",
+            "pop.pastTrauma": "Traumas del pasado",
+            "pop.looseEnds": "Cabos sueltos",
+            "pop.regrets": "Arrepentimientos",
+            "f.raceName": "Nombre de la raza",
+            "f.racialBenefits": "Beneficios raciales",
+            "f.className": "Nombre de la clase",
+            "f.classBenefits": "Beneficios de clase",
+            "f.clubs": "Clubes, sociedades, gremios, dioses",
+            "f.kills": "Cosas importantes que he matado",
+            "crawler.title": "Otro Crawler {n}",
+            "crawler.relationship": "¿Cuál es tu relación con este Crawler?",
+            "f.tier": "Nivel",
+            "f.amenities": "Comodidades",
+            "sec.spaceDiagram": "Diagrama del espacio personal",
+            "note.tag": "NOTAS / {n}",
+            "tab.sheet": "Hoja",
+            "tab.combat": "Ataques",
+            "tab.skills": "Habilidades",
+            "tab.gear": "Equipo",
+            "tab.inventory": "Inventario",
+            "tab.journal": "Diario",
+            "stat.STR": "Fuerza",
+            "stat.INT": "Inteligencia",
+            "stat.CON": "Constitución",
+            "stat.DEX": "Destreza",
+            "stat.CHA": "Carisma",
+            "f.enhanced": "Mejorado",
+            "f.unenhanced": "Sin mejorar",
+            "alert.badImage": "No se puede leer esta imagen.",
+            "alert.badImport":
+              "Ese archivo no es una exportación de hoja válida.",
+            "confirm.reset":
+              "¿Reiniciar toda la hoja? Esta acción es irreversible.",
+          },
+          de: {
+            "hdr.kicker": "Crawler-Dossier",
+            "hdr.unnamed": "Namenloser Crawler",
+            "hdr.lvl": "STUFE",
+            "hdr.floor": "EBENE",
+            "btn.import": "Importieren",
+            "btn.export": "JSON exportieren",
+            "btn.reset": "Zurücksetzen",
+            "btn.addRow": "+ Zeile hinzufügen",
+            "btn.removeImg": "Bild entfernen",
+            "btn.theme.dark": "Dunkel",
+            "btn.theme.light": "Hell",
+            "title.theme": "Hell / Dunkel umschalten",
+            "title.reset": "Den gesamten Bogen zurücksetzen",
+            "title.imgbox": "Klicken oder Bild ablegen",
+            "title.mirrorDR": "Wie Schadensresistenz",
+            "title.modFromStat": "Mod des gewählten Attributs",
+            "toast.saved": "gespeichert",
+            "chip.health": "Gesundheit",
+            "hint.health":
+              "Markiere ein Segment, sobald es verloren ist — notiere die abgedeckten TP",
+            "chip.identity": "Identität",
+            "f.name": "Name",
+            "f.race": "Volk",
+            "f.pronouns": "Geschlecht / Pronomen",
+            "f.level": "Stufe",
+            "f.crawlerNumber": "Crawler-Nummer",
+            "f.class": "Klasse",
+            "f.floor": "Ebene",
+            "f.aiFavor": "KI-Gunst",
+            "f.size": "Größe",
+            "size.1": "1 Winzig",
+            "size.2": "2 Klein",
+            "size.3": "3 Zierlich",
+            "size.4": "4 Mittel (Mensch)",
+            "size.5": "5 Groß",
+            "size.6": "6 Riesig",
+            "size.7": "7 Kolossal",
+            "size.8": "8 Gigantisch",
+            "f.current": "Aktuell",
+            "f.max": "Max",
+            "chip.portrait": "Porträt",
+            "ph.portraitBox": "Porträt — klicken oder Bild ablegen",
+            "ph.diagramBox": "Diagramm — klicken oder Bild ablegen",
+            "ph.hp": "TP",
+            "ph.layoutNotes": "Layout-Notizen",
+            "alt.portrait": "Porträt",
+            "alt.spaceDiagram": "Diagramm des persönlichen Raums",
+            "chip.defense": "Verteidigung",
+            "rule.dr": "Schadensresistenz",
+            "f.armor": "Rüstung",
+            "f.dexMod": "DEX-Mod",
+            "f.buffs": "Buffs",
+            "f.drTotal": "SR gesamt",
+            "rule.evade": "Ausweichen",
+            "f.evadeTotal": "Ausweichen gesamt",
+            "rule.movement": "Bewegung",
+            "f.move": "Tempo",
+            "f.step": "Schritt",
+            "chip.extBuffs": "Externe Buffs (max. 3)",
+            "chip.debuffs": "Debuffs",
+            "chip.hotlist": "Hotlist",
+            "chip.attacks": "Angriffe",
+            "col.rank": "Rang",
+            "col.stat": "Attr.",
+            "col.toHit": "Treffer",
+            "col.damage": "Schaden",
+            "col.effects": "Effekte",
+            "chip.skills": "Fertigkeiten",
+            "col.check": "Probenart",
+            "col.notesUpgrades": "Notizen & Verbesserungen",
+            "check.Unopposed": "Ohne Gegner",
+            "check.Opposed": "Mit Gegner",
+            "check.Passive": "Passiv",
+            "check.Evade": "Ausweichen",
+            "chip.inventory": "Inventar",
+            "col.item": "Gegenstand",
+            "col.qty": "Anz.",
+            "col.notes": "Notizen",
+            "chip.gearSlots": "Ausrüstungsplätze / Tattoos / Patches",
+            "chip.accessories": "Accessoires (max. 10)",
+            "gear.head": "Kopf",
+            "gear.torso": "Torso",
+            "gear.arms": "Arme",
+            "gear.hands": "Hände / Gehalten",
+            "gear.legs": "Beine",
+            "gear.feet": "Füße",
+            "jnav.popularity": "Popularität & Trauma",
+            "jnav.race": "Volk & Klasse",
+            "jnav.affiliations": "Clubs & Kills",
+            "jnav.crawlers": "Andere Crawler",
+            "jnav.biography": "Biografie",
+            "jnav.space": "Persönlicher Raum",
+            "jnav.notes": "Notizen",
+            "pop.popularity": "Popularität und Sponsoren",
+            "pop.pastTrauma": "Vergangene Traumata",
+            "pop.looseEnds": "Lose Enden",
+            "pop.regrets": "Bedauern",
+            "f.raceName": "Name des Volkes",
+            "f.racialBenefits": "Volksvorteile",
+            "f.className": "Name der Klasse",
+            "f.classBenefits": "Klassenvorteile",
+            "f.clubs": "Clubs, Gesellschaften, Gilden, Götter",
+            "f.kills": "Wichtige Dinge, die ich getötet habe",
+            "crawler.title": "Anderer Crawler {n}",
+            "crawler.relationship":
+              "Wie ist deine Beziehung zu diesem Crawler?",
+            "f.tier": "Stufe",
+            "f.amenities": "Ausstattung",
+            "sec.spaceDiagram": "Diagramm des persönlichen Raums",
+            "note.tag": "NOTIZEN / {n}",
+            "tab.sheet": "Bogen",
+            "tab.combat": "Angriffe",
+            "tab.skills": "Fertigkeiten",
+            "tab.gear": "Ausrüstung",
+            "tab.inventory": "Inventar",
+            "tab.journal": "Tagebuch",
+            "stat.STR": "Stärke",
+            "stat.INT": "Intelligenz",
+            "stat.CON": "Konstitution",
+            "stat.DEX": "Geschicklichkeit",
+            "stat.CHA": "Charisma",
+            "f.enhanced": "Verbessert",
+            "f.unenhanced": "Unverbessert",
+            "alert.badImage": "Dieses Bild kann nicht gelesen werden.",
+            "alert.badImport": "Diese Datei ist kein gültiger Bogen-Export.",
+            "confirm.reset":
+              "Den gesamten Bogen zurücksetzen? Diese Aktion ist unwiderruflich.",
+          },
+          pt: {
+            "hdr.kicker": "Dossiê Crawler",
+            "hdr.unnamed": "Crawler sem nome",
+            "hdr.lvl": "NÍV",
+            "hdr.floor": "ANDAR",
+            "btn.import": "Importar",
+            "btn.export": "Exportar JSON",
+            "btn.reset": "Redefinir",
+            "btn.addRow": "+ Adicionar linha",
+            "btn.removeImg": "Remover a imagem",
+            "btn.theme.dark": "Escuro",
+            "btn.theme.light": "Claro",
+            "title.theme": "Alternar claro / escuro",
+            "title.reset": "Redefinir toda a ficha",
+            "title.imgbox": "Clique ou solte uma imagem",
+            "title.mirrorDR": "Igual à resistência a dano",
+            "title.modFromStat": "Mod do atributo escolhido",
+            "toast.saved": "salvo",
+            "chip.health": "Saúde",
+            "hint.health":
+              "Marque um segmento quando for perdido — anote os PV que ele cobre",
+            "chip.identity": "Identidade",
+            "f.name": "Nome",
+            "f.race": "Raça",
+            "f.pronouns": "Gênero / Pronomes",
+            "f.level": "Nível",
+            "f.crawlerNumber": "Número de Crawler",
+            "f.class": "Classe",
+            "f.floor": "Andar",
+            "f.aiFavor": "Favor da IA",
+            "f.size": "Tamanho",
+            "size.1": "1 Minúsculo",
+            "size.2": "2 Pequeno",
+            "size.3": "3 Miúdo",
+            "size.4": "4 Médio (Humano)",
+            "size.5": "5 Grande",
+            "size.6": "6 Enorme",
+            "size.7": "7 Colossal",
+            "size.8": "8 Gigantesco",
+            "f.current": "Atual",
+            "f.max": "Máx",
+            "chip.portrait": "Retrato",
+            "ph.portraitBox": "retrato — clique ou solte uma imagem",
+            "ph.diagramBox": "diagrama — clique ou solte uma imagem",
+            "ph.hp": "PV",
+            "ph.layoutNotes": "Notas de layout",
+            "alt.portrait": "Retrato",
+            "alt.spaceDiagram": "Diagrama do espaço pessoal",
+            "chip.defense": "Defesa",
+            "rule.dr": "Resistência a dano",
+            "f.armor": "Armadura",
+            "f.dexMod": "Mod DEX",
+            "f.buffs": "Buffs",
+            "f.drTotal": "Total RD",
+            "rule.evade": "Esquiva",
+            "f.evadeTotal": "Total esquiva",
+            "rule.movement": "Movimento",
+            "f.move": "Deslocamento",
+            "f.step": "Passo",
+            "chip.extBuffs": "Buffs externos (máx 3)",
+            "chip.debuffs": "Debuffs",
+            "chip.hotlist": "Hotlist",
+            "chip.attacks": "Ataques",
+            "col.rank": "Grau",
+            "col.stat": "Atrib.",
+            "col.toHit": "Acerto",
+            "col.damage": "Dano",
+            "col.effects": "Efeitos",
+            "chip.skills": "Perícias",
+            "col.check": "Tipo de teste",
+            "col.notesUpgrades": "Notas e melhorias",
+            "check.Unopposed": "Sem oposição",
+            "check.Opposed": "Com oposição",
+            "check.Passive": "Passivo",
+            "check.Evade": "Esquiva",
+            "chip.inventory": "Inventário",
+            "col.item": "Item",
+            "col.qty": "Qtd",
+            "col.notes": "Notas",
+            "chip.gearSlots": "Espaços de equipamento / Tatuagens / Emblemas",
+            "chip.accessories": "Acessórios (máx 10)",
+            "gear.head": "Cabeça",
+            "gear.torso": "Torso",
+            "gear.arms": "Braços",
+            "gear.hands": "Mãos / Segurando",
+            "gear.legs": "Pernas",
+            "gear.feet": "Pés",
+            "jnav.popularity": "Popularidade e traumas",
+            "jnav.race": "Raça e classe",
+            "jnav.affiliations": "Clubes e mortes",
+            "jnav.crawlers": "Outros Crawlers",
+            "jnav.biography": "Biografia",
+            "jnav.space": "Espaço pessoal",
+            "jnav.notes": "Notas",
+            "pop.popularity": "Popularidade e patrocinadores",
+            "pop.pastTrauma": "Traumas do passado",
+            "pop.looseEnds": "Pontas soltas",
+            "pop.regrets": "Arrependimentos",
+            "f.raceName": "Nome da raça",
+            "f.racialBenefits": "Benefícios raciais",
+            "f.className": "Nome da classe",
+            "f.classBenefits": "Benefícios de classe",
+            "f.clubs": "Clubes, sociedades, guildas, deuses",
+            "f.kills": "Coisas importantes que matei",
+            "crawler.title": "Outro Crawler {n}",
+            "crawler.relationship": "Qual é a sua relação com este Crawler?",
+            "f.tier": "Nível",
+            "f.amenities": "Comodidades",
+            "sec.spaceDiagram": "Diagrama do espaço pessoal",
+            "note.tag": "NOTAS / {n}",
+            "tab.sheet": "Ficha",
+            "tab.combat": "Ataques",
+            "tab.skills": "Perícias",
+            "tab.gear": "Equipamento",
+            "tab.inventory": "Inventário",
+            "tab.journal": "Diário",
+            "stat.STR": "Força",
+            "stat.INT": "Inteligência",
+            "stat.CON": "Constituição",
+            "stat.DEX": "Destreza",
+            "stat.CHA": "Carisma",
+            "f.enhanced": "Aprimorado",
+            "f.unenhanced": "Sem aprimoramento",
+            "alert.badImage": "Não é possível ler esta imagem.",
+            "alert.badImport":
+              "Esse arquivo não é uma exportação de ficha válida.",
+            "confirm.reset":
+              "Redefinir toda a ficha? Esta ação é irreversível.",
+          },
+        };
+
+        var BIO_I18N = {
+          fr: [
+            "Ton nom a-t-il une signification particulière ? As-tu des surnoms ?",
+            "Pourquoi es-tu entré dans le donjon ?",
+            "D'où viens-tu ?",
+            "Quel était ton métier avant d'entrer dans le donjon ?",
+            "Comment s'est passée ton enfance ?",
+            "Quelle relation as-tu avec tes parents / tuteurs ?",
+            "Qui sont tes amis / proches les plus chers ?",
+            "Sont-ils entrés dans le donjon ? Sont-ils avec toi ?",
+            "Quels 3 mots utiliserais-tu pour te décrire ?",
+            "Quels 3 mots tes amis utiliseraient-ils pour te décrire ?",
+            "Es-tu plutôt un meneur ou un suiveur ?",
+            "Si tu pouvais donner un nom à ton groupe ou le renommer, quel serait-il ?",
+            "Quel est ton mantra ?",
+            "As-tu des passe-temps ?",
+            "Avant d'entrer dans le donjon, comment passais-tu un samedi soir ordinaire ?",
+            "Qu'est-ce qui te manque le plus de la Terre telle que tu la connaissais ?",
+            "Quelles sont tes convictions morales fondamentales ?",
+            "Es-tu croyant ? Si oui, quelle religion pratiques-tu ?",
+            "Quelle est ta plus grande force ?",
+            "Quel est ton plus grand défaut ?",
+            "Si tu pouvais revenir en arrière et changer une chose dans ta vie, laquelle serait-ce ?",
+            "À quel personnage tiens-tu le plus ? Pourquoi ?",
+            "Comment gères-tu les conflits ?",
+            "Que ressens-tu à l'idée de tuer d'autres Crawlers ?",
+            "Quelle est ta chanson thème ?",
+            "Quelle est ta couleur emblématique ?",
+            "Quel est ton plat préféré ?",
+            "Quelle est ta série préférée ?",
+            "Quelle est ta plus grande peur ?",
+            "Quelle est ta plus grande insécurité ?",
+            "Quel est ton plaisir coupable ?",
+            "Quelle est ta plus grande réussite ?",
+            "Qu'est-ce qui te rend heureux ?",
+            "Qu'est-ce qui te rend triste ?",
+            "Qu'est-ce qui te met en colère ?",
+            "Décris la plus grosse erreur que tu aies jamais commise.",
+            "Aimes-tu prendre des risques ?",
+            "À quoi ressemble la réussite pour toi ?",
+            "À quoi ressemble l'échec pour toi ?",
+            "Si on te proposait un marché à un étage ultérieur, l'accepterais-tu ?",
+          ],
+          es: [
+            "¿Tu nombre tiene algún significado especial? ¿Tienes algún apodo?",
+            "¿Por qué entraste en la mazmorra?",
+            "¿De dónde eres?",
+            "¿Cuál era tu ocupación antes de entrar en la mazmorra?",
+            "¿Cómo fue tu infancia?",
+            "¿Cómo es tu relación con tus padres/tutores?",
+            "¿Quiénes son tus amigos o familiares más cercanos?",
+            "¿Entraron en la mazmorra? ¿Están contigo?",
+            "¿Qué 3 palabras usarías para describirte?",
+            "¿Qué 3 palabras usarían tus amigos para describirte?",
+            "¿Eres más líder o seguidor?",
+            "Si pudieras ponerle nombre a tu grupo o cambiárselo, ¿cuál sería?",
+            "¿Cuál es tu mantra?",
+            "¿Tienes algún pasatiempo?",
+            "Antes de entrar en la mazmorra, ¿cómo pasabas un sábado por la noche normal?",
+            "¿Qué es lo que más echas de menos de la Tierra tal como la conocías?",
+            "¿Cuáles son tus creencias morales fundamentales?",
+            "¿Eres religioso? Si es así, ¿qué religión practicas?",
+            "¿Cuál es tu mayor fortaleza?",
+            "¿Cuál es tu mayor defecto?",
+            "Si pudieras volver atrás y cambiar una cosa de tu vida, ¿cuál sería?",
+            "¿Cuál es el personaje que más te importa? ¿Por qué?",
+            "¿Cómo afrontas los conflictos?",
+            "¿Qué opinas de matar a otros Crawlers?",
+            "¿Cuál es tu canción principal?",
+            "¿Cuál es tu color característico?",
+            "¿Cuál es tu comida favorita?",
+            "¿Cuál es tu serie de televisión favorita?",
+            "¿Cuál es tu mayor miedo?",
+            "¿Cuál es tu mayor inseguridad?",
+            "¿Cuál es tu placer culpable?",
+            "¿Cuál es tu mayor logro?",
+            "¿Qué te hace feliz?",
+            "¿Qué te entristece?",
+            "¿Qué te enfada?",
+            "Describe el mayor error que has cometido.",
+            "¿Te gusta arriesgarte?",
+            "¿Cómo es el éxito para ti?",
+            "¿Cómo es el fracaso para ti?",
+            "Si pudieras aceptar un trato en un piso posterior, ¿lo harías?",
+          ],
+          de: [
+            "Hat dein Name eine besondere Bedeutung? Hast du Spitznamen?",
+            "Warum bist du in den Dungeon gegangen?",
+            "Woher kommst du?",
+            "Was war dein Beruf, bevor du den Dungeon betreten hast?",
+            "Wie war deine Kindheit?",
+            "Wie ist dein Verhältnis zu deinen Eltern/Vormündern?",
+            "Wer sind deine engsten Freunde/Familienmitglieder?",
+            "Sind sie in den Dungeon gegangen? Sind sie bei dir?",
+            "Mit welchen 3 Worten würdest du dich beschreiben?",
+            "Mit welchen 3 Worten würden deine Freunde dich beschreiben?",
+            "Bist du eher führend oder folgend?",
+            "Wenn du deiner Gruppe einen Namen geben oder sie umbenennen könntest, wie würde er lauten?",
+            "Was ist dein Mantra?",
+            "Hast du Hobbys?",
+            "Wie hast du vor dem Dungeon einen normalen Samstagabend verbracht?",
+            "Was vermisst du am meisten an der Erde, wie du sie kanntest?",
+            "Was sind deine grundlegenden moralischen Überzeugungen?",
+            "Bist du religiös? Wenn ja, welche Religion praktizierst du?",
+            "Was ist deine größte Stärke?",
+            "Was ist dein größter Fehler?",
+            "Wenn du zurückgehen und eine Sache in deinem Leben ändern könntest, welche wäre das?",
+            "Welche Figur bedeutet dir am meisten? Warum?",
+            "Wie gehst du mit Konflikten um?",
+            "Wie stehst du dazu, andere Crawler zu töten?",
+            "Was ist dein Titellied?",
+            "Was ist deine charakteristische Farbe?",
+            "Was ist dein Lieblingsessen?",
+            "Was ist deine Lieblingsserie?",
+            "Was ist deine größte Angst?",
+            "Was ist deine größte Unsicherheit?",
+            "Was ist dein heimliches Vergnügen?",
+            "Was ist deine größte Errungenschaft?",
+            "Was macht dich glücklich?",
+            "Was macht dich traurig?",
+            "Was macht dich wütend?",
+            "Beschreibe den größten Fehler, den du je gemacht hast.",
+            "Gehst du gern Risiken ein?",
+            "Wie sieht Erfolg für dich aus?",
+            "Wie sieht Scheitern für dich aus?",
+            "Würdest du einen Deal auf einer späteren Ebene annehmen, wenn du könntest?",
+          ],
+          pt: [
+            "O teu nome tem algum significado especial? Tens alguma alcunha?",
+            "Porque entraste na masmorra?",
+            "De onde és?",
+            "Qual era a tua ocupação antes de entrares na masmorra?",
+            "Como foi a tua infância?",
+            "Como é a tua relação com os teus pais/tutores?",
+            "Quem são os teus amigos/familiares mais próximos?",
+            "Eles entraram na masmorra? Estão contigo?",
+            "Que 3 palavras usarias para te descrever?",
+            "Que 3 palavras os teus amigos usariam para te descrever?",
+            "És mais líder ou seguidor?",
+            "Se pudesses dar um nome ao teu grupo ou mudá-lo, qual seria?",
+            "Qual é o teu mantra?",
+            "Tens algum passatempo?",
+            "Antes de entrares na masmorra, como passavas um sábado à noite normal?",
+            "Do que sentes mais falta da Terra tal como a conhecias?",
+            "Quais são as tuas convicções morais fundamentais?",
+            "És religioso? Se sim, que religião praticas?",
+            "Qual é a tua maior força?",
+            "Qual é o teu maior defeito?",
+            "Se pudesses voltar atrás e mudar uma coisa na tua vida, qual seria?",
+            "Qual é a personagem com quem mais te importas? Porquê?",
+            "Como lidas com o conflito?",
+            "O que sentes sobre matar outros Crawlers?",
+            "Qual é a tua música-tema?",
+            "Qual é a tua cor característica?",
+            "Qual é a tua comida favorita?",
+            "Qual é a tua série de televisão favorita?",
+            "Qual é o teu maior medo?",
+            "Qual é a tua maior insegurança?",
+            "Qual é o teu prazer culpado?",
+            "Qual é a tua maior conquista?",
+            "O que te faz feliz?",
+            "O que te deixa triste?",
+            "O que te deixa zangado?",
+            "Descreve o maior erro que já cometeste.",
+            "Gostas de correr riscos?",
+            "Como é o sucesso para ti?",
+            "Como é o fracasso para ti?",
+            "Se pudesses aceitar um acordo num andar posterior, aceitarias?",
+          ],
+        };
+
+        function t(key) {
+          if (!key) return "";
+          if (key.indexOf("bio.") === 0) {
+            var bi = parseInt(key.slice(4), 10);
+            var arr = BIO_I18N[lang] || BIO_I18N.fr;
+            return arr && arr[bi] != null ? arr[bi] : "";
+          }
+          var d = I18N[lang] || I18N.fr;
+          if (d && d[key] != null) return d[key];
+          if (I18N.fr[key] != null) return I18N.fr[key];
+          return key;
+        }
+
+        function applyI18n() {
+          document.documentElement.setAttribute("lang", lang);
+          $$("[data-i18n]").forEach(function (el) {
+            var s = t(el.getAttribute("data-i18n"));
+            if (el.hasAttribute("data-n"))
+              s = s.replace("{n}", el.getAttribute("data-n"));
+            el.textContent = s;
+          });
+          $$("[data-i18n-ph]").forEach(function (el) {
+            el.setAttribute("placeholder", t(el.getAttribute("data-i18n-ph")));
+          });
+          $$("[data-i18n-title]").forEach(function (el) {
+            el.setAttribute("title", t(el.getAttribute("data-i18n-title")));
+          });
+          $$("[data-i18n-alt]").forEach(function (el) {
+            el.setAttribute("alt", t(el.getAttribute("data-i18n-alt")));
+          });
+          var ls = $("#langSel");
+          if (ls && ls.value !== lang) ls.value = lang;
+          applyTheme(
+            document.documentElement.getAttribute("data-theme") || "light",
+          );
+          header();
+        }
+
+        /* ---------------- tiny helpers ---------------- */
+        var $ = function (s, r) {
+          return (r || document).querySelector(s);
+        };
+        var $$ = function (s, r) {
+          return Array.prototype.slice.call(
+            (r || document).querySelectorAll(s),
+          );
+        };
+        function esc(s) {
+          return String(s).replace(/[&<>"]/g, function (c) {
+            return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c];
+          });
+        }
+        function range(n, from) {
+          from = from || 0;
+          var a = [];
+          for (var k = 0; k < n; k++) a.push(k + from);
+          return a;
+        }
+        var STAT_OPTS =
+          '<option value=""></option>' +
+          STATS.map(function (s) {
+            return '<option value="' + s + '">' + s + "</option>";
+          }).join("");
+        var DICE_OPTS = [
+          "",
+          "d4",
+          "d6",
+          "d8",
+          "d10",
+          "d12",
+          "d20",
+          "2d6",
+          "2d8",
+        ]
+          .map(function (d) {
+            return '<option value="' + d + '">' + d + "</option>";
+          })
+          .join("");
+        var CHECK_OPTS = ["", "Unopposed", "Opposed", "Passive", "Evade"]
+          .map(function (c) {
+            return (
+              '<option value="' +
+              c +
+              '"' +
+              (c ? ' data-i18n="check.' + c + '"' : "") +
+              ">" +
+              c +
+              "</option>"
+            );
+          })
+          .join("");
+
+        var DEFAULT_ATTACKS = 20,
+          DEFAULT_SKILLS = 24,
+          DEFAULT_INV = 36;
+        var attackCount = 0,
+          skillCount = 0,
+          invCount = 0;
+
+        /* ---------------- row templates ---------------- */
+        function attackRowHTML(i) {
+          var b = "attacks." + i + ".";
+          return (
+            '<div class="row cols-attacks" data-row="attacks.' +
+            i +
+            '">' +
+            '<input data-k="' +
+            b +
+            'name">' +
+            '<input data-k="' +
+            b +
+            'rank" class="center">' +
+            '<select data-k="' +
+            b +
+            'statA">' +
+            STAT_OPTS +
+            "</select>" +
+            '<input data-k="' +
+            b +
+            'toHit" data-c="row.toHit" class="center" readonly>' +
+            '<div class="dmg-cell">' +
+            '<select data-k="' +
+            b +
+            'dice">' +
+            DICE_OPTS +
+            "</select>" +
+            '<input data-k="' +
+            b +
+            'modA" data-c="row.mod" data-src="statA" readonly data-i18n-title="title.modFromStat" title="Mod from selected stat">' +
+            "</div>" +
+            '<input data-k="' +
+            b +
+            'effects">' +
+            "</div>"
+          );
+        }
+        function skillRowHTML(i) {
+          var b = "skills." + i + ".";
+          return (
+            '<div class="row cols-skills" data-row="skills.' +
+            i +
+            '">' +
+            '<span style="display:flex;justify-content:center;"><input type="checkbox" data-k="' +
+            b +
+            'done"></span>' +
+            '<input data-k="' +
+            b +
+            'name">' +
+            '<input data-k="' +
+            b +
+            'rank" class="center">' +
+            '<select data-k="' +
+            b +
+            'stat">' +
+            STAT_OPTS +
+            "</select>" +
+            '<input data-k="' +
+            b +
+            'mod" data-c="row.mod" data-src="stat" class="center" readonly>' +
+            '<select data-k="' +
+            b +
+            'checkType">' +
+            CHECK_OPTS +
+            "</select>" +
+            '<input data-k="' +
+            b +
+            'notes">' +
+            "</div>"
+          );
+        }
+        function invRowHTML(i) {
+          var b = "inv." + i + ".";
+          return (
+            '<div class="row cols-inv">' +
+            '<input data-k="' +
+            b +
+            'item">' +
+            '<input data-k="' +
+            b +
+            'qty" class="center">' +
+            '<input data-k="' +
+            b +
+            'notes">' +
+            "</div>"
+          );
+        }
+        function addAttackRow() {
+          $("#attackRows").insertAdjacentHTML(
+            "beforeend",
+            attackRowHTML(attackCount++),
+          );
+        }
+        function addSkillRow() {
+          $("#skillRows").insertAdjacentHTML(
+            "beforeend",
+            skillRowHTML(skillCount++),
+          );
+        }
+        function addInvRow() {
+          $("#invRows").insertAdjacentHTML("beforeend", invRowHTML(invCount++));
+        }
+        function ensureAttacks(n) {
+          while (attackCount < n) addAttackRow();
+        }
+        function ensureSkills(n) {
+          while (skillCount < n) addSkillRow();
+        }
+        function ensureInv(n) {
+          while (invCount < n) addInvRow();
+        }
+
+        /* ---------------- build static repeating DOM ---------------- */
+        function build() {
+          $("#hpGrid").innerHTML = range(10, 1)
+            .map(function (n) {
+              var pct = n * 10;
+              return (
+                '<div class="hp-cell">' +
+                '<div class="cap" style="background:' +
+                HP_COLORS[n - 1] +
+                ';">' +
+                pct +
+                "%</div>" +
+                '<label class="box"><input type="checkbox" data-k="hp.' +
+                pct +
+                '.on"></label>' +
+                '<input data-k="hp.' +
+                pct +
+                '.hp" data-i18n-ph="ph.hp" placeholder="HP">' +
+                "</div>"
+              );
+            })
+            .join("");
+
+          $("#statsGrid").innerHTML = STAT_LIST.map(function (s) {
+            return (
+              '<div class="card stat-card">' +
+              '<div class="top"><span class="name" data-i18n="stat.' +
+              s.key +
+              '">' +
+              s.label +
+              '</span><span class="mini">Mod</span></div>' +
+              '<input data-k="stats.' +
+              s.key +
+              '.mod" data-c="stat.mod" readonly placeholder="—">' +
+              '<div class="pair">' +
+              '<label class="lbl sm"><span data-i18n="f.enhanced">Enhanced</span><input data-k="stats.' +
+              s.key +
+              '.enh" class="center"></label>' +
+              '<label class="lbl sm"><span data-i18n="f.unenhanced">Unenhanced</span><input data-k="stats.' +
+              s.key +
+              '.unenh" class="center"></label>' +
+              "</div></div>"
+            );
+          }).join("");
+
+          $("#hotlist").innerHTML = range(10, 1)
+            .map(function (i) {
+              return '<input data-k="journal.hotlist.' + i + '">';
+            })
+            .join("");
+
+          ensureAttacks(DEFAULT_ATTACKS);
+          ensureSkills(DEFAULT_SKILLS);
+          ensureInv(DEFAULT_INV);
+
+          $("#gearSlots").innerHTML = GEAR_SLOTS.map(function (g) {
+            return (
+              '<label class="lbl"><span data-i18n="gear.' +
+              g.key +
+              '">' +
+              g.label +
+              '</span><input data-k="gear.' +
+              g.key +
+              '"></label>'
+            );
+          }).join("");
+
+          $("#accRows").innerHTML = range(10, 1)
+            .map(function (i) {
+              return (
+                '<div class="acc-row"><span class="n">' +
+                i +
+                '</span><input data-k="gear.acc.' +
+                i +
+                '"></div>'
+              );
+            })
+            .join("");
+
+          $("#jnav").innerHTML = JOURNAL_NAV.map(function (j) {
+            return (
+              '<button class="jtab" type="button" data-jtab="' +
+              j.key +
+              '" data-i18n="jnav.' +
+              j.key +
+              '">' +
+              j.label +
+              "</button>"
+            );
+          }).join("");
+
+          $("#popFields").innerHTML = POP_FIELDS.map(function (p) {
+            return (
+              '<label class="lbl"><span class="jsection-lbl" data-i18n="pop.' +
+              p.key +
+              '">' +
+              p.label +
+              "</span>" +
+              '<textarea data-k="journal.' +
+              p.key +
+              '" rows="5"></textarea></label>'
+            );
+          }).join("");
+
+          $("#crawlerRows").innerHTML = range(8, 1)
+            .map(function (i) {
+              var b = "crawlers." + i + ".";
+              var f = function (i18nKey, key) {
+                return (
+                  '<label class="lbl"><span data-i18n="' +
+                  i18nKey +
+                  '"></span><input data-k="' +
+                  b +
+                  key +
+                  '"></label>'
+                );
+              };
+              return (
+                '<div class="card">' +
+                '<div class="chip mb" data-i18n="crawler.title" data-n="' +
+                i +
+                '">Other Crawler ' +
+                i +
+                "</div>" +
+                '<div class="identity-grid">' +
+                f("f.name", "name") +
+                f("f.race", "race") +
+                f("f.pronouns", "pronouns") +
+                f("f.level", "level") +
+                f("f.crawlerNumber", "number") +
+                f("f.class", "class") +
+                "</div>" +
+                '<div class="grid" style="gap:12px;margin-top:12px;">' +
+                '<label class="lbl"><span data-i18n="crawler.relationship"></span>' +
+                '<textarea data-k="' +
+                b +
+                'relationship" rows="3"></textarea></label>' +
+                '<label class="lbl"><span data-i18n="col.notes"></span><textarea data-k="' +
+                b +
+                'notes" rows="3"></textarea></label>' +
+                "</div></div>"
+              );
+            })
+            .join("");
+
+          $("#bioQs").innerHTML = BIO.map(function (q, i) {
+            return (
+              '<label class="bio-q"><span data-i18n="bio.' +
+              i +
+              '">' +
+              esc(q) +
+              '</span><textarea data-k="bio.' +
+              i +
+              '" rows="3"></textarea></label>'
+            );
+          }).join("");
+
+          $("#notePages").innerHTML = range(12, 1)
+            .map(function (i) {
+              return (
+                '<div class="card note-card"><div class="tag" data-i18n="note.tag" data-n="' +
+                i +
+                '">NOTES / ' +
+                i +
+                "</div>" +
+                '<textarea data-k="notes.' +
+                i +
+                '" rows="10"></textarea></div>'
+              );
+            })
+            .join("");
+
+          $("#tabbar").innerHTML = TABS.map(function (t) {
+            return (
+              '<button class="tab" type="button" data-tab="' +
+              t.key +
+              '" data-i18n="tab.' +
+              t.key +
+              '">' +
+              t.label +
+              "</button>"
+            );
+          }).join("");
+        }
+
+        /* ---------------- field access ---------------- */
+        function fields() {
+          return $$("[data-k]");
+        }
+        function field(k) {
+          return $('[data-k="' + k + '"]');
+        }
+        function val(k) {
+          var el = field(k);
+          if (!el) return "";
+          return el.type === "checkbox" ? el.checked : el.value;
+        }
+        function num(k) {
+          return parseFloat(String(val(k)).replace(/[^0-9.\-]/g, "")) || 0;
+        }
+
+        /* ---------------- computed fields ---------------- */
+        function setC(el, v) {
+          var out =
+            v === "" || v === null || !isFinite(v)
+              ? ""
+              : v > 0
+                ? "+" + v
+                : String(v);
+          if (el.value !== out) el.value = out;
+          el.style.opacity = out === "" ? "0.4" : "1";
+        }
+
+        function recompute() {
+          var mod = function (s) {
+            return s && STATS.indexOf(s) >= 0 ? num("stats." + s + ".mod") : "";
+          };
+
+          // stat modifiers from the score table (Enhanced, else Unenhanced)
+          STAT_LIST.forEach(function (s) {
+            var el = field("stats." + s.key + ".mod");
+            if (el)
+              setC(
+                el,
+                scoreToMod(
+                  val("stats." + s.key + ".enh") ||
+                    val("stats." + s.key + ".unenh"),
+                ),
+              );
+          });
+
+          var dex = $('[data-c="def.dexMod"]');
+          if (dex) setC(dex, num("stats.DEX.mod"));
+          var dr = $('[data-c="def.drTotal"]');
+          if (dr)
+            setC(dr, num("def.armor") + num("def.dexMod") + num("def.drBuffs"));
+          $$("[data-mirror]").forEach(function (el) {
+            var v = String(val(el.getAttribute("data-mirror")));
+            if (el.value !== v) el.value = v;
+          });
+
+          var ev = $('[data-c="def.evadeTotal"]');
+          if (ev) {
+            var eb = num("def.armor") + num("def.evadeBuffs");
+            ev.value = "d20 " + (eb > 0 ? "+" + eb : String(eb));
+            ev.style.opacity = "1";
+          }
+
+          renderMana();
+          renderImages();
+
+          $$("[data-row]").forEach(function (row) {
+            var q = function (sel) {
+              return row.querySelector(sel);
+            };
+            $$('[data-c="row.mod"]', row).forEach(function (el) {
+              var src = q(
+                'select[data-k$=".' + el.getAttribute("data-src") + '"]',
+              );
+              setC(el, src ? mod(src.value) : "");
+            });
+            var rank = q('[data-k$=".rank"]');
+            var statA = q('select[data-k$=".statA"]');
+            var hit = q('[data-c="row.toHit"]');
+            if (hit) {
+              var r = parseFloat(rank && rank.value) || 0;
+              var m = parseFloat(statA ? mod(statA.value) : "") || 0;
+              setC(
+                hit,
+                (rank && rank.value) || (statA && statA.value) ? r + m : "",
+              );
+            }
+          });
+        }
+
+        function renderMana() {
+          var cur = num("mana.current"),
+            max = num("mana.max");
+          var pct = max > 0 ? Math.max(0, Math.min(100, (cur / max) * 100)) : 0;
+          var fill = $('[data-mana="fill"]');
+          if (fill) fill.style.width = pct + "%";
+          var c = $('[data-mana="cur"]');
+          if (c)
+            c.textContent =
+              String(val("mana.current")).trim() === "" ? "0" : cur;
+          var m = $('[data-mana="max"]');
+          if (m)
+            m.textContent = String(val("mana.max")).trim() === "" ? "0" : max;
+        }
+
+        /* ---------------- image boxes (portrait, diagram) — stored as data URLs ---------------- */
+        var activeImgKey = null;
+
+        function renderImgBox(key) {
+          var box = $('[data-imgbox="' + key + '"]');
+          if (!box) return;
+          var f = field(key);
+          var data = f ? f.value : "";
+          var img = box.querySelector("[data-imgbox-img]");
+          var ph = box.querySelector("[data-imgbox-ph]");
+          var clr = $('[data-imgbox-clear="' + key + '"]');
+          if (data) {
+            if (img) {
+              if (img.getAttribute("src") !== data) img.src = data;
+              img.hidden = false;
+            }
+            if (ph) ph.hidden = true;
+            if (clr) clr.hidden = false;
+            box.classList.add("has-img");
+          } else {
+            if (img) {
+              img.hidden = true;
+              img.removeAttribute("src");
+            }
+            if (ph) ph.hidden = false;
+            if (clr) clr.hidden = true;
+            box.classList.remove("has-img");
+          }
+        }
+
+        function renderImages() {
+          $$("[data-imgbox]").forEach(function (b) {
+            renderImgBox(b.getAttribute("data-imgbox"));
+          });
+        }
+
+        function loadImageFile(key, file) {
+          if (!key || !file || !/^image\//.test(file.type || "")) return;
+          var r = new FileReader();
+          r.onload = function () {
+            var img = new Image();
+            img.onload = function () {
+              var max = 640,
+                w = img.width,
+                h = img.height;
+              if (w > max || h > max) {
+                if (w >= h) {
+                  h = Math.round((h * max) / w);
+                  w = max;
+                } else {
+                  w = Math.round((w * max) / h);
+                  h = max;
+                }
+              }
+              var data;
+              try {
+                var cv = document.createElement("canvas");
+                cv.width = w;
+                cv.height = h;
+                cv.getContext("2d").drawImage(img, 0, 0, w, h);
+                data = cv.toDataURL("image/jpeg", 0.82);
+              } catch (e) {
+                data = r.result;
+              }
+              var f = field(key);
+              if (f) f.value = data;
+              renderImgBox(key);
+              save();
+            };
+            img.onerror = function () {
+              alert(t("alert.badImage"));
+            };
+            img.src = r.result;
+          };
+          r.readAsDataURL(file);
+        }
+
+        /* ---------------- header ---------------- */
+        function header() {
+          var n = $('[data-hdr="name"]'),
+            s = $('[data-hdr="sub"]');
+          if (n) n.textContent = val("identity.name") || t("hdr.unnamed");
+          if (s) {
+            var parts = [];
+            var lvl = val("identity.level"),
+              fl = val("identity.floor"),
+              cl = val("identity.class");
+            if (String(lvl).trim() !== "") parts.push(t("hdr.lvl") + " " + lvl);
+            if (String(fl).trim() !== "") parts.push(t("hdr.floor") + " " + fl);
+            if (String(cl).trim() !== "") parts.push(cl);
+            s.textContent = parts.join("  /  ");
+          }
+        }
+
+        /* ---------------- persistence ---------------- */
+        function collect() {
+          var flat = {};
+          fields().forEach(function (el) {
+            var v = el.type === "checkbox" ? el.checked : el.value;
+            if (v === "" || v === false) return;
+            flat[el.getAttribute("data-k")] = v;
+          });
+          return flat;
+        }
+
+        var saveTimer, toastTimer;
+        function save() {
+          clearTimeout(saveTimer);
+          saveTimer = setTimeout(function () {
+            try {
+              localStorage.setItem(
+                STORE,
+                JSON.stringify({
+                  v: 1,
+                  savedAt: new Date().toISOString(),
+                  counts: {
+                    attacks: attackCount,
+                    skills: skillCount,
+                    inv: invCount,
+                  },
+                  fields: collect(),
+                }),
+              );
+              var tag = $("[data-saved]");
+              if (tag) {
+                tag.textContent =
+                  t("toast.saved") + " " + new Date().toLocaleTimeString();
+                tag.style.opacity = "1";
+                clearTimeout(toastTimer);
+                toastTimer = setTimeout(function () {
+                  tag.style.opacity = "0";
+                }, 1600);
+              }
+            } catch (err) {
+              /* storage full or blocked */
+            }
+          }, 500);
+        }
+
+        function apply(flat, force) {
+          Object.keys(flat).forEach(function (k) {
+            var el = field(k);
+            if (!el) return;
+            if (
+              !force &&
+              (el === document.activeElement || el.hasAttribute("data-dirty"))
+            )
+              return;
+            if (el.type === "checkbox") el.checked = !!flat[k];
+            else if (el.value !== String(flat[k])) el.value = flat[k];
+          });
+          recompute();
+          header();
+        }
+
+        function maxIndex(flat, prefix) {
+          var max = -1;
+          Object.keys(flat).forEach(function (k) {
+            if (k.indexOf(prefix) === 0) {
+              var m = k.slice(prefix.length).match(/^(\d+)\./);
+              if (m) max = Math.max(max, parseInt(m[1], 10));
+            }
+          });
+          return max;
+        }
+        function ensureFromData(flat, counts) {
+          counts = counts || {};
+          ensureAttacks(
+            Math.max(
+              DEFAULT_ATTACKS,
+              counts.attacks || 0,
+              maxIndex(flat, "attacks.") + 1,
+            ),
+          );
+          ensureSkills(
+            Math.max(
+              DEFAULT_SKILLS,
+              counts.skills || 0,
+              maxIndex(flat, "skills.") + 1,
+            ),
+          );
+          ensureInv(
+            Math.max(DEFAULT_INV, counts.inv || 0, maxIndex(flat, "inv.") + 1),
+          );
+        }
+
+        function load() {
+          try {
+            var raw = localStorage.getItem(STORE);
+            if (!raw) return;
+            var d = JSON.parse(raw);
+            var flat = d.fields || {};
+            ensureFromData(flat, d.counts);
+            apply(flat);
+          } catch (err) {
+            /* ignore corrupt save */
+          }
+        }
+
+        /* ---------------- JSON import / export ---------------- */
+        function nest(flat) {
+          var out = {};
+          Object.keys(flat).forEach(function (k) {
+            var parts = k.split(".");
+            var cur = out;
+            parts.forEach(function (p, i) {
+              var last = i === parts.length - 1;
+              var nextIsIdx = !last && /^\d+$/.test(parts[i + 1]);
+              if (last) cur[p] = flat[k];
+              else {
+                if (cur[p] == null) cur[p] = nextIsIdx ? [] : {};
+                cur = cur[p];
+              }
+            });
+          });
+          return out;
+        }
+
+        function flatten(obj, prefix, out) {
+          out = out || {};
+          prefix = prefix || "";
+          if (obj && typeof obj === "object") {
+            Object.keys(obj).forEach(function (k) {
+              var v = obj[k];
+              if (v != null && typeof v === "object")
+                flatten(v, prefix + k + ".", out);
+              else if (v != null && v !== "") out[prefix + k] = v;
+            });
+          }
+          return out;
+        }
+
+        function exportJSON() {
+          var flat = collect();
+          var payload = {
+            format: "dungeon-crawler-sheet",
+            version: 1,
+            exportedAt: new Date().toISOString(),
+            counts: { skills: skillCount, inv: invCount },
+            character: nest(flat),
+            fields: flat,
+          };
+          var name =
+            (val("identity.name") || "crawler")
+              .toString()
+              .trim()
+              .replace(/[^a-z0-9\-_]+/gi, "-")
+              .toLowerCase() || "crawler";
+          var blob = new Blob([JSON.stringify(payload, null, 2)], {
+            type: "application/json",
+          });
+          var a = document.createElement("a");
+          a.href = URL.createObjectURL(blob);
+          a.download = name + "-sheet.json";
+          document.body.appendChild(a);
+          a.click();
+          setTimeout(function () {
+            URL.revokeObjectURL(a.href);
+            a.remove();
+          }, 500);
+        }
+
+        function importJSON(file) {
+          if (!file) return;
+          var r = new FileReader();
+          r.onload = function () {
+            try {
+              var d = JSON.parse(r.result);
+              var flat = d.fields;
+              if (!flat && d.character) flat = flatten(d.character);
+              if (!flat) flat = d;
+              ensureFromData(flat, d.counts);
+              fields().forEach(function (el) {
+                if (el.type === "checkbox") el.checked = false;
+                else el.value = "";
+                el.removeAttribute("data-dirty");
+              });
+              apply(flat, true);
+              save();
+            } catch (err) {
+              alert(t("alert.badImport"));
+            }
+          };
+          r.readAsText(file);
+        }
+
+        /* Type an HP amount in any health cell -> put the same value in every cell. */
+        function syncHP(srcEl) {
+          if (!/^hp\.\d+\.hp$/.test(srcEl.getAttribute("data-k") || "")) return;
+          $$('[data-k^="hp."]').forEach(function (e) {
+            if (e === srcEl || !/\.hp$/.test(e.getAttribute("data-k"))) return;
+            if (e.value !== srcEl.value) e.value = srcEl.value;
+            e.removeAttribute("data-dirty");
+          });
+        }
+
+        function resetAll() {
+          if (!window.confirm(t("confirm.reset"))) return;
+          fields().forEach(function (el) {
+            if (el.type === "checkbox") el.checked = false;
+            else el.value = "";
+            el.removeAttribute("data-dirty");
+          });
+          recompute();
+          header();
+          save();
+        }
+
+        /* ---------------- tabs ---------------- */
+        var curTab = "sheet",
+          curJTab = "popularity";
+        function showTab(key) {
+          curTab = key;
+          $$("[data-pane]").forEach(function (p) {
+            p.hidden = p.getAttribute("data-pane") !== key;
+          });
+          $$("[data-tab]").forEach(function (b) {
+            b.classList.toggle("is-active", b.getAttribute("data-tab") === key);
+          });
+        }
+        function showJTab(key) {
+          curJTab = key;
+          $$("[data-jpane]").forEach(function (p) {
+            p.hidden = p.getAttribute("data-jpane") !== key;
+          });
+          $$("[data-jtab]").forEach(function (b) {
+            b.classList.toggle(
+              "is-active",
+              b.getAttribute("data-jtab") === key,
+            );
+          });
+        }
+
+        /* ---------------- theme ---------------- */
+        function applyTheme(theme) {
+          document.documentElement.setAttribute("data-theme", theme);
+          $("#themeBtn").textContent =
+            theme === "dark" ? t("btn.theme.light") : t("btn.theme.dark");
+        }
+        function toggleTheme() {
+          var next =
+            document.documentElement.getAttribute("data-theme") === "dark"
+              ? "light"
+              : "dark";
+          try {
+            localStorage.setItem(TKEY, next);
+          } catch (e) {}
+          applyTheme(next);
+        }
+
+        /* ---------------- wiring ---------------- */
+        function wire() {
+          document.addEventListener("input", function (e) {
+            var t = e.target;
+            var mir = t && t.closest ? t.closest("[data-mirror]") : null;
+            if (mir) {
+              var tgt = field(mir.getAttribute("data-mirror"));
+              if (tgt && tgt.value !== mir.value) {
+                tgt.value = mir.value;
+                tgt.setAttribute("data-dirty", "1");
+              }
+              recompute();
+              header();
+              save();
+              return;
+            }
+            var el = t.closest ? t.closest("[data-k]") : null;
+            if (!el) return;
+            if (e.isTrusted) el.setAttribute("data-dirty", "1");
+            if (/^hp\.\d+\.hp$/.test(el.getAttribute("data-k") || "")) syncHP(el);
+            recompute();
+            header();
+            save();
+          });
+          document.addEventListener("change", function (e) {
+            if (e.target.closest && e.target.closest("[data-k]")) {
+              recompute();
+              save();
+            }
+          });
+          document.addEventListener("click", function (e) {
+            var t = e.target;
+            if (!t || !t.closest) return;
+            var tab = t.closest("[data-tab]");
+            if (tab) return showTab(tab.getAttribute("data-tab"));
+            var jt = t.closest("[data-jtab]");
+            if (jt) return showJTab(jt.getAttribute("data-jtab"));
+            if (t.closest("#themeBtn")) return toggleTheme();
+            var imgClr = t.closest("[data-imgbox-clear]");
+            if (imgClr) {
+              var ck = imgClr.getAttribute("data-imgbox-clear");
+              var cf = field(ck);
+              if (cf) cf.value = "";
+              renderImgBox(ck);
+              save();
+              return;
+            }
+            var imgBox = t.closest("[data-imgbox]");
+            if (imgBox) {
+              activeImgKey = imgBox.getAttribute("data-imgbox");
+              $("#imgFile").click();
+              return;
+            }
+            var add = t.closest("[data-add]");
+            if (add) {
+              var which = add.getAttribute("data-add");
+              if (which === "attacks") addAttackRow();
+              else if (which === "skills") addSkillRow();
+              else addInvRow();
+              applyI18n();
+              recompute();
+              save();
+              return;
+            }
+            var act = t.closest("[data-act]");
+            if (!act) return;
+            if (act.getAttribute("data-act") === "export") exportJSON();
+            if (act.getAttribute("data-act") === "import")
+              $("[data-file]").click();
+            if (act.getAttribute("data-act") === "reset") resetAll();
+          });
+          $("[data-file]").addEventListener("change", function (e) {
+            importJSON(e.target.files[0]);
+            e.target.value = "";
+          });
+
+          var imgFile = $("#imgFile");
+          if (imgFile)
+            imgFile.addEventListener("change", function (e) {
+              loadImageFile(activeImgKey, e.target.files[0]);
+              e.target.value = "";
+            });
+
+          var langSel = $("#langSel");
+          if (langSel)
+            langSel.addEventListener("change", function () {
+              lang =
+                LANGS.indexOf(langSel.value) >= 0 ? langSel.value : "fr";
+              try {
+                localStorage.setItem(LKEY, lang);
+              } catch (e) {}
+              applyI18n();
+            });
+
+          $$("[data-imgbox]").forEach(function (box) {
+            ["dragenter", "dragover"].forEach(function (ev) {
+              box.addEventListener(ev, function (e) {
+                e.preventDefault();
+                box.classList.add("drop");
+              });
+            });
+            ["dragleave", "dragend", "drop"].forEach(function (ev) {
+              box.addEventListener(ev, function () {
+                box.classList.remove("drop");
+              });
+            });
+            box.addEventListener("drop", function (e) {
+              e.preventDefault();
+              if (
+                e.dataTransfer &&
+                e.dataTransfer.files &&
+                e.dataTransfer.files[0]
+              )
+                loadImageFile(
+                  box.getAttribute("data-imgbox"),
+                  e.dataTransfer.files[0],
+                );
+            });
+            box.addEventListener("keydown", function (e) {
+              if (e.key === "Enter" || e.key === " ") {
+                e.preventDefault();
+                activeImgKey = box.getAttribute("data-imgbox");
+                $("#imgFile").click();
+              }
+            });
+          });
+        }
+
+        /* ---------------- init ---------------- */
+        build();
+
+        var theme = "light";
+        try {
+          theme = localStorage.getItem(TKEY) || "light";
+        } catch (e) {}
+        try {
+          lang = localStorage.getItem(LKEY) || "fr";
+        } catch (e) {}
+        if (LANGS.indexOf(lang) < 0) lang = "fr";
+        var ls0 = $("#langSel");
+        if (ls0) ls0.value = lang;
+
+        wire();
+        applyTheme(theme);
+        load();
+        applyI18n();
+        recompute();
+        header();
+        showTab(curTab);
+        showJTab(curJTab);
+      })();
+    </script>
+  </body>
+</html>
