@@ -62,8 +62,9 @@ Rank + Hit Stat Mod), Damage Dice, Damage Stat, Damage Mod and Effects. Hit Stat
 and Damage Stat are independent; damage is Damage Dice + Damage Stat Mod.
 
 ### Skills
-Starts with 24 rows, add more as needed: done checkbox, Name, Rank, Stat, **Mod**
-(auto), Check Type (Unopposed / Opposed / Passive / Evade) and Notes & Upgrades.
+Starts with 24 rows, add more as needed: Skill Advancement mark, Name, Rank,
+Stat, automatically derived **Stat Mod**, Check Type (Unopposed / Opposed /
+Passive / Evade) and Notes & Upgrades. Rank is tracked separately from Stat Mod.
 
 ### Inventory
 Starts with 36 rows, add more as needed: Item, Qty, Notes.

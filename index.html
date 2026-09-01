@@ -1067,8 +1067,8 @@
             <div class="chip" style="margin-bottom: 6px" data-i18n="chip.skills">Skills</div>
             <div class="tbl" style="min-width: 860px">
               <div class="head cols-skills">
-                <span>✔</span><span data-i18n="f.name">Name</span><span data-i18n="col.rank">Rank</span><span data-i18n="col.stat">Stat</span
-                ><span>Mod</span><span data-i18n="col.check">Check Type</span
+                <span data-i18n-title="title.skillAdvancement" data-i18n-aria-label="title.skillAdvancement" title="Mark for Skill Advancement" aria-label="Mark for Skill Advancement">✔</span><span data-i18n="f.name">Name</span><span data-i18n="col.rank">Rank</span><span data-i18n="col.stat">Stat</span
+                ><span data-i18n="col.statMod">Stat Mod</span><span data-i18n="col.check">Check Type</span
                 ><span data-i18n="col.notesUpgrades">Notes &amp; Upgrades</span>
               </div>
               <div id="skillRows"></div>
@@ -1376,6 +1376,7 @@
             "title.imgbox": "Click or drop an image",
             "title.mirrorDR": "Same as Damage Resistance",
             "title.modFromStat": "Mod from selected stat",
+            "title.skillAdvancement": "Mark for Skill Advancement",
             "toast.saved": "saved",
             "chip.health": "Health",
             "hint.health":
@@ -1432,6 +1433,7 @@
             "col.damageMod": "Damage Mod",
             "col.effects": "Effects",
             "chip.skills": "Skills",
+            "col.statMod": "Stat Mod",
             "col.check": "Check Type",
             "col.notesUpgrades": "Notes & Upgrades",
             "check.Unopposed": "Unopposed",
@@ -1508,6 +1510,7 @@
             "title.imgbox": "Cliquer ou déposer une image",
             "title.mirrorDR": "Identique à la résistance aux dégâts",
             "title.modFromStat": "Mod de la caractéristique choisie",
+            "title.skillAdvancement": "Marquer pour l'avancement de compétence",
             "toast.saved": "enregistré",
             "chip.health": "Santé",
             "hint.health":
@@ -1564,6 +1567,7 @@
             "col.damageMod": "Mod dégâts",
             "col.effects": "Effets",
             "chip.skills": "Compétences",
+            "col.statMod": "Mod de carac.",
             "col.check": "Type de test",
             "col.notesUpgrades": "Notes et améliorations",
             "check.Unopposed": "Non opposé",
@@ -1640,6 +1644,7 @@
             "title.imgbox": "Haz clic o suelta una imagen",
             "title.mirrorDR": "Igual que la resistencia al daño",
             "title.modFromStat": "Mod de la característica elegida",
+            "title.skillAdvancement": "Marcar para avance de habilidad",
             "toast.saved": "guardado",
             "chip.health": "Salud",
             "hint.health":
@@ -1696,6 +1701,7 @@
             "col.damageMod": "Mod de daño",
             "col.effects": "Efectos",
             "chip.skills": "Habilidades",
+            "col.statMod": "Mod de car.",
             "col.check": "Tipo de tirada",
             "col.notesUpgrades": "Notas y mejoras",
             "check.Unopposed": "Sin oposición",
@@ -1773,6 +1779,7 @@
             "title.imgbox": "Klicken oder Bild ablegen",
             "title.mirrorDR": "Wie Schadensresistenz",
             "title.modFromStat": "Mod des gewählten Attributs",
+            "title.skillAdvancement": "Für Fertigkeitssteigerung markieren",
             "toast.saved": "gespeichert",
             "chip.health": "Gesundheit",
             "hint.health":
@@ -1829,6 +1836,7 @@
             "col.damageMod": "Schadensmod.",
             "col.effects": "Effekte",
             "chip.skills": "Fertigkeiten",
+            "col.statMod": "Attributsmod.",
             "col.check": "Probenart",
             "col.notesUpgrades": "Notizen & Verbesserungen",
             "check.Unopposed": "Ohne Gegner",
@@ -1906,6 +1914,7 @@
             "title.imgbox": "Clique ou solte uma imagem",
             "title.mirrorDR": "Igual à resistência a dano",
             "title.modFromStat": "Mod do atributo escolhido",
+            "title.skillAdvancement": "Marcar para avanço da perícia",
             "toast.saved": "salvo",
             "chip.health": "Saúde",
             "hint.health":
@@ -1962,6 +1971,7 @@
             "col.damageMod": "Mod de dano",
             "col.effects": "Efeitos",
             "chip.skills": "Perícias",
+            "col.statMod": "Mod de atrib.",
             "col.check": "Tipo de teste",
             "col.notesUpgrades": "Notas e melhorias",
             "check.Unopposed": "Sem oposição",
@@ -2223,6 +2233,12 @@
           $$("[data-i18n-title]").forEach(function (el) {
             el.setAttribute("title", t(el.getAttribute("data-i18n-title")));
           });
+          $$("[data-i18n-aria-label]").forEach(function (el) {
+            el.setAttribute(
+              "aria-label",
+              t(el.getAttribute("data-i18n-aria-label")),
+            );
+          });
           $$("[data-i18n-alt]").forEach(function (el) {
             el.setAttribute("alt", t(el.getAttribute("data-i18n-alt")));
           });
@@ -2357,7 +2373,7 @@
             '<div class="row cols-skills" data-row="skills.' +
             i +
             '">' +
-            '<span style="display:flex;justify-content:center;"><input type="checkbox" data-k="' +
+            '<span style="display:flex;justify-content:center;"><input type="checkbox" data-i18n-title="title.skillAdvancement" data-i18n-aria-label="title.skillAdvancement" title="Mark for Skill Advancement" aria-label="Mark for Skill Advancement" data-k="' +
             b +
             'done"></span>' +
             '<input data-k="' +
@@ -2373,7 +2389,7 @@
             "</select>" +
             '<input data-k="' +
             b +
-            'mod" data-c="row.mod" data-src="stat" class="center" readonly>' +
+            'mod" data-c="row.skillStatMod" data-src="stat" class="center" readonly>' +
             '<select data-k="' +
             b +
             'checkType">' +
@@ -2696,6 +2712,13 @@
                 'select[data-k$=".' + el.getAttribute("data-src") + '"]',
               );
               setC(el, src ? mod(src.value) : "");
+            });
+            $$('[data-c="row.skillStatMod"]', row).forEach(function (el) {
+              var src = q(
+                'select[data-k$=".' + el.getAttribute("data-src") + '"]',
+              );
+              var statMod = src ? val("stats." + src.value + ".mod") : "";
+              setC(el, String(statMod).trim() === "" ? "" : mod(src.value));
             });
             var rank = q('[data-k$=".rank"]');
             var hitStat = q('select[data-k$=".hitStat"]');
