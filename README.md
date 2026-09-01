@@ -43,7 +43,8 @@ automatically in that browser, and nothing ever leaves your machine.
   crawler's current CON Mod; mark a slot when it is lost.
 - **Identity** — name, race, gender / pronouns, level, Crawler Number, class,
   floor, AI Favor and size (Tiny → Gargantuan).
-- **Mana** — current / max with a live gauge.
+- **Mana** — Current Mana is tracked manually; Max Mana equals the crawler's
+  current Enhanced Intelligence Stat.
 - **Portrait** — image upload as described above.
 - **Stats** — Strength, Intelligence, Constitution, Dexterity, Charisma. Enter the
   Enhanced and/or Unenhanced score; the Mod is derived from the Dungeon Crawler
