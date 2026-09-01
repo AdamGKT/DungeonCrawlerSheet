@@ -868,7 +868,7 @@
                   ><input data-k="identity.pronouns"
                 /></label>
                 <label class="lbl"
-                  ><span data-i18n="f.level">Level</span><input data-k="identity.level"
+                  ><span data-i18n="f.level">Level</span><input data-k="identity.level" inputmode="numeric" data-i18n-title="title.level" data-i18n-aria-label="title.level" title="Tutorial crawlers start at Level 1. Current Level limit: 250. Level gains may award Stat points; apply advancement manually." aria-label="Tutorial crawlers start at Level 1. Current Level limit: 250. Level gains may award Stat points; apply advancement manually."
                 /></label>
                 <label class="lbl"
                   ><span data-i18n="f.crawlerNumber">Crawler Number</span
@@ -878,7 +878,7 @@
                   ><span data-i18n="f.class">Class</span><input data-k="identity.class"
                 /></label>
                 <label class="lbl"
-                  ><span data-i18n="f.floor">Floor</span><input data-k="identity.floor"
+                  ><span data-i18n="f.floor">Floor</span><input data-k="identity.floor" inputmode="numeric" data-i18n-title="title.floor" data-i18n-aria-label="title.floor" title="Tutorial crawlers start on Floor 1. Floor and Level are tracked independently." aria-label="Tutorial crawlers start on Floor 1. Floor and Level are tracked independently."
                 /></label>
                 <label class="lbl"
                   ><span data-i18n="f.aiFavor">AI Favor</span
@@ -1398,6 +1398,10 @@
               "Record the item currently occupying each Gear Slot. Equipped Gear may grant its listed benefits.",
             "title.accessories":
               "Each field represents one Accessory Gear Slot. Crawlers normally have up to 10.",
+            "title.level":
+              "Tutorial crawlers start at Level 1. Current Level limit: 250. Level gains may award Stat points; apply advancement manually.",
+            "title.floor":
+              "Tutorial crawlers start on Floor 1. Floor and Level are tracked independently.",
             "toast.saved": "saved",
             "chip.health": "Health",
             "hint.health":
@@ -1543,6 +1547,10 @@
               "Notez l'objet qui occupe actuellement chaque emplacement d'équipement. L'équipement porté peut accorder les avantages indiqués.",
             "title.accessories":
               "Chaque champ représente un emplacement d'accessoire. Les Crawlers en ont normalement jusqu'à 10.",
+            "title.level":
+              "Les Crawlers du tutoriel commencent au niveau 1. Limite actuelle : 250. Les gains de niveau peuvent accorder des points de caractéristique ; appliquez l'avancement manuellement.",
+            "title.floor":
+              "Les Crawlers du tutoriel commencent à l'étage 1. L'étage et le niveau sont suivis indépendamment.",
             "toast.saved": "enregistré",
             "chip.health": "Santé",
             "hint.health":
@@ -1688,6 +1696,10 @@
               "Anota el objeto que ocupa actualmente cada ranura de equipo. El equipo equipado puede otorgar sus beneficios indicados.",
             "title.accessories":
               "Cada campo representa una ranura de accesorio. Los Crawlers normalmente tienen hasta 10.",
+            "title.level":
+              "Los Crawlers del tutorial comienzan en nivel 1. Límite actual: 250. Subir de nivel puede otorgar puntos de característica; aplica el avance manualmente.",
+            "title.floor":
+              "Los Crawlers del tutorial comienzan en el piso 1. El piso y el nivel se registran de forma independiente.",
             "toast.saved": "guardado",
             "chip.health": "Salud",
             "hint.health":
@@ -1834,6 +1846,10 @@
               "Trage den Gegenstand ein, der den jeweiligen Ausrüstungsplatz belegt. Angelegte Ausrüstung kann ihre aufgeführten Vorteile gewähren.",
             "title.accessories":
               "Jedes Feld stellt einen Accessoire-Ausrüstungsplatz dar. Crawler haben normalerweise bis zu 10.",
+            "title.level":
+              "Tutorial-Crawler beginnen auf Stufe 1. Aktuelle Stufengrenze: 250. Stufenaufstiege können Attributspunkte gewähren; wende den Aufstieg manuell an.",
+            "title.floor":
+              "Tutorial-Crawler beginnen auf Ebene 1. Ebene und Stufe werden unabhängig erfasst.",
             "toast.saved": "gespeichert",
             "chip.health": "Gesundheit",
             "hint.health":
@@ -1980,6 +1996,10 @@
               "Registre o item que ocupa atualmente cada espaço de equipamento. Equipamentos em uso podem conceder os benefícios indicados.",
             "title.accessories":
               "Cada campo representa um espaço de Acessório. Crawlers normalmente têm até 10.",
+            "title.level":
+              "Crawlers do tutorial começam no nível 1. Limite atual: 250. Ganhos de nível podem conceder pontos de atributo; aplique o avanço manualmente.",
+            "title.floor":
+              "Crawlers do tutorial começam no andar 1. Andar e nível são registrados de forma independente.",
             "toast.saved": "salvo",
             "chip.health": "Saúde",
             "hint.health":
@@ -2710,6 +2730,10 @@
           field("def.move").value = "20";
           field("def.step").value = "10";
         }
+        function setDefaultLevelAndFloor() {
+          field("identity.level").value = "1";
+          field("identity.floor").value = "1";
+        }
         function val(k) {
           var el = field(k);
           if (!el) return "";
@@ -3155,6 +3179,7 @@
           });
           resizeInv(DEFAULT_INV);
           setDefaultMovement();
+          setDefaultLevelAndFloor();
           recompute();
           header();
           save();
@@ -3333,6 +3358,7 @@
         /* ---------------- init ---------------- */
         build();
         setDefaultMovement();
+        setDefaultLevelAndFloor();
 
         var theme = "light";
         try {

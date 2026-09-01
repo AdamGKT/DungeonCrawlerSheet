@@ -45,7 +45,12 @@ automatically in that browser, and nothing ever leaves your machine.
   floor, AI Favor and size (Tiny → Gargantuan). AI Favor is a manually tracked
   spendable resource: Humans begin with 1 and animal crawlers with 0; spend 1 for
   a qualifying d20 reroll or an extra non-Attack Action. Favor may be gained or
-  lost during play.
+  lost during play. A Tutorial crawler defaults to Level 1 / Floor 1; Level and
+  Floor remain independently tracked. Direct Third-Floor creation uses its own
+  Level 10 setup procedure. The current Level cap is 250. Level gains on Floor 3
+  or deeper award 3 Stat points, which may remain undistributed until a saferoom;
+  they do not directly raise Skill Ranks. This sheet leaves advancement
+  application manual.
 - **Mana** — Current Mana is tracked manually; Max Mana equals the crawler's
   current Enhanced Intelligence Stat.
 - **Portrait** — image upload as described above.
