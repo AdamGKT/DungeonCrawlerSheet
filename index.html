@@ -881,7 +881,17 @@
                   ><span data-i18n="f.floor">Floor</span><input data-k="identity.floor"
                 /></label>
                 <label class="lbl"
-                  ><span data-i18n="f.aiFavor">AI Favor</span><input data-k="def.aiFavor"
+                  ><span data-i18n="f.aiFavor">AI Favor</span
+                  ><input
+                    type="number"
+                    inputmode="numeric"
+                    min="0"
+                    step="1"
+                    data-k="def.aiFavor"
+                    data-i18n-title="title.aiFavor"
+                    data-i18n-aria-label="title.aiFavor"
+                    title="Spend 1 to reroll a d20 (except Natural 1) or gain one extra non-Attack Action once per round."
+                    aria-label="Spend 1 to reroll a d20 (except Natural 1) or gain one extra non-Attack Action once per round."
                 /></label>
                 <label class="lbl"
                   ><span data-i18n="f.size">Size</span
@@ -1377,6 +1387,8 @@
             "title.mirrorDR": "Same as Damage Resistance",
             "title.modFromStat": "Mod from selected stat",
             "title.skillAdvancement": "Mark for Skill Advancement",
+            "title.aiFavor":
+              "Spend 1 to reroll a d20 (except Natural 1) or gain one extra non-Attack Action once per round.",
             "toast.saved": "saved",
             "chip.health": "Health",
             "hint.health":
@@ -1511,6 +1523,8 @@
             "title.mirrorDR": "Identique à la résistance aux dégâts",
             "title.modFromStat": "Mod de la caractéristique choisie",
             "title.skillAdvancement": "Marquer pour l'avancement de compétence",
+            "title.aiFavor":
+              "Dépensez 1 pour relancer un d20 (sauf un 1 naturel) ou gagner une action supplémentaire hors Attaque une fois par round.",
             "toast.saved": "enregistré",
             "chip.health": "Santé",
             "hint.health":
@@ -1645,6 +1659,8 @@
             "title.mirrorDR": "Igual que la resistencia al daño",
             "title.modFromStat": "Mod de la característica elegida",
             "title.skillAdvancement": "Marcar para avance de habilidad",
+            "title.aiFavor":
+              "Gasta 1 para repetir un d20 (salvo un 1 natural) u obtener una acción extra que no sea de Ataque una vez por ronda.",
             "toast.saved": "guardado",
             "chip.health": "Salud",
             "hint.health":
@@ -1780,6 +1796,8 @@
             "title.mirrorDR": "Wie Schadensresistenz",
             "title.modFromStat": "Mod des gewählten Attributs",
             "title.skillAdvancement": "Für Fertigkeitssteigerung markieren",
+            "title.aiFavor":
+              "Gib 1 aus, um einen W20 neu zu würfeln (außer Natürliche 1) oder einmal pro Runde eine zusätzliche Nicht-Angriffsaktion zu erhalten.",
             "toast.saved": "gespeichert",
             "chip.health": "Gesundheit",
             "hint.health":
@@ -1915,6 +1933,8 @@
             "title.mirrorDR": "Igual à resistência a dano",
             "title.modFromStat": "Mod do atributo escolhido",
             "title.skillAdvancement": "Marcar para avanço da perícia",
+            "title.aiFavor":
+              "Gaste 1 para repetir um d20 (exceto 1 natural) ou ganhar uma Ação extra que não seja de Ataque uma vez por rodada.",
             "toast.saved": "salvo",
             "chip.health": "Saúde",
             "hint.health":
@@ -2643,6 +2663,16 @@
           return parseFloat(String(val(k)).replace(/[^0-9.\-]/g, "")) || 0;
         }
 
+        function sanitizeAIFavor(el) {
+          if (
+            el &&
+            el.getAttribute("data-k") === "def.aiFavor" &&
+            el.value !== "" &&
+            !/^\d+$/.test(el.value)
+          )
+            el.value = "";
+        }
+
         /* ---------------- computed fields ---------------- */
         function setC(el, v) {
           var out =
@@ -3132,6 +3162,7 @@
             }
             var el = t.closest ? t.closest("[data-k]") : null;
             if (!el) return;
+            sanitizeAIFavor(el);
             if (e.isTrusted) el.setAttribute("data-dirty", "1");
             recompute();
             header();

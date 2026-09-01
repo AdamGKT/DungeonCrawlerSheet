@@ -42,7 +42,10 @@ automatically in that browser, and nothing ever leaves your machine.
 - **Health** — a 10-slot crawler Health Bar (10 % … 100 %). Each slot is worth the
   crawler's current CON Mod; mark a slot when it is lost.
 - **Identity** — name, race, gender / pronouns, level, Crawler Number, class,
-  floor, AI Favor and size (Tiny → Gargantuan).
+  floor, AI Favor and size (Tiny → Gargantuan). AI Favor is a manually tracked
+  spendable resource: Humans begin with 1 and animal crawlers with 0; spend 1 for
+  a qualifying d20 reroll or an extra non-Attack Action. Favor may be gained or
+  lost during play.
 - **Mana** — Current Mana is tracked manually; Max Mana equals the crawler's
   current Enhanced Intelligence Stat.
 - **Portrait** — image upload as described above.
