@@ -86,6 +86,21 @@ Starts with 20 rows, add more as needed: Name, Rank, Hit Stat, **To Hit** (auto 
 Rank + Hit Stat Mod), Damage Dice, Damage Stat, Damage Mod and Effects. Hit Stat
 and Damage Stat are independent; damage is Damage Dice + Damage Stat Mod.
 
+### Damage and mitigation
+DR Total is Armor + DR Buffs, and DR reduces incoming damage first. The official
+sheet has no separate crawler fields for Resistance, Vulnerability or Immunity;
+record their sources in the appropriate Gear, Buff, attack Effects or notes
+field and resolve them manually. Type-specific Resistance halves applicable
+damage, Vulnerability doubles it, and Immunity reduces it to zero and prevents
+additional effects arising from that damage. Armor-Piercing ignores DR;
+Anti-Piercing allows the crawler's DR to apply against Armor-Piercing damage.
+For attacks with multiple damage types, split damage evenly by type before
+applying relevant type-specific mitigation. Record attack damage types and
+properties in Effects. The sheet does not resolve incoming damage automatically.
+
+Official damage types: Acid, Bludgeoning, Electric, Fire, Force, Holy, Ice,
+Necrotic, Piercing, Poison, Psychic, Slashing and Sonic.
+
 ### Skills
 Starts with 24 rows, add more as needed: Skill Advancement mark, Name, Rank,
 Stat, automatically derived **Stat Mod**, Check Type (Unopposed / Opposed /
