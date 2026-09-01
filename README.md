@@ -56,8 +56,9 @@ automatically in that browser, and nothing ever leaves your machine.
   quick-reference slots.
 
 ### Attacks
-Starts with 20 rows, add more as needed: Name, Rank, Stat, **To Hit** (auto =
-Rank + stat Mod), Damage (die + Mod from the chosen stat), Effects.
+Starts with 20 rows, add more as needed: Name, Rank, Hit Stat, **To Hit** (auto =
+Rank + Hit Stat Mod), Damage Dice, Damage Stat, Damage Mod and Effects. Hit Stat
+and Damage Stat are independent; damage is Damage Dice + Damage Stat Mod.
 
 ### Skills
 Starts with 24 rows, add more as needed: done checkbox, Name, Rank, Stat, **Mod**
@@ -120,3 +121,5 @@ GitHub Pages, Netlify, a USB stick, a local folder.
   table rows, journal pages, tab bar, translations) are generated at load time.
 - Fields are bound by a `data-k` attribute to a flat key (e.g. `stats.STR.enh`);
   export nests these into a `character` object and also keeps the flat map.
+- Saves and exports use schema version 2. Version 1 attacks with a single `statA`
+  remain compatible and initialize both Hit Stat and Damage Stat from that value.

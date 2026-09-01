@@ -614,7 +614,7 @@
         color: var(--acc);
       }
       .cols-attacks {
-        grid-template-columns: 2fr 0.6fr 0.85fr 0.75fr 1.6fr 2fr;
+        grid-template-columns: 1.8fr 0.55fr 0.8fr 0.7fr 0.75fr 0.8fr 0.6fr 1.8fr;
       }
       .cols-skills {
         grid-template-columns: 34px 1.6fr 0.6fr 0.85fr 0.55fr 1fr 2.2fr;
@@ -1045,10 +1045,11 @@
         <section data-pane="combat" hidden>
           <div class="card scrollx">
             <div class="chip" style="margin-bottom: 6px" data-i18n="chip.attacks">Attacks</div>
-            <div class="tbl" style="min-width: 760px">
+            <div class="tbl" style="min-width: 960px">
               <div class="head cols-attacks">
-                <span data-i18n="f.name">Name</span><span data-i18n="col.rank">Rank</span><span data-i18n="col.stat">Stat</span
-                ><span class="acc" data-i18n="col.toHit">To Hit</span><span data-i18n="col.damage">Damage</span
+                <span data-i18n="f.name">Name</span><span data-i18n="col.rank">Rank</span><span data-i18n="col.hitStat">Hit Stat</span
+                ><span class="acc" data-i18n="col.toHit">To Hit</span><span data-i18n="col.damageDice">Damage Dice</span
+                ><span data-i18n="col.damageStat">Damage Stat</span><span data-i18n="col.damageMod">Damage Mod</span
                 ><span data-i18n="col.effects">Effects</span>
               </div>
               <div id="attackRows"></div>
@@ -1422,8 +1423,12 @@
             "chip.attacks": "Attacks",
             "col.rank": "Rank",
             "col.stat": "Stat",
+            "col.hitStat": "Hit Stat",
             "col.toHit": "To Hit",
             "col.damage": "Damage",
+            "col.damageDice": "Damage Dice",
+            "col.damageStat": "Damage Stat",
+            "col.damageMod": "Damage Mod",
             "col.effects": "Effects",
             "chip.skills": "Skills",
             "col.check": "Check Type",
@@ -1550,8 +1555,12 @@
             "chip.attacks": "Attaques",
             "col.rank": "Rang",
             "col.stat": "Carac.",
+            "col.hitStat": "Carac. d'attaque",
             "col.toHit": "Toucher",
             "col.damage": "Dégâts",
+            "col.damageDice": "Dés de dégâts",
+            "col.damageStat": "Carac. de dégâts",
+            "col.damageMod": "Mod dégâts",
             "col.effects": "Effets",
             "chip.skills": "Compétences",
             "col.check": "Type de test",
@@ -1678,8 +1687,12 @@
             "chip.attacks": "Ataques",
             "col.rank": "Rango",
             "col.stat": "Car.",
+            "col.hitStat": "Car. de impacto",
             "col.toHit": "Impacto",
             "col.damage": "Daño",
+            "col.damageDice": "Dados de daño",
+            "col.damageStat": "Car. de daño",
+            "col.damageMod": "Mod de daño",
             "col.effects": "Efectos",
             "chip.skills": "Habilidades",
             "col.check": "Tipo de tirada",
@@ -1807,8 +1820,12 @@
             "chip.attacks": "Angriffe",
             "col.rank": "Rang",
             "col.stat": "Attr.",
+            "col.hitStat": "Trefferattribut",
             "col.toHit": "Treffer",
             "col.damage": "Schaden",
+            "col.damageDice": "Schadenswürfel",
+            "col.damageStat": "Schadensattribut",
+            "col.damageMod": "Schadensmod.",
             "col.effects": "Effekte",
             "chip.skills": "Fertigkeiten",
             "col.check": "Probenart",
@@ -1936,8 +1953,12 @@
             "chip.attacks": "Ataques",
             "col.rank": "Grau",
             "col.stat": "Atrib.",
+            "col.hitStat": "Atrib. de acerto",
             "col.toHit": "Acerto",
             "col.damage": "Dano",
+            "col.damageDice": "Dados de dano",
+            "col.damageStat": "Atrib. de dano",
+            "col.damageMod": "Mod de dano",
             "col.effects": "Efeitos",
             "chip.skills": "Perícias",
             "col.check": "Tipo de teste",
@@ -2304,22 +2325,25 @@
             'rank" class="center">' +
             '<select data-k="' +
             b +
-            'statA">' +
+            'hitStat">' +
             STAT_OPTS +
             "</select>" +
             '<input data-k="' +
             b +
             'toHit" data-c="row.toHit" class="center" readonly>' +
-            '<div class="dmg-cell">' +
             '<select data-k="' +
             b +
             'dice">' +
             DICE_OPTS +
             "</select>" +
+            '<select data-k="' +
+            b +
+            'damageStat">' +
+            STAT_OPTS +
+            "</select>" +
             '<input data-k="' +
             b +
-            'modA" data-c="row.mod" data-src="statA" readonly data-i18n-title="title.modFromStat" title="Mod from selected stat">' +
-            "</div>" +
+            'damageMod" data-c="row.mod" data-src="damageStat" class="center" readonly data-i18n-title="title.modFromStat" title="Mod from selected stat">' +
             '<input data-k="' +
             b +
             'effects">' +
@@ -2663,14 +2687,14 @@
               setC(el, src ? mod(src.value) : "");
             });
             var rank = q('[data-k$=".rank"]');
-            var statA = q('select[data-k$=".statA"]');
+            var hitStat = q('select[data-k$=".hitStat"]');
             var hit = q('[data-c="row.toHit"]');
             if (hit) {
               var r = parseFloat(rank && rank.value) || 0;
-              var m = parseFloat(statA ? mod(statA.value) : "") || 0;
+              var m = parseFloat(hitStat ? mod(hitStat.value) : "") || 0;
               setC(
                 hit,
-                (rank && rank.value) || (statA && statA.value) ? r + m : "",
+                (rank && rank.value) || (hitStat && hitStat.value) ? r + m : "",
               );
             }
           });
@@ -2804,7 +2828,7 @@
               localStorage.setItem(
                 STORE,
                 JSON.stringify({
-                  v: 1,
+                  v: 2,
                   savedAt: new Date().toISOString(),
                   counts: {
                     attacks: attackCount,
@@ -2856,6 +2880,26 @@
           });
           return max;
         }
+
+        function migrateLegacyAttacks(flat) {
+          Object.keys(flat).forEach(function (k) {
+            var m = k.match(/^attacks\.(\d+)\.statA$/);
+            if (!m) return;
+            var base = "attacks." + m[1] + ".";
+            var hitKey = base + "hitStat";
+            var damageKey = base + "damageStat";
+            if (String(flat[k]).trim() !== "") {
+              if (flat[hitKey] == null || String(flat[hitKey]).trim() === "")
+                flat[hitKey] = flat[k];
+              if (flat[damageKey] == null || String(flat[damageKey]).trim() === "")
+                flat[damageKey] = flat[k];
+            }
+            delete flat[base + "toHit"];
+            delete flat[base + "modA"];
+          });
+          return flat;
+        }
+
         function ensureFromData(flat, counts) {
           counts = counts || {};
           ensureAttacks(
@@ -2882,7 +2926,7 @@
             var raw = localStorage.getItem(STORE);
             if (!raw) return;
             var d = JSON.parse(raw);
-            var flat = d.fields || {};
+            var flat = migrateLegacyAttacks(d.fields || {});
             ensureFromData(flat, d.counts);
             apply(flat);
           } catch (err) {
@@ -2927,9 +2971,9 @@
           var flat = collect();
           var payload = {
             format: "dungeon-crawler-sheet",
-            version: 1,
+            version: 2,
             exportedAt: new Date().toISOString(),
-            counts: { skills: skillCount, inv: invCount },
+            counts: { attacks: attackCount, skills: skillCount, inv: invCount },
             character: nest(flat),
             fields: flat,
           };
@@ -2962,6 +3006,7 @@
               var flat = d.fields;
               if (!flat && d.character) flat = flatten(d.character);
               if (!flat) flat = d;
+              migrateLegacyAttacks(flat);
               ensureFromData(flat, d.counts);
               fields().forEach(function (el) {
                 if (el.type === "checkbox") el.checked = false;
