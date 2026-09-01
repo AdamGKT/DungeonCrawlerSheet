@@ -59,8 +59,10 @@ automatically in that browser, and nothing ever leaves your machine.
     accompany an Action and is not a separate Action, so a normal Move Action
     can cover 30 ft as Move + Step. Both values remain manually editable for
     later effects that modify movement.
-- **External Buffs** (max 3), **Debuffs**, and a full-width **Hotlist** of 10
-  quick-reference slots.
+- **External Buffs** (max 3), **Debuffs**, and a full-width **Hotlist** with 10
+  quick-access slots for items, Spells, weapons, potions and similar entries. A
+  slot can hold up to 999 of the same item by name; merely storing an item there
+  does not grant its equipment benefits.
 
 ### Attacks
 Starts with 20 rows, add more as needed: Name, Rank, Hit Stat, **To Hit** (auto =
@@ -73,7 +75,9 @@ Stat, automatically derived **Stat Mod**, Check Type (Unopposed / Opposed /
 Passive / Evade) and Notes & Upgrades. Rank is tracked separately from Stat Mod.
 
 ### Inventory
-Starts with 36 rows, add more as needed: Item, Qty, Notes.
+Starts with 36 rows of UI space, not a game-rule capacity; add more as needed.
+Stored Inventory is not limited by encumbrance. Item, Qty and Notes are tracked
+manually, and no maximum is imposed on Inventory Qty.
 
 ### Gear
 - Gear slots / tattoos / patches: Head, Torso, Arms, Hands / Holding, Legs, Feet.
