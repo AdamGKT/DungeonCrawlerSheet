@@ -49,8 +49,8 @@ automatically in that browser, and nothing ever leaves your machine.
   Enhanced and/or Unenhanced score; the Mod is derived from the Dungeon Crawler
   score-to-modifier table (Enhanced takes priority).
 - **Defense**
-  - *Damage Resistance* = Armor + DEX Mod + Buffs → **DR Total**
-  - *Evade* = `d20` + Armor + Buffs → **Evade Total**
+  - *Damage Resistance* = Armor + DR Buffs → **DR Total**
+  - *Evade* = `d20` + DEX Mod + Evade Buffs → **Evade Total**
   - *Movement* — Move and Step.
 - **External Buffs** (max 3), **Debuffs**, and a full-width **Hotlist** of 10
   quick-reference slots.

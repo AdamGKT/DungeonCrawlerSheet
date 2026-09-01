@@ -967,14 +967,6 @@
                       ><input data-k="def.armor" class="center"
                     /></label>
                     <label class="lbl def"
-                      ><span data-i18n="f.dexMod">DEX Mod</span
-                      ><input
-                        data-k="def.dexMod"
-                        data-c="def.dexMod"
-                        class="center"
-                        readonly
-                    /></label>
-                    <label class="lbl def"
                       ><span data-i18n="f.buffs">Buffs</span
                       ><input data-k="def.drBuffs" class="center"
                     /></label>
@@ -992,12 +984,12 @@
                   <div class="sub-rule" data-i18n="rule.evade">Evade</div>
                   <div class="def-cols">
                     <label class="lbl def"
-                      ><span data-i18n="f.armor">Armor</span
+                      ><span data-i18n="f.dexMod">DEX Mod</span
                       ><input
-                        data-mirror="def.armor"
+                        data-k="def.dexMod"
+                        data-c="def.dexMod"
                         class="center"
-                        inputmode="numeric"
-                        data-i18n-title="title.mirrorDR"
+                        readonly
                     /></label>
                     <label class="lbl def"
                       ><span data-i18n="f.buffs">Buffs</span
@@ -2644,7 +2636,7 @@
           if (dex) setC(dex, num("stats.DEX.mod"));
           var dr = $('[data-c="def.drTotal"]');
           if (dr)
-            setC(dr, num("def.armor") + num("def.dexMod") + num("def.drBuffs"));
+            setC(dr, num("def.armor") + num("def.drBuffs"));
           $$("[data-mirror]").forEach(function (el) {
             var v = String(val(el.getAttribute("data-mirror")));
             if (el.value !== v) el.value = v;
@@ -2652,7 +2644,7 @@
 
           var ev = $('[data-c="def.evadeTotal"]');
           if (ev) {
-            var eb = num("def.armor") + num("def.evadeBuffs");
+            var eb = num("def.dexMod") + num("def.evadeBuffs");
             ev.value = "d20 " + (eb > 0 ? "+" + eb : String(eb));
             ev.style.opacity = "1";
           }
