@@ -39,8 +39,8 @@ automatically in that browser, and nothing ever leaves your machine.
 ## Tabs
 
 ### Sheet
-- **Health** — a 10-segment track (10 % … 100 %). Tick a segment as it is lost and
-  note the HP total it covers; typing an HP value in one cell fills them all.
+- **Health** — a 10-slot crawler Health Bar (10 % … 100 %). Each slot is worth the
+  crawler's current CON Mod; mark a slot when it is lost.
 - **Identity** — name, race, gender / pronouns, level, Crawler Number, class,
   floor, AI Favor and size (Tiny → Gargantuan).
 - **Mana** — current / max with a live gauge.

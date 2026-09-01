@@ -847,7 +847,7 @@
             >
               <span class="chip" data-i18n="chip.health">Health</span>
               <span class="hint" data-i18n="hint.health"
-                >Tick a segment as it is lost — note the HP it covers</span
+                >Mark a slot when it is lost — each slot is worth your current CON Mod</span
               >
             </div>
             <div class="hp-grid" id="hpGrid"></div>
@@ -1378,7 +1378,7 @@
             "toast.saved": "saved",
             "chip.health": "Health",
             "hint.health":
-              "Tick a segment when it's lost — note the HP it covers",
+              "Mark a slot when it is lost — each slot is worth your current CON Mod",
             "chip.identity": "Identity",
             "f.name": "Name",
             "f.race": "Race",
@@ -1402,7 +1402,7 @@
             "chip.portrait": "Portrait",
             "ph.portraitBox": "portrait — click or drop an image",
             "ph.diagramBox": "diagram — click or drop an image",
-            "ph.hp": "HP",
+            "ph.hp": "HB Value",
             "ph.layoutNotes": "Layout notes",
             "alt.portrait": "Portrait",
             "alt.spaceDiagram": "Personal space diagram",
@@ -1510,7 +1510,7 @@
             "toast.saved": "enregistré",
             "chip.health": "Santé",
             "hint.health":
-              "Cochez un segment quand il est perdu — notez les PV qu'il couvre",
+              "Cochez un emplacement lorsqu'il est perdu — chacun vaut votre Mod CON actuel",
             "chip.identity": "Identité",
             "f.name": "Nom",
             "f.race": "Race",
@@ -1534,7 +1534,7 @@
             "chip.portrait": "Portrait",
             "ph.portraitBox": "portrait — cliquer ou déposer une image",
             "ph.diagramBox": "schéma — cliquer ou déposer une image",
-            "ph.hp": "PV",
+            "ph.hp": "Valeur de BH",
             "ph.layoutNotes": "Notes de disposition",
             "alt.portrait": "Portrait",
             "alt.spaceDiagram": "Schéma de l'espace personnel",
@@ -1642,7 +1642,7 @@
             "toast.saved": "guardado",
             "chip.health": "Salud",
             "hint.health":
-              "Marca un segmento cuando se pierde — anota los PG que cubre",
+              "Marca una casilla cuando se pierda — cada una vale tu Mod CON actual",
             "chip.identity": "Identidad",
             "f.name": "Nombre",
             "f.race": "Raza",
@@ -1666,7 +1666,7 @@
             "chip.portrait": "Retrato",
             "ph.portraitBox": "retrato — haz clic o suelta una imagen",
             "ph.diagramBox": "diagrama — haz clic o suelta una imagen",
-            "ph.hp": "PG",
+            "ph.hp": "Valor de BS",
             "ph.layoutNotes": "Notas de distribución",
             "alt.portrait": "Retrato",
             "alt.spaceDiagram": "Diagrama del espacio personal",
@@ -1775,7 +1775,7 @@
             "toast.saved": "gespeichert",
             "chip.health": "Gesundheit",
             "hint.health":
-              "Markiere ein Segment, sobald es verloren ist — notiere die abgedeckten TP",
+              "Markiere einen Slot, wenn er verloren geht — jeder ist deinen aktuellen KON-Mod wert",
             "chip.identity": "Identität",
             "f.name": "Name",
             "f.race": "Volk",
@@ -1799,7 +1799,7 @@
             "chip.portrait": "Porträt",
             "ph.portraitBox": "Porträt — klicken oder Bild ablegen",
             "ph.diagramBox": "Diagramm — klicken oder Bild ablegen",
-            "ph.hp": "TP",
+            "ph.hp": "LB-Wert",
             "ph.layoutNotes": "Layout-Notizen",
             "alt.portrait": "Porträt",
             "alt.spaceDiagram": "Diagramm des persönlichen Raums",
@@ -1908,7 +1908,7 @@
             "toast.saved": "salvo",
             "chip.health": "Saúde",
             "hint.health":
-              "Marque um segmento quando for perdido — anote os PV que ele cobre",
+              "Marque um espaço quando for perdido — cada um vale seu Mod CON atual",
             "chip.identity": "Identidade",
             "f.name": "Nome",
             "f.race": "Raça",
@@ -1932,7 +1932,7 @@
             "chip.portrait": "Retrato",
             "ph.portraitBox": "retrato — clique ou solte uma imagem",
             "ph.diagramBox": "diagrama — clique ou solte uma imagem",
-            "ph.hp": "PV",
+            "ph.hp": "Valor de BV",
             "ph.layoutNotes": "Notas de layout",
             "alt.portrait": "Retrato",
             "alt.spaceDiagram": "Diagrama do espaço pessoal",
@@ -2442,7 +2442,7 @@
                 '.on"></label>' +
                 '<input data-k="hp.' +
                 pct +
-                '.hp" data-i18n-ph="ph.hp" placeholder="HP">' +
+                '.hp" data-i18n-ph="ph.hp" placeholder="HB Value" readonly>' +
                 "</div>"
               );
             })
@@ -2638,6 +2638,14 @@
           el.style.opacity = out === "" ? "0.4" : "1";
         }
 
+        function renderHealth() {
+          var conMod = val("stats.CON.mod");
+          var out = conMod === "" ? "" : String(num("stats.CON.mod"));
+          $$('[data-k^="hp."][data-k$=".hp"]').forEach(function (el) {
+            if (el.value !== out) el.value = out;
+          });
+        }
+
         function recompute() {
           var mod = function (s) {
             return s && STATS.indexOf(s) >= 0 ? num("stats." + s + ".mod") : "";
@@ -2655,6 +2663,8 @@
                 ),
               );
           });
+
+          renderHealth();
 
           var dex = $('[data-c="def.dexMod"]');
           if (dex) setC(dex, num("stats.DEX.mod"));
@@ -3022,16 +3032,6 @@
           r.readAsText(file);
         }
 
-        /* Type an HP amount in any health cell -> put the same value in every cell. */
-        function syncHP(srcEl) {
-          if (!/^hp\.\d+\.hp$/.test(srcEl.getAttribute("data-k") || "")) return;
-          $$('[data-k^="hp."]').forEach(function (e) {
-            if (e === srcEl || !/\.hp$/.test(e.getAttribute("data-k"))) return;
-            if (e.value !== srcEl.value) e.value = srcEl.value;
-            e.removeAttribute("data-dirty");
-          });
-        }
-
         function resetAll() {
           if (!window.confirm(t("confirm.reset"))) return;
           fields().forEach(function (el) {
@@ -3105,7 +3105,6 @@
             var el = t.closest ? t.closest("[data-k]") : null;
             if (!el) return;
             if (e.isTrusted) el.setAttribute("data-dirty", "1");
-            if (/^hp\.\d+\.hp$/.test(el.getAttribute("data-k") || "")) syncHP(el);
             recompute();
             header();
             save();
