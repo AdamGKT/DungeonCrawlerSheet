@@ -55,7 +55,10 @@ automatically in that browser, and nothing ever leaves your machine.
 - **Defense**
   - *Damage Resistance* = Armor + DR Buffs → **DR Total**
   - *Evade* = `d20` + DEX Mod + Evade Buffs → **Evade Total**
-  - *Movement* — Move and Step.
+  - *Movement* — Move defaults to 20 ft and Step defaults to 10 ft. Step may
+    accompany an Action and is not a separate Action, so a normal Move Action
+    can cover 30 ft as Move + Step. Both values remain manually editable for
+    later effects that modify movement.
 - **External Buffs** (max 3), **Debuffs**, and a full-width **Hotlist** of 10
   quick-reference slots.
 
