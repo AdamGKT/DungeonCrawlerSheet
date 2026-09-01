@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="fr" data-theme="light">
+<html lang="en" data-theme="light">
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -793,6 +793,7 @@
         <div class="sub" data-hdr="sub"></div>
         <div class="tools">
           <select id="langSel" title="Language / Langue">
+            <option value="en">EN</option>
             <option value="fr">FR</option>
             <option value="es">ES</option>
             <option value="de">DE</option>
@@ -1360,10 +1361,138 @@
 
         /* ---------------- i18n ---------------- */
         var LKEY = "dcsheet.lang";
-        var LANGS = ["fr", "es", "de", "pt"];
-        var lang = "fr";
+        var LANGS = ["en", "fr", "es", "de", "pt"];
+        var lang = "en";
 
         var I18N = {
+          en: {
+            "hdr.kicker": "Crawler Dossier",
+            "hdr.unnamed": "Unnamed Crawler",
+            "hdr.lvl": "LVL",
+            "hdr.floor": "FLOOR",
+            "btn.import": "Import",
+            "btn.export": "Export JSON",
+            "btn.reset": "Reset",
+            "btn.addRow": "+ Add row",
+            "btn.removeImg": "Remove image",
+            "btn.theme.dark": "Dark",
+            "btn.theme.light": "Light",
+            "title.theme": "Toggle light / dark",
+            "title.reset": "Reset the entire sheet",
+            "title.imgbox": "Click or drop an image",
+            "title.mirrorDR": "Same as Damage Resistance",
+            "title.modFromStat": "Mod from selected stat",
+            "toast.saved": "saved",
+            "chip.health": "Health",
+            "hint.health":
+              "Tick a segment when it's lost — note the HP it covers",
+            "chip.identity": "Identity",
+            "f.name": "Name",
+            "f.race": "Race",
+            "f.pronouns": "Gender / Pronouns",
+            "f.level": "Level",
+            "f.crawlerNumber": "Crawler Number",
+            "f.class": "Class",
+            "f.floor": "Floor",
+            "f.aiFavor": "AI Favor",
+            "f.size": "Size",
+            "size.1": "1 Tiny",
+            "size.2": "2 Small",
+            "size.3": "3 Petite",
+            "size.4": "4 Medium (Human)",
+            "size.5": "5 Large",
+            "size.6": "6 Huge",
+            "size.7": "7 Colossal",
+            "size.8": "8 Gargantuan",
+            "f.current": "Current",
+            "f.max": "Max",
+            "chip.portrait": "Portrait",
+            "ph.portraitBox": "portrait — click or drop an image",
+            "ph.diagramBox": "diagram — click or drop an image",
+            "ph.hp": "HP",
+            "ph.layoutNotes": "Layout notes",
+            "alt.portrait": "Portrait",
+            "alt.spaceDiagram": "Personal space diagram",
+            "chip.defense": "Defense",
+            "rule.dr": "Damage Resistance",
+            "f.armor": "Armor",
+            "f.dexMod": "DEX Mod",
+            "f.buffs": "Buffs",
+            "f.drTotal": "DR Total",
+            "rule.evade": "Evade",
+            "f.evadeTotal": "Evade Total",
+            "rule.movement": "Movement",
+            "f.move": "Move",
+            "f.step": "Step",
+            "chip.extBuffs": "External Buffs (Max 3)",
+            "chip.debuffs": "Debuffs",
+            "chip.hotlist": "Hotlist",
+            "chip.attacks": "Attacks",
+            "col.rank": "Rank",
+            "col.stat": "Stat",
+            "col.toHit": "To Hit",
+            "col.damage": "Damage",
+            "col.effects": "Effects",
+            "chip.skills": "Skills",
+            "col.check": "Check Type",
+            "col.notesUpgrades": "Notes & Upgrades",
+            "check.Unopposed": "Unopposed",
+            "check.Opposed": "Opposed",
+            "check.Passive": "Passive",
+            "check.Evade": "Evade",
+            "chip.inventory": "Inventory",
+            "col.item": "Item",
+            "col.qty": "Qty",
+            "col.notes": "Notes",
+            "chip.gearSlots": "Gear Slots / Tattoos / Patches",
+            "chip.accessories": "Accessories (Max 10)",
+            "gear.head": "Head",
+            "gear.torso": "Torso",
+            "gear.arms": "Arms",
+            "gear.hands": "Hands / Held",
+            "gear.legs": "Legs",
+            "gear.feet": "Feet",
+            "jnav.popularity": "Popularity & Trauma",
+            "jnav.race": "Race & Class",
+            "jnav.affiliations": "Clubs & Kills",
+            "jnav.crawlers": "Other Crawlers",
+            "jnav.biography": "Biography",
+            "jnav.space": "Personal Space",
+            "jnav.notes": "Notes",
+            "pop.popularity": "Popularity & Sponsors",
+            "pop.pastTrauma": "Past Trauma",
+            "pop.looseEnds": "Loose Ends",
+            "pop.regrets": "Regrets",
+            "f.raceName": "Name of Race",
+            "f.racialBenefits": "Racial Benefits",
+            "f.className": "Name of Class",
+            "f.classBenefits": "Class Benefits",
+            "f.clubs": "Clubs, Societies, Guilds, Gods",
+            "f.kills": "Important Things I've Killed",
+            "crawler.title": "Other Crawler {n}",
+            "crawler.relationship": "What is your relationship with this Crawler?",
+            "f.tier": "Tier",
+            "f.amenities": "Amenities",
+            "sec.spaceDiagram": "Personal Space Diagram",
+            "note.tag": "NOTES / {n}",
+            "tab.sheet": "Sheet",
+            "tab.combat": "Attacks",
+            "tab.skills": "Skills",
+            "tab.gear": "Gear",
+            "tab.inventory": "Inventory",
+            "tab.journal": "Journal",
+            "stat.STR": "Strength",
+            "stat.INT": "Intelligence",
+            "stat.CON": "Constitution",
+            "stat.DEX": "Dexterity",
+            "stat.CHA": "Charisma",
+            "f.enhanced": "Enhanced",
+            "f.unenhanced": "Unenhanced",
+            "alert.badImage": "Couldn't read that image.",
+            "alert.badImport": "This file isn't a valid sheet export.",
+            "confirm.reset":
+              "Reset the entire sheet? This cannot be undone.",
+          },
           fr: {
             "hdr.kicker": "Dossier Crawler",
             "hdr.unnamed": "Crawler sans nom",
@@ -1882,6 +2011,7 @@
         };
 
         var BIO_I18N = {
+          en: BIO,
           fr: [
             "Ton nom a-t-il une signification particulière ? As-tu des surnoms ?",
             "Pourquoi es-tu entré dans le donjon ?",
@@ -2056,12 +2186,12 @@
           if (!key) return "";
           if (key.indexOf("bio.") === 0) {
             var bi = parseInt(key.slice(4), 10);
-            var arr = BIO_I18N[lang] || BIO_I18N.fr;
+            var arr = BIO_I18N[lang] || BIO_I18N.en;
             return arr && arr[bi] != null ? arr[bi] : "";
           }
-          var d = I18N[lang] || I18N.fr;
+          var d = I18N[lang] || I18N.en;
           if (d && d[key] != null) return d[key];
-          if (I18N.fr[key] != null) return I18N.fr[key];
+          if (I18N.en[key] != null) return I18N.en[key];
           return key;
         }
 
@@ -3006,7 +3136,7 @@
           if (langSel)
             langSel.addEventListener("change", function () {
               lang =
-                LANGS.indexOf(langSel.value) >= 0 ? langSel.value : "fr";
+                LANGS.indexOf(langSel.value) >= 0 ? langSel.value : "en";
               try {
                 localStorage.setItem(LKEY, lang);
               } catch (e) {}
@@ -3055,9 +3185,9 @@
           theme = localStorage.getItem(TKEY) || "light";
         } catch (e) {}
         try {
-          lang = localStorage.getItem(LKEY) || "fr";
+          lang = localStorage.getItem(LKEY) || "en";
         } catch (e) {}
-        if (LANGS.indexOf(lang) < 0) lang = "fr";
+        if (LANGS.indexOf(lang) < 0) lang = "en";
         var ls0 = $("#langSel");
         if (ls0) ls0.value = lang;
 
