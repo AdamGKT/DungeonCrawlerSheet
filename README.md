@@ -68,10 +68,18 @@ automatically in that browser, and nothing ever leaves your machine.
     accompany an Action and is not a separate Action, so a normal Move Action
     can cover 30 ft as Move + Step. Both values remain manually editable for
     later effects that modify movement.
-- **External Buffs** (max 3), **Debuffs**, and a full-width **Hotlist** with 10
-  quick-access slots for items, Spells, weapons, potions and similar entries. A
-  slot can hold up to 999 of the same item by name; merely storing an item there
-  does not grant its equipment benefits.
+- **Buffs & Debuffs** — Buffs are positive effects; reflect Internal Buff effects
+  manually in the relevant sheet values. The three External Buff slots record
+  the currently active selection, chosen from all available External Buffs at
+  the start of the crawling day. If a crawler gains access to a new External Buff
+  during the day, they may change the active selection during a short rest.
+  Debuffs are tracked manually with their duration or ending condition; there
+  is no active limit, and duplicates only stack when marked Stackable. DR and
+  Evade Buff fields are numeric aggregate modifiers. The sheet does not
+  automate triggers, durations, cooldowns or individual effects.
+- **Hotlist** — 10 quick-access slots for items, Spells, weapons, potions and
+  similar entries. A slot can hold up to 999 of the same item by name; merely
+  storing an item there does not grant its equipment benefits.
 
 ### Attacks
 Starts with 20 rows, add more as needed: Name, Rank, Hit Stat, **To Hit** (auto =

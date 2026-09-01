@@ -979,7 +979,7 @@
                     /></label>
                     <label class="lbl def"
                       ><span data-i18n="f.buffs">Buffs</span
-                      ><input data-k="def.drBuffs" class="center"
+                      ><input data-k="def.drBuffs" class="center" data-i18n-title="title.drBuffs" data-i18n-aria-label="title.drBuffs" title="Numeric modifier from active effects that modify Damage Resistance." aria-label="Numeric modifier from active effects that modify Damage Resistance."
                     /></label>
                     <label class="lbl def acc"
                       ><span data-i18n="f.drTotal">DR Total</span
@@ -1004,7 +1004,7 @@
                     /></label>
                     <label class="lbl def"
                       ><span data-i18n="f.buffs">Buffs</span
-                      ><input data-k="def.evadeBuffs" class="center"
+                      ><input data-k="def.evadeBuffs" class="center" data-i18n-title="title.evadeBuffs" data-i18n-aria-label="title.evadeBuffs" title="Numeric modifier from active effects that modify Evade." aria-label="Numeric modifier from active effects that modify Evade."
                     /></label>
                     <label class="lbl def acc"
                       ><span data-i18n="f.evadeTotal">Evade Total</span
@@ -1032,7 +1032,7 @@
 
             <div class="stack">
               <div class="card">
-                <div class="chip mb" data-i18n="chip.extBuffs">External Buffs (Max 3)</div>
+                <div class="chip mb" data-i18n="chip.extBuffs" data-i18n-title="title.extBuffs" data-i18n-aria-label="title.extBuffs" title="Track your three currently active External Buffs. Choose them at the start of the crawling day. If you gain access to a new External Buff during the day, you may change the active selection during a short rest." aria-label="Track your three currently active External Buffs. Choose them at the start of the crawling day. If you gain access to a new External Buff during the day, you may change the active selection during a short rest.">External Buffs (Max 3)</div>
                 <div class="grid" style="gap: 8px">
                   <input data-k="buffs.ext.0" placeholder="1." />
                   <input data-k="buffs.ext.1" placeholder="2." />
@@ -1040,8 +1040,8 @@
                 </div>
               </div>
               <div class="card">
-                <div class="chip mb" data-i18n="chip.debuffs">Debuffs</div>
-                <textarea data-k="buffs.debuffs" rows="4"></textarea>
+                <div class="chip mb" data-i18n="chip.debuffs" data-i18n-title="title.debuffs" data-i18n-aria-label="title.debuffs" title="Track active Debuffs and their remaining duration or ending condition. There is no limit; duplicate copies apply only when Stackable." aria-label="Track active Debuffs and their remaining duration or ending condition. There is no limit; duplicate copies apply only when Stackable.">Debuffs</div>
+                <textarea data-k="buffs.debuffs" rows="4" data-i18n-title="title.debuffs" data-i18n-aria-label="title.debuffs" title="Track active Debuffs and their remaining duration or ending condition. There is no limit; duplicate copies apply only when Stackable." aria-label="Track active Debuffs and their remaining duration or ending condition. There is no limit; duplicate copies apply only when Stackable."></textarea>
               </div>
             </div>
           </div>
@@ -1406,6 +1406,14 @@
               "Current Enhanced Stat: Unenhanced plus applicable Gear, Spell, Buff, and other bonuses. Stat Mod is based on this value.",
             "title.statUnenhanced":
               "Base Stat layer. Level-earned Stat Points and other qualifying permanent increases affect this value.",
+            "title.extBuffs":
+              "Track your three currently active External Buffs. Choose them at the start of the crawling day. If you gain access to a new External Buff during the day, you may change the active selection during a short rest.",
+            "title.debuffs":
+              "Track active Debuffs and their remaining duration or ending condition. There is no limit; duplicate copies apply only when Stackable.",
+            "title.drBuffs":
+              "Numeric modifier from active effects that modify Damage Resistance.",
+            "title.evadeBuffs":
+              "Numeric modifier from active effects that modify Evade.",
             "toast.saved": "saved",
             "chip.health": "Health",
             "hint.health":
@@ -1560,6 +1568,14 @@
               "Caractéristique améliorée actuelle : valeur non améliorée plus les bonus applicables d'équipement, de sorts, de buffs et autres. Le Mod de caractéristique est basé sur cette valeur.",
             "title.statUnenhanced":
               "Valeur de caractéristique de base. Les points de caractéristique gagnés par niveau et les autres augmentations permanentes admissibles affectent cette valeur.",
+            "title.extBuffs":
+              "Notez vos trois Buffs externes actuellement actifs. Choisissez-les au début de la journée d'exploration. Si vous accédez à un nouveau Buff externe pendant la journée, vous pouvez modifier la sélection active pendant un repos court.",
+            "title.debuffs":
+              "Notez les Debuffs actifs et leur durée restante ou condition de fin. Leur nombre est illimité ; les copies ne s'appliquent que si le Debuff est Stackable.",
+            "title.drBuffs":
+              "Modificateur numérique des effets actifs qui modifient la résistance aux dégâts.",
+            "title.evadeBuffs":
+              "Modificateur numérique des effets actifs qui modifient l'esquive.",
             "toast.saved": "enregistré",
             "chip.health": "Santé",
             "hint.health":
@@ -1714,6 +1730,14 @@
               "Característica Mejorada actual: la No Mejorada más las bonificaciones aplicables de equipo, Conjuros, buffs y otras fuentes. El Mod de característica se basa en este valor.",
             "title.statUnenhanced":
               "Capa de característica base. Los puntos de característica obtenidos por nivel y otros aumentos permanentes aplicables afectan este valor.",
+            "title.extBuffs":
+              "Anota tus tres Buffs externos activos. Elígelos al inicio del día de exploración. Si obtienes acceso a un nuevo Buff externo durante el día, puedes cambiar la selección activa durante un descanso corto.",
+            "title.debuffs":
+              "Anota los Debuffs activos y su duración restante o condición de finalización. No hay límite; las copias solo se aplican si el Debuff es Stackable.",
+            "title.drBuffs":
+              "Modificador numérico de los efectos activos que modifican la resistencia al daño.",
+            "title.evadeBuffs":
+              "Modificador numérico de los efectos activos que modifican la evasión.",
             "toast.saved": "guardado",
             "chip.health": "Salud",
             "hint.health":
@@ -1869,6 +1893,14 @@
               "Aktuelles verbessertes Attribut: unverbesserter Wert plus anwendbare Boni durch Ausrüstung, Zauber, Buffs und andere Quellen. Der Attributsmodifikator basiert auf diesem Wert.",
             "title.statUnenhanced":
               "Basisattribut. Durch Stufenaufstiege erhaltene Attributspunkte und andere anwendbare dauerhafte Erhöhungen verändern diesen Wert.",
+            "title.extBuffs":
+              "Trage deine drei derzeit aktiven externen Buffs ein. Wähle sie zu Beginn des Crawler-Tages. Erhältst du im Tagesverlauf Zugang zu einem neuen externen Buff, darfst du die aktive Auswahl während einer kurzen Rast ändern.",
+            "title.debuffs":
+              "Trage aktive Debuffs und ihre verbleibende Dauer oder Endbedingung ein. Ihre Anzahl ist unbegrenzt; Kopien gelten nur, wenn der Debuff Stackable ist.",
+            "title.drBuffs":
+              "Numerischer Modifikator aus aktiven Effekten, die die Schadensresistenz verändern.",
+            "title.evadeBuffs":
+              "Numerischer Modifikator aus aktiven Effekten, die Ausweichen verändern.",
             "toast.saved": "gespeichert",
             "chip.health": "Gesundheit",
             "hint.health":
@@ -2024,6 +2056,14 @@
               "Atributo Aprimorado atual: valor Sem aprimoramento mais bônus aplicáveis de Equipamentos, Magias, buffs e outras fontes. O Mod de atributo usa este valor.",
             "title.statUnenhanced":
               "Camada de atributo base. Pontos de atributo ganhos por nível e outros aumentos permanentes aplicáveis afetam este valor.",
+            "title.extBuffs":
+              "Registre seus três Buffs externos atualmente ativos. Escolha-os no início do dia de exploração. Se você obtiver acesso a um novo Buff externo durante o dia, poderá mudar a seleção ativa durante um descanso curto.",
+            "title.debuffs":
+              "Registre os Debuffs ativos e sua duração restante ou condição de término. Não há limite; cópias só se aplicam quando o Debuff é Stackable.",
+            "title.drBuffs":
+              "Modificador numérico de efeitos ativos que alteram a resistência a dano.",
+            "title.evadeBuffs":
+              "Modificador numérico de efeitos ativos que alteram a esquiva.",
             "toast.saved": "salvo",
             "chip.health": "Saúde",
             "hint.health":
@@ -2767,6 +2807,12 @@
         function num(k) {
           return parseFloat(String(val(k)).replace(/[^0-9.\-]/g, "")) || 0;
         }
+        function defenseNum(k) {
+          var s = String(val(k)).trim();
+          if (!/^[+-]?(?:\d+(?:\.\d*)?|\.\d+)$/.test(s)) return 0;
+          var n = parseFloat(s);
+          return isFinite(n) ? n : 0;
+        }
 
         function sanitizeAIFavor(el) {
           if (
@@ -2819,7 +2865,7 @@
           if (dex) setC(dex, num("stats.DEX.mod"));
           var dr = $('[data-c="def.drTotal"]');
           if (dr)
-            setC(dr, num("def.armor") + num("def.drBuffs"));
+            setC(dr, defenseNum("def.armor") + defenseNum("def.drBuffs"));
           $$("[data-mirror]").forEach(function (el) {
             var v = String(val(el.getAttribute("data-mirror")));
             if (el.value !== v) el.value = v;
@@ -2827,7 +2873,7 @@
 
           var ev = $('[data-c="def.evadeTotal"]');
           if (ev) {
-            var eb = num("def.dexMod") + num("def.evadeBuffs");
+            var eb = num("def.dexMod") + defenseNum("def.evadeBuffs");
             ev.value = "d20 " + (eb > 0 ? "+" + eb : String(eb));
             ev.style.opacity = "1";
           }
