@@ -77,11 +77,17 @@ Passive / Evade) and Notes & Upgrades. Rank is tracked separately from Stat Mod.
 ### Inventory
 Starts with 36 rows of UI space, not a game-rule capacity; add more as needed.
 Stored Inventory is not limited by encumbrance. Item, Qty and Notes are tracked
-manually, and no maximum is imposed on Inventory Qty.
+manually, and no maximum is imposed on Inventory Qty. Items stored only in
+Inventory do not grant Gear bonuses.
 
 ### Gear
-- Gear slots / tattoos / patches: Head, Torso, Arms, Hands / Holding, Legs, Feet.
-- Accessories (max 10).
+- The Gear area follows the official Gear Slots / Tattoos / Patches layout:
+  Head, Torso, Arms, Hands / Holding, Legs, Feet and Accessories. Record Gear,
+  Tattoos and Patches according to the Gear Slot they occupy or modify.
+- Each normal field records the item currently occupying that Gear Slot;
+  Accessories provide 10 individually numbered Gear Slots.
+- Equipped Gear may grant its listed benefits. Gear bonuses and effects are
+  applied manually; items stored only in Inventory or Hotlist do not grant them.
 
 ### Journal
 - **Popularity & Trauma** — popularity and sponsors, past trauma, loose ends,
