@@ -55,8 +55,12 @@ automatically in that browser, and nothing ever leaves your machine.
   current Enhanced Intelligence Stat.
 - **Portrait** — image upload as described above.
 - **Stats** — Strength, Intelligence, Constitution, Dexterity, Charisma. Enter the
-  Enhanced and/or Unenhanced score; the Mod is derived from the Dungeon Crawler
-  score-to-modifier table (Enhanced takes priority).
+  Unenhanced base Stat and current Enhanced Stat separately. Initial character
+  creation starts both layers at the same value. Enhanced includes Unenhanced
+  plus applicable enhancements, and Stat Mod is calculated from Enhanced only.
+  Level-earned Stat Points increase both layers, but advancement remains
+  manually applied. Bonuses from other systems must likewise be reflected
+  manually in Enhanced; the sheet does not identify or calculate each source.
 - **Defense**
   - *Damage Resistance* = Armor + DR Buffs → **DR Total**
   - *Evade* = `d20` + DEX Mod + Evade Buffs → **Evade Total**

@@ -1354,8 +1354,8 @@
         ];
         function scoreToMod(raw) {
           var s = String(raw == null ? "" : raw).trim();
-          if (s === "") return "";
-          var n = parseFloat(s.replace(/[^0-9.\-]/g, ""));
+          if (!/^(?:\d+(?:\.\d*)?|\.\d+)$/.test(s)) return "";
+          var n = parseFloat(s);
           if (!isFinite(n) || n < 1) return "";
           for (var i = 0; i < MOD_TABLE.length; i++) {
             if (n <= MOD_TABLE[i][0]) return MOD_TABLE[i][1];
@@ -1402,6 +1402,10 @@
               "Tutorial crawlers start at Level 1. Current Level limit: 250. Level gains may award Stat points; apply advancement manually.",
             "title.floor":
               "Tutorial crawlers start on Floor 1. Floor and Level are tracked independently.",
+            "title.statEnhanced":
+              "Current Enhanced Stat: Unenhanced plus applicable Gear, Spell, Buff, and other bonuses. Stat Mod is based on this value.",
+            "title.statUnenhanced":
+              "Base Stat layer. Level-earned Stat Points and other qualifying permanent increases affect this value.",
             "toast.saved": "saved",
             "chip.health": "Health",
             "hint.health":
@@ -1513,6 +1517,7 @@
             "stat.CHA": "Charisma",
             "f.enhanced": "Enhanced",
             "f.unenhanced": "Unenhanced",
+            "f.mod": "Mod",
             "alert.badImage": "Couldn't read that image.",
             "alert.badImport": "This file isn't a valid sheet export.",
             "confirm.reset":
@@ -1551,6 +1556,10 @@
               "Les Crawlers du tutoriel commencent au niveau 1. Limite actuelle : 250. Les gains de niveau peuvent accorder des points de caractéristique ; appliquez l'avancement manuellement.",
             "title.floor":
               "Les Crawlers du tutoriel commencent à l'étage 1. L'étage et le niveau sont suivis indépendamment.",
+            "title.statEnhanced":
+              "Caractéristique améliorée actuelle : valeur non améliorée plus les bonus applicables d'équipement, de sorts, de buffs et autres. Le Mod de caractéristique est basé sur cette valeur.",
+            "title.statUnenhanced":
+              "Valeur de caractéristique de base. Les points de caractéristique gagnés par niveau et les autres augmentations permanentes admissibles affectent cette valeur.",
             "toast.saved": "enregistré",
             "chip.health": "Santé",
             "hint.health":
@@ -1662,6 +1671,7 @@
             "stat.CHA": "Charisme",
             "f.enhanced": "Amélioré",
             "f.unenhanced": "Non amélioré",
+            "f.mod": "Mod",
             "alert.badImage": "Impossible de lire cette image.",
             "alert.badImport": "Ce fichier n'est pas un export de fiche valide.",
             "confirm.reset":
@@ -1700,6 +1710,10 @@
               "Los Crawlers del tutorial comienzan en nivel 1. Límite actual: 250. Subir de nivel puede otorgar puntos de característica; aplica el avance manualmente.",
             "title.floor":
               "Los Crawlers del tutorial comienzan en el piso 1. El piso y el nivel se registran de forma independiente.",
+            "title.statEnhanced":
+              "Característica Mejorada actual: la No Mejorada más las bonificaciones aplicables de equipo, Conjuros, buffs y otras fuentes. El Mod de característica se basa en este valor.",
+            "title.statUnenhanced":
+              "Capa de característica base. Los puntos de característica obtenidos por nivel y otros aumentos permanentes aplicables afectan este valor.",
             "toast.saved": "guardado",
             "chip.health": "Salud",
             "hint.health":
@@ -1811,6 +1825,7 @@
             "stat.CHA": "Carisma",
             "f.enhanced": "Mejorado",
             "f.unenhanced": "Sin mejorar",
+            "f.mod": "Mod",
             "alert.badImage": "No se puede leer esta imagen.",
             "alert.badImport":
               "Ese archivo no es una exportación de hoja válida.",
@@ -1850,6 +1865,10 @@
               "Tutorial-Crawler beginnen auf Stufe 1. Aktuelle Stufengrenze: 250. Stufenaufstiege können Attributspunkte gewähren; wende den Aufstieg manuell an.",
             "title.floor":
               "Tutorial-Crawler beginnen auf Ebene 1. Ebene und Stufe werden unabhängig erfasst.",
+            "title.statEnhanced":
+              "Aktuelles verbessertes Attribut: unverbesserter Wert plus anwendbare Boni durch Ausrüstung, Zauber, Buffs und andere Quellen. Der Attributsmodifikator basiert auf diesem Wert.",
+            "title.statUnenhanced":
+              "Basisattribut. Durch Stufenaufstiege erhaltene Attributspunkte und andere anwendbare dauerhafte Erhöhungen verändern diesen Wert.",
             "toast.saved": "gespeichert",
             "chip.health": "Gesundheit",
             "hint.health":
@@ -1962,6 +1981,7 @@
             "stat.CHA": "Charisma",
             "f.enhanced": "Verbessert",
             "f.unenhanced": "Unverbessert",
+            "f.mod": "Mod.",
             "alert.badImage": "Dieses Bild kann nicht gelesen werden.",
             "alert.badImport": "Diese Datei ist kein gültiger Bogen-Export.",
             "confirm.reset":
@@ -2000,6 +2020,10 @@
               "Crawlers do tutorial começam no nível 1. Limite atual: 250. Ganhos de nível podem conceder pontos de atributo; aplique o avanço manualmente.",
             "title.floor":
               "Crawlers do tutorial começam no andar 1. Andar e nível são registrados de forma independente.",
+            "title.statEnhanced":
+              "Atributo Aprimorado atual: valor Sem aprimoramento mais bônus aplicáveis de Equipamentos, Magias, buffs e outras fontes. O Mod de atributo usa este valor.",
+            "title.statUnenhanced":
+              "Camada de atributo base. Pontos de atributo ganhos por nível e outros aumentos permanentes aplicáveis afetam este valor.",
             "toast.saved": "salvo",
             "chip.health": "Saúde",
             "hint.health":
@@ -2111,6 +2135,7 @@
             "stat.CHA": "Carisma",
             "f.enhanced": "Aprimorado",
             "f.unenhanced": "Sem aprimoramento",
+            "f.mod": "Mod",
             "alert.badImage": "Não é possível ler esta imagem.",
             "alert.badImport":
               "Esse arquivo não é uma exportação de ficha válida.",
@@ -2564,17 +2589,17 @@
               s.key +
               '">' +
               s.label +
-              '</span><span class="mini">Mod</span></div>' +
+              '</span><span class="mini" data-i18n="f.mod">Mod</span></div>' +
               '<input data-k="stats.' +
               s.key +
               '.mod" data-c="stat.mod" readonly placeholder="—">' +
               '<div class="pair">' +
               '<label class="lbl sm"><span data-i18n="f.enhanced">Enhanced</span><input data-k="stats.' +
               s.key +
-              '.enh" class="center"></label>' +
+              '.enh" class="center" data-i18n-title="title.statEnhanced" data-i18n-aria-label="title.statEnhanced" title="Current Enhanced Stat: Unenhanced plus applicable Gear, Spell, Buff, and other bonuses. Stat Mod is based on this value." aria-label="Current Enhanced Stat: Unenhanced plus applicable Gear, Spell, Buff, and other bonuses. Stat Mod is based on this value."></label>' +
               '<label class="lbl sm"><span data-i18n="f.unenhanced">Unenhanced</span><input data-k="stats.' +
               s.key +
-              '.unenh" class="center"></label>' +
+              '.unenh" class="center" data-i18n-title="title.statUnenhanced" data-i18n-aria-label="title.statUnenhanced" title="Base Stat layer. Level-earned Stat Points and other qualifying permanent increases affect this value." aria-label="Base Stat layer. Level-earned Stat Points and other qualifying permanent increases affect this value."></label>' +
               "</div></div>"
             );
           }).join("");
@@ -2778,16 +2803,13 @@
             return s && STATS.indexOf(s) >= 0 ? num("stats." + s + ".mod") : "";
           };
 
-          // stat modifiers from the score table (Enhanced, else Unenhanced)
+          // stat modifiers from the Enhanced score table
           STAT_LIST.forEach(function (s) {
             var el = field("stats." + s.key + ".mod");
             if (el)
               setC(
                 el,
-                scoreToMod(
-                  val("stats." + s.key + ".enh") ||
-                    val("stats." + s.key + ".unenh"),
-                ),
+                scoreToMod(val("stats." + s.key + ".enh")),
               );
           });
 
