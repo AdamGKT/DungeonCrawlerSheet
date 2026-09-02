@@ -39,36 +39,87 @@ automatically in that browser, and nothing ever leaves your machine.
 ## Tabs
 
 ### Sheet
-- **Health** — a 10-segment track (10 % … 100 %). Tick a segment as it is lost and
-  note the HP total it covers; typing an HP value in one cell fills them all.
+- **Health** — a 10-slot crawler Health Bar (10 % … 100 %). Each slot is worth the
+  crawler's current CON Mod; mark a slot when it is lost.
 - **Identity** — name, race, gender / pronouns, level, Crawler Number, class,
-  floor, AI Favor and size (Tiny → Gargantuan).
-- **Mana** — current / max with a live gauge.
+  floor, AI Favor and size (Tiny → Gargantuan). AI Favor is a manually tracked
+  spendable resource: Humans begin with 1 and animal crawlers with 0; spend 1 for
+  a qualifying d20 reroll or an extra non-Attack Action. Favor may be gained or
+  lost during play. A Tutorial crawler defaults to Level 1 / Floor 1; Level and
+  Floor remain independently tracked. Direct Third-Floor creation uses its own
+  Level 10 setup procedure. The current Level cap is 250. Level gains on Floor 3
+  or deeper award 3 Stat points, which may remain undistributed until a saferoom;
+  they do not directly raise Skill Ranks. This sheet leaves advancement
+  application manual.
+- **Mana** — Current Mana is tracked manually; Max Mana equals the crawler's
+  current Enhanced Intelligence Stat.
 - **Portrait** — image upload as described above.
 - **Stats** — Strength, Intelligence, Constitution, Dexterity, Charisma. Enter the
-  Enhanced and/or Unenhanced score; the Mod is derived from the Dungeon Crawler
-  score-to-modifier table (Enhanced takes priority).
+  Unenhanced base Stat and current Enhanced Stat separately. Initial character
+  creation starts both layers at the same value. Enhanced includes Unenhanced
+  plus applicable enhancements, and Stat Mod is calculated from Enhanced only.
+  Level-earned Stat Points increase both layers, but advancement remains
+  manually applied. Bonuses from other systems must likewise be reflected
+  manually in Enhanced; the sheet does not identify or calculate each source.
 - **Defense**
-  - *Damage Resistance* = Armor + DEX Mod + Buffs → **DR Total**
-  - *Evade* = `d20` + Armor + Buffs → **Evade Total**
-  - *Movement* — Move and Step.
-- **External Buffs** (max 3), **Debuffs**, and a full-width **Hotlist** of 10
-  quick-reference slots.
+  - *Damage Resistance* = Armor + DR Buffs → **DR Total**
+  - *Evade* = `d20` + DEX Mod + Evade Buffs → **Evade Total**
+  - *Movement* — Move defaults to 20 ft and Step defaults to 10 ft. Step may
+    accompany an Action and is not a separate Action, so a normal Move Action
+    can cover 30 ft as Move + Step. Both values remain manually editable for
+    later effects that modify movement.
+- **Buffs & Debuffs** — Buffs are positive effects; reflect Internal Buff effects
+  manually in the relevant sheet values. The three External Buff slots record
+  the currently active selection, chosen from all available External Buffs at
+  the start of the crawling day. If a crawler gains access to a new External Buff
+  during the day, they may change the active selection during a short rest.
+  Debuffs are tracked manually with their duration or ending condition; there
+  is no active limit, and duplicates only stack when marked Stackable. DR and
+  Evade Buff fields are numeric aggregate modifiers. The sheet does not
+  automate triggers, durations, cooldowns or individual effects.
+- **Hotlist** — 10 quick-access slots for items, Spells, weapons, potions and
+  similar entries. A slot can hold up to 999 of the same item by name; merely
+  storing an item there does not grant its equipment benefits.
 
 ### Attacks
-Starts with 20 rows, add more as needed: Name, Rank, Stat, **To Hit** (auto =
-Rank + stat Mod), Damage (die + Mod from the chosen stat), Effects.
+Starts with 20 rows, add more as needed: Name, Rank, Hit Stat, **To Hit** (auto =
+Rank + Hit Stat Mod), Damage Dice, Damage Stat, Damage Mod and Effects. Hit Stat
+and Damage Stat are independent; damage is Damage Dice + Damage Stat Mod.
+
+### Damage and mitigation
+DR Total is Armor + DR Buffs, and DR reduces incoming damage first. The official
+sheet has no separate crawler fields for Resistance, Vulnerability or Immunity;
+record their sources in the appropriate Gear, Buff, attack Effects or notes
+field and resolve them manually. Type-specific Resistance halves applicable
+damage, Vulnerability doubles it, and Immunity reduces it to zero and prevents
+additional effects arising from that damage. Armor-Piercing ignores DR;
+Anti-Piercing allows the crawler's DR to apply against Armor-Piercing damage.
+For attacks with multiple damage types, split damage evenly by type before
+applying relevant type-specific mitigation. Record attack damage types and
+properties in Effects. The sheet does not resolve incoming damage automatically.
+
+Official damage types: Acid, Bludgeoning, Electric, Fire, Force, Holy, Ice,
+Necrotic, Piercing, Poison, Psychic, Slashing and Sonic.
 
 ### Skills
-Starts with 24 rows, add more as needed: done checkbox, Name, Rank, Stat, **Mod**
-(auto), Check Type (Unopposed / Opposed / Passive / Evade) and Notes & Upgrades.
+Starts with 24 rows, add more as needed: Skill Advancement mark, Name, Rank,
+Stat, automatically derived **Stat Mod**, Check Type (Unopposed / Opposed /
+Passive / Evade) and Notes & Upgrades. Rank is tracked separately from Stat Mod.
 
 ### Inventory
-Starts with 36 rows, add more as needed: Item, Qty, Notes.
+Starts with 36 rows of UI space, not a game-rule capacity; add more as needed.
+Stored Inventory is not limited by encumbrance. Item, Qty and Notes are tracked
+manually, and no maximum is imposed on Inventory Qty. Items stored only in
+Inventory do not grant Gear bonuses.
 
 ### Gear
-- Gear slots / tattoos / patches: Head, Torso, Arms, Hands / Holding, Legs, Feet.
-- Accessories (max 10).
+- The Gear area follows the official Gear Slots / Tattoos / Patches layout:
+  Head, Torso, Arms, Hands / Holding, Legs, Feet and Accessories. Record Gear,
+  Tattoos and Patches according to the Gear Slot they occupy or modify.
+- Each normal field records the item currently occupying that Gear Slot;
+  Accessories provide 10 individually numbered Gear Slots.
+- Equipped Gear may grant its listed benefits. Gear bonuses and effects are
+  applied manually; items stored only in Inventory or Hotlist do not grant them.
 
 ### Journal
 - **Popularity & Trauma** — popularity and sponsors, past trauma, loose ends,
@@ -120,3 +171,5 @@ GitHub Pages, Netlify, a USB stick, a local folder.
   table rows, journal pages, tab bar, translations) are generated at load time.
 - Fields are bound by a `data-k` attribute to a flat key (e.g. `stats.STR.enh`);
   export nests these into a `character` object and also keeps the flat map.
+- Saves and exports use schema version 2. Version 1 attacks with a single `statA`
+  remain compatible and initialize both Hit Stat and Damage Stat from that value.

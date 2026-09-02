@@ -614,7 +614,7 @@
         color: var(--acc);
       }
       .cols-attacks {
-        grid-template-columns: 2fr 0.6fr 0.85fr 0.75fr 1.6fr 2fr;
+        grid-template-columns: 1.8fr 0.55fr 0.8fr 0.7fr 0.75fr 0.8fr 0.6fr 1.8fr;
       }
       .cols-skills {
         grid-template-columns: 34px 1.6fr 0.6fr 0.85fr 0.55fr 1fr 2.2fr;
@@ -847,7 +847,7 @@
             >
               <span class="chip" data-i18n="chip.health">Health</span>
               <span class="hint" data-i18n="hint.health"
-                >Tick a segment as it is lost — note the HP it covers</span
+                >Mark a slot when it is lost — each slot is worth your current CON Mod</span
               >
             </div>
             <div class="hp-grid" id="hpGrid"></div>
@@ -868,7 +868,7 @@
                   ><input data-k="identity.pronouns"
                 /></label>
                 <label class="lbl"
-                  ><span data-i18n="f.level">Level</span><input data-k="identity.level"
+                  ><span data-i18n="f.level">Level</span><input data-k="identity.level" inputmode="numeric" data-i18n-title="title.level" data-i18n-aria-label="title.level" title="Tutorial crawlers start at Level 1. Current Level limit: 250. Level gains may award Stat points; apply advancement manually." aria-label="Tutorial crawlers start at Level 1. Current Level limit: 250. Level gains may award Stat points; apply advancement manually."
                 /></label>
                 <label class="lbl"
                   ><span data-i18n="f.crawlerNumber">Crawler Number</span
@@ -878,10 +878,19 @@
                   ><span data-i18n="f.class">Class</span><input data-k="identity.class"
                 /></label>
                 <label class="lbl"
-                  ><span data-i18n="f.floor">Floor</span><input data-k="identity.floor"
+                  ><span data-i18n="f.floor">Floor</span><input data-k="identity.floor" inputmode="numeric" data-i18n-title="title.floor" data-i18n-aria-label="title.floor" title="Tutorial crawlers start on Floor 1. Floor and Level are tracked independently." aria-label="Tutorial crawlers start on Floor 1. Floor and Level are tracked independently."
                 /></label>
                 <label class="lbl"
-                  ><span data-i18n="f.aiFavor">AI Favor</span><input data-k="def.aiFavor"
+                  ><span data-i18n="f.aiFavor">AI Favor</span
+                  ><input
+                    type="number"
+                    inputmode="numeric"
+                    step="1"
+                    data-k="def.aiFavor"
+                    data-i18n-title="title.aiFavor"
+                    data-i18n-aria-label="title.aiFavor"
+                    title="Spend 1 to reroll a d20 (except Natural 1) or gain one extra non-Attack Action once per round."
+                    aria-label="Spend 1 to reroll a d20 (except Natural 1) or gain one extra non-Attack Action once per round."
                 /></label>
                 <label class="lbl"
                   ><span data-i18n="f.size">Size</span
@@ -923,6 +932,7 @@
                       data-k="mana.max"
                       class="center"
                       inputmode="numeric"
+                      readonly
                   /></label>
                 </div>
               </div>
@@ -967,6 +977,27 @@
                       ><input data-k="def.armor" class="center"
                     /></label>
                     <label class="lbl def"
+                      ><span data-i18n="f.buffs">Buffs</span
+                      ><input data-k="def.drBuffs" class="center" data-i18n-title="title.drBuffs" data-i18n-aria-label="title.drBuffs" title="Numeric modifier from active effects that modify Damage Resistance." aria-label="Numeric modifier from active effects that modify Damage Resistance."
+                    /></label>
+                    <label class="lbl def acc"
+                      ><span data-i18n="f.drTotal">DR Total</span
+                      ><input
+                        data-k="def.drTotal"
+                        data-c="def.drTotal"
+                        class="center total-input"
+                        readonly
+                        data-i18n-title="title.drTotal"
+                        data-i18n-aria-label="title.drTotal"
+                        title="DR reduces incoming damage first. Damage-type Resistance, Vulnerability, Immunity, and Armor-Piercing are resolved manually."
+                        aria-label="DR reduces incoming damage first. Damage-type Resistance, Vulnerability, Immunity, and Armor-Piercing are resolved manually."
+                    /></label>
+                  </div>
+                </div>
+                <div class="inset">
+                  <div class="sub-rule" data-i18n="rule.evade">Evade</div>
+                  <div class="def-cols">
+                    <label class="lbl def"
                       ><span data-i18n="f.dexMod">DEX Mod</span
                       ><input
                         data-k="def.dexMod"
@@ -976,32 +1007,7 @@
                     /></label>
                     <label class="lbl def"
                       ><span data-i18n="f.buffs">Buffs</span
-                      ><input data-k="def.drBuffs" class="center"
-                    /></label>
-                    <label class="lbl def acc"
-                      ><span data-i18n="f.drTotal">DR Total</span
-                      ><input
-                        data-k="def.drTotal"
-                        data-c="def.drTotal"
-                        class="center total-input"
-                        readonly
-                    /></label>
-                  </div>
-                </div>
-                <div class="inset">
-                  <div class="sub-rule" data-i18n="rule.evade">Evade</div>
-                  <div class="def-cols">
-                    <label class="lbl def"
-                      ><span data-i18n="f.armor">Armor</span
-                      ><input
-                        data-mirror="def.armor"
-                        class="center"
-                        inputmode="numeric"
-                        data-i18n-title="title.mirrorDR"
-                    /></label>
-                    <label class="lbl def"
-                      ><span data-i18n="f.buffs">Buffs</span
-                      ><input data-k="def.evadeBuffs" class="center"
+                      ><input data-k="def.evadeBuffs" class="center" data-i18n-title="title.evadeBuffs" data-i18n-aria-label="title.evadeBuffs" title="Numeric modifier from active effects that modify Evade." aria-label="Numeric modifier from active effects that modify Evade."
                     /></label>
                     <label class="lbl def acc"
                       ><span data-i18n="f.evadeTotal">Evade Total</span
@@ -1017,10 +1023,10 @@
                   <div class="sub-rule" data-i18n="rule.movement">Movement</div>
                   <div class="def-cols">
                     <label class="lbl def"
-                      ><span data-i18n="f.move">Move</span><input data-k="def.move" class="center"
+                      ><span data-i18n="f.move">Move</span><input data-k="def.move" class="center" data-i18n-title="title.move" data-i18n-aria-label="title.move" title="Default 20 ft. A Move Action uses this distance." aria-label="Default 20 ft. A Move Action uses this distance."
                     /></label>
                     <label class="lbl def"
-                      ><span data-i18n="f.step">Step</span><input data-k="def.step" class="center"
+                      ><span data-i18n="f.step">Step</span><input data-k="def.step" class="center" data-i18n-title="title.step" data-i18n-aria-label="title.step" title="Default 10 ft. You may Step whenever you take an Action; Step is not a separate Action." aria-label="Default 10 ft. You may Step whenever you take an Action; Step is not a separate Action."
                     /></label>
                   </div>
                 </div>
@@ -1029,7 +1035,7 @@
 
             <div class="stack">
               <div class="card">
-                <div class="chip mb" data-i18n="chip.extBuffs">External Buffs (Max 3)</div>
+                <div class="chip mb" data-i18n="chip.extBuffs" data-i18n-title="title.extBuffs" data-i18n-aria-label="title.extBuffs" title="Track your three currently active External Buffs. Choose them at the start of the crawling day. If you gain access to a new External Buff during the day, you may change the active selection during a short rest." aria-label="Track your three currently active External Buffs. Choose them at the start of the crawling day. If you gain access to a new External Buff during the day, you may change the active selection during a short rest.">External Buffs (Max 3)</div>
                 <div class="grid" style="gap: 8px">
                   <input data-k="buffs.ext.0" placeholder="1." />
                   <input data-k="buffs.ext.1" placeholder="2." />
@@ -1037,14 +1043,14 @@
                 </div>
               </div>
               <div class="card">
-                <div class="chip mb" data-i18n="chip.debuffs">Debuffs</div>
-                <textarea data-k="buffs.debuffs" rows="4"></textarea>
+                <div class="chip mb" data-i18n="chip.debuffs" data-i18n-title="title.debuffs" data-i18n-aria-label="title.debuffs" title="Track active Debuffs and their remaining duration or ending condition. There is no limit; duplicate copies apply only when Stackable." aria-label="Track active Debuffs and their remaining duration or ending condition. There is no limit; duplicate copies apply only when Stackable.">Debuffs</div>
+                <textarea data-k="buffs.debuffs" rows="4" data-i18n-title="title.debuffs" data-i18n-aria-label="title.debuffs" title="Track active Debuffs and their remaining duration or ending condition. There is no limit; duplicate copies apply only when Stackable." aria-label="Track active Debuffs and their remaining duration or ending condition. There is no limit; duplicate copies apply only when Stackable."></textarea>
               </div>
             </div>
           </div>
 
           <div class="card mt">
-            <div class="chip mb" data-i18n="chip.hotlist">Hotlist</div>
+            <div class="chip mb" data-i18n="chip.hotlist" data-i18n-title="title.hotlist" data-i18n-aria-label="title.hotlist" title="10 quick-access slots. A slot can hold up to 999 of the same item by name." aria-label="10 quick-access slots. A slot can hold up to 999 of the same item by name.">Hotlist</div>
             <div class="hotlist" id="hotlist"></div>
           </div>
         </section>
@@ -1053,11 +1059,12 @@
         <section data-pane="combat" hidden>
           <div class="card scrollx">
             <div class="chip" style="margin-bottom: 6px" data-i18n="chip.attacks">Attacks</div>
-            <div class="tbl" style="min-width: 760px">
+            <div class="tbl" style="min-width: 960px">
               <div class="head cols-attacks">
-                <span data-i18n="f.name">Name</span><span data-i18n="col.rank">Rank</span><span data-i18n="col.stat">Stat</span
-                ><span class="acc" data-i18n="col.toHit">To Hit</span><span data-i18n="col.damage">Damage</span
-                ><span data-i18n="col.effects">Effects</span>
+                <span data-i18n="f.name">Name</span><span data-i18n="col.rank">Rank</span><span data-i18n="col.hitStat">Hit Stat</span
+                ><span class="acc" data-i18n="col.toHit">To Hit</span><span data-i18n="col.damageDice">Damage Dice</span
+                ><span data-i18n="col.damageStat">Damage Stat</span><span data-i18n="col.damageMod">Damage Mod</span
+                ><span data-i18n="col.effects" data-i18n-title="title.attackEffects" data-i18n-aria-label="title.attackEffects" title="Record damage type and special attack properties here, such as Piercing damage or Armor-Piercing. Effects are descriptive and resolved manually." aria-label="Record damage type and special attack properties here, such as Piercing damage or Armor-Piercing. Effects are descriptive and resolved manually.">Effects</span>
               </div>
               <div id="attackRows"></div>
             </div>
@@ -1073,8 +1080,8 @@
             <div class="chip" style="margin-bottom: 6px" data-i18n="chip.skills">Skills</div>
             <div class="tbl" style="min-width: 860px">
               <div class="head cols-skills">
-                <span>✔</span><span data-i18n="f.name">Name</span><span data-i18n="col.rank">Rank</span><span data-i18n="col.stat">Stat</span
-                ><span>Mod</span><span data-i18n="col.check">Check Type</span
+                <span data-i18n-title="title.skillAdvancement" data-i18n-aria-label="title.skillAdvancement" title="Mark for Skill Advancement" aria-label="Mark for Skill Advancement">✔</span><span data-i18n="f.name">Name</span><span data-i18n="col.rank">Rank</span><span data-i18n="col.stat">Stat</span
+                ><span data-i18n="col.statMod">Stat Mod</span><span data-i18n="col.check">Check Type</span
                 ><span data-i18n="col.notesUpgrades">Notes &amp; Upgrades</span>
               </div>
               <div id="skillRows"></div>
@@ -1105,11 +1112,11 @@
         <section data-pane="gear" hidden>
           <div class="cards-320">
             <div class="card">
-              <div class="chip mb" data-i18n="chip.gearSlots">Gear Slots / Tattoos / Patches</div>
+              <div class="chip mb" data-i18n="chip.gearSlots" data-i18n-title="title.gearSlots" data-i18n-aria-label="title.gearSlots" title="Record the item currently occupying each Gear Slot. Equipped Gear may grant its listed benefits." aria-label="Record the item currently occupying each Gear Slot. Equipped Gear may grant its listed benefits.">Gear Slots / Tattoos / Patches</div>
               <div class="grid" style="gap: 12px" id="gearSlots"></div>
             </div>
             <div class="card">
-              <div class="chip mb" data-i18n="chip.accessories">Accessories (Max 10)</div>
+              <div class="chip mb" data-i18n="chip.accessories" data-i18n-title="title.accessories" data-i18n-aria-label="title.accessories" title="Each field represents one Accessory Gear Slot. Crawlers normally have up to 10." aria-label="Each field represents one Accessory Gear Slot. Crawlers normally have up to 10.">Accessories (Max 10)</div>
               <div class="grid" style="gap: 8px" id="accRows"></div>
             </div>
           </div>
@@ -1350,8 +1357,8 @@
         ];
         function scoreToMod(raw) {
           var s = String(raw == null ? "" : raw).trim();
-          if (s === "") return "";
-          var n = parseFloat(s.replace(/[^0-9.\-]/g, ""));
+          if (!/^(?:\d+(?:\.\d*)?|\.\d+)$/.test(s)) return "";
+          var n = parseFloat(s);
           if (!isFinite(n) || n < 1) return "";
           for (var i = 0; i < MOD_TABLE.length; i++) {
             if (n <= MOD_TABLE[i][0]) return MOD_TABLE[i][1];
@@ -1382,10 +1389,42 @@
             "title.imgbox": "Click or drop an image",
             "title.mirrorDR": "Same as Damage Resistance",
             "title.modFromStat": "Mod from selected stat",
+            "title.skillAdvancement": "Mark for Skill Advancement",
+            "title.aiFavor":
+              "Spend 1 to reroll a d20 (except Natural 1) or gain one extra non-Attack Action once per round.",
+            "title.move": "Default 20 ft. A Move Action uses this distance.",
+            "title.step":
+              "Default 10 ft. You may Step whenever you take an Action; Step is not a separate Action.",
+            "title.hotlist":
+              "10 quick-access slots. A slot can hold up to 999 of the same item by name.",
+            "title.gearSlots":
+              "Record the item currently occupying each Gear Slot. Equipped Gear may grant its listed benefits.",
+            "title.accessories":
+              "Each field represents one Accessory Gear Slot. Crawlers normally have up to 10.",
+            "title.level":
+              "Tutorial crawlers start at Level 1. Current Level limit: 250. Level gains may award Stat points; apply advancement manually.",
+            "title.floor":
+              "Tutorial crawlers start on Floor 1. Floor and Level are tracked independently.",
+            "title.statEnhanced":
+              "Current Enhanced Stat: Unenhanced plus applicable Gear, Spell, Buff, and other bonuses. Stat Mod is based on this value.",
+            "title.statUnenhanced":
+              "Base Stat layer. Level-earned Stat Points and other qualifying permanent increases affect this value.",
+            "title.extBuffs":
+              "Track your three currently active External Buffs. Choose them at the start of the crawling day. If you gain access to a new External Buff during the day, you may change the active selection during a short rest.",
+            "title.debuffs":
+              "Track active Debuffs and their remaining duration or ending condition. There is no limit; duplicate copies apply only when Stackable.",
+            "title.drBuffs":
+              "Numeric modifier from active effects that modify Damage Resistance.",
+            "title.evadeBuffs":
+              "Numeric modifier from active effects that modify Evade.",
+            "title.drTotal":
+              "DR reduces incoming damage first. Damage-type Resistance, Vulnerability, Immunity, and Armor-Piercing are resolved manually.",
+            "title.attackEffects":
+              "Record damage type and special attack properties here, such as Piercing damage or Armor-Piercing. Effects are descriptive and resolved manually.",
             "toast.saved": "saved",
             "chip.health": "Health",
             "hint.health":
-              "Tick a segment when it's lost — note the HP it covers",
+              "Mark a slot when it is lost — each slot is worth your current CON Mod",
             "chip.identity": "Identity",
             "f.name": "Name",
             "f.race": "Race",
@@ -1409,7 +1448,7 @@
             "chip.portrait": "Portrait",
             "ph.portraitBox": "portrait — click or drop an image",
             "ph.diagramBox": "diagram — click or drop an image",
-            "ph.hp": "HP",
+            "ph.hp": "HB Value",
             "ph.layoutNotes": "Layout notes",
             "alt.portrait": "Portrait",
             "alt.spaceDiagram": "Personal space diagram",
@@ -1430,10 +1469,15 @@
             "chip.attacks": "Attacks",
             "col.rank": "Rank",
             "col.stat": "Stat",
+            "col.hitStat": "Hit Stat",
             "col.toHit": "To Hit",
             "col.damage": "Damage",
+            "col.damageDice": "Damage Dice",
+            "col.damageStat": "Damage Stat",
+            "col.damageMod": "Damage Mod",
             "col.effects": "Effects",
             "chip.skills": "Skills",
+            "col.statMod": "Stat Mod",
             "col.check": "Check Type",
             "col.notesUpgrades": "Notes & Upgrades",
             "check.Unopposed": "Unopposed",
@@ -1488,6 +1532,7 @@
             "stat.CHA": "Charisma",
             "f.enhanced": "Enhanced",
             "f.unenhanced": "Unenhanced",
+            "f.mod": "Mod",
             "alert.badImage": "Couldn't read that image.",
             "alert.badImport": "This file isn't a valid sheet export.",
             "confirm.reset":
@@ -1510,10 +1555,42 @@
             "title.imgbox": "Cliquer ou déposer une image",
             "title.mirrorDR": "Identique à la résistance aux dégâts",
             "title.modFromStat": "Mod de la caractéristique choisie",
+            "title.skillAdvancement": "Marquer pour l'avancement de compétence",
+            "title.aiFavor":
+              "Dépensez 1 pour relancer un d20 (sauf un 1 naturel) ou gagner une action supplémentaire hors Attaque une fois par round.",
+            "title.move": "20 pieds par défaut. Une action de déplacement utilise cette distance.",
+            "title.step":
+              "10 pieds par défaut. Vous pouvez faire un pas avec chaque action ; le pas n'est pas une action distincte.",
+            "title.hotlist":
+              "10 emplacements d'accès rapide. Un emplacement peut contenir jusqu'à 999 objets identiques portant le même nom.",
+            "title.gearSlots":
+              "Notez l'objet qui occupe actuellement chaque emplacement d'équipement. L'équipement porté peut accorder les avantages indiqués.",
+            "title.accessories":
+              "Chaque champ représente un emplacement d'accessoire. Les Crawlers en ont normalement jusqu'à 10.",
+            "title.level":
+              "Les Crawlers du tutoriel commencent au niveau 1. Limite actuelle : 250. Les gains de niveau peuvent accorder des points de caractéristique ; appliquez l'avancement manuellement.",
+            "title.floor":
+              "Les Crawlers du tutoriel commencent à l'étage 1. L'étage et le niveau sont suivis indépendamment.",
+            "title.statEnhanced":
+              "Caractéristique améliorée actuelle : valeur non améliorée plus les bonus applicables d'équipement, de sorts, de buffs et autres. Le Mod de caractéristique est basé sur cette valeur.",
+            "title.statUnenhanced":
+              "Valeur de caractéristique de base. Les points de caractéristique gagnés par niveau et les autres augmentations permanentes admissibles affectent cette valeur.",
+            "title.extBuffs":
+              "Notez vos trois Buffs externes actuellement actifs. Choisissez-les au début de la journée d'exploration. Si vous accédez à un nouveau Buff externe pendant la journée, vous pouvez modifier la sélection active pendant un repos court.",
+            "title.debuffs":
+              "Notez les Debuffs actifs et leur durée restante ou condition de fin. Leur nombre est illimité ; les copies ne s'appliquent que si le Debuff est Stackable.",
+            "title.drBuffs":
+              "Modificateur numérique des effets actifs qui modifient la résistance aux dégâts.",
+            "title.evadeBuffs":
+              "Modificateur numérique des effets actifs qui modifient l'esquive.",
+            "title.drTotal":
+              "La RD réduit d'abord les dégâts subis. Résistance par type de dégâts, Vulnérabilité, Immunité et Perforation d'armure sont résolues manuellement.",
+            "title.attackEffects":
+              "Notez ici le type de dégâts et les propriétés spéciales de l'attaque, comme les dégâts perforants ou la Perforation d'armure. Les effets sont descriptifs et résolus manuellement.",
             "toast.saved": "enregistré",
             "chip.health": "Santé",
             "hint.health":
-              "Cochez un segment quand il est perdu — notez les PV qu'il couvre",
+              "Cochez un emplacement lorsqu'il est perdu — chacun vaut votre Mod CON actuel",
             "chip.identity": "Identité",
             "f.name": "Nom",
             "f.race": "Race",
@@ -1537,7 +1614,7 @@
             "chip.portrait": "Portrait",
             "ph.portraitBox": "portrait — cliquer ou déposer une image",
             "ph.diagramBox": "schéma — cliquer ou déposer une image",
-            "ph.hp": "PV",
+            "ph.hp": "Valeur de BV",
             "ph.layoutNotes": "Notes de disposition",
             "alt.portrait": "Portrait",
             "alt.spaceDiagram": "Schéma de l'espace personnel",
@@ -1558,10 +1635,15 @@
             "chip.attacks": "Attaques",
             "col.rank": "Rang",
             "col.stat": "Carac.",
+            "col.hitStat": "Carac. d'attaque",
             "col.toHit": "Toucher",
             "col.damage": "Dégâts",
+            "col.damageDice": "Dés de dégâts",
+            "col.damageStat": "Carac. de dégâts",
+            "col.damageMod": "Mod dégâts",
             "col.effects": "Effets",
             "chip.skills": "Compétences",
+            "col.statMod": "Mod de carac.",
             "col.check": "Type de test",
             "col.notesUpgrades": "Notes et améliorations",
             "check.Unopposed": "Non opposé",
@@ -1616,6 +1698,7 @@
             "stat.CHA": "Charisme",
             "f.enhanced": "Amélioré",
             "f.unenhanced": "Non amélioré",
+            "f.mod": "Mod",
             "alert.badImage": "Impossible de lire cette image.",
             "alert.badImport": "Ce fichier n'est pas un export de fiche valide.",
             "confirm.reset":
@@ -1638,10 +1721,42 @@
             "title.imgbox": "Haz clic o suelta una imagen",
             "title.mirrorDR": "Igual que la resistencia al daño",
             "title.modFromStat": "Mod de la característica elegida",
+            "title.skillAdvancement": "Marcar para avance de habilidad",
+            "title.aiFavor":
+              "Gasta 1 para repetir un d20 (salvo un 1 natural) u obtener una acción extra que no sea de Ataque una vez por ronda.",
+            "title.move": "20 pies por defecto. Una acción de movimiento usa esta distancia.",
+            "title.step":
+              "10 pies por defecto. Puedes dar un paso con cada acción; el paso no es una acción separada.",
+            "title.hotlist":
+              "10 espacios de acceso rápido. Un espacio puede contener hasta 999 objetos iguales con el mismo nombre.",
+            "title.gearSlots":
+              "Anota el objeto que ocupa actualmente cada ranura de equipo. El equipo equipado puede otorgar sus beneficios indicados.",
+            "title.accessories":
+              "Cada campo representa una ranura de accesorio. Los Crawlers normalmente tienen hasta 10.",
+            "title.level":
+              "Los Crawlers del tutorial comienzan en nivel 1. Límite actual: 250. Subir de nivel puede otorgar puntos de característica; aplica el avance manualmente.",
+            "title.floor":
+              "Los Crawlers del tutorial comienzan en el piso 1. El piso y el nivel se registran de forma independiente.",
+            "title.statEnhanced":
+              "Característica Mejorada actual: la No Mejorada más las bonificaciones aplicables de equipo, Conjuros, buffs y otras fuentes. El Mod de característica se basa en este valor.",
+            "title.statUnenhanced":
+              "Capa de característica base. Los puntos de característica obtenidos por nivel y otros aumentos permanentes aplicables afectan este valor.",
+            "title.extBuffs":
+              "Anota tus tres Buffs externos activos. Elígelos al inicio del día de exploración. Si obtienes acceso a un nuevo Buff externo durante el día, puedes cambiar la selección activa durante un descanso corto.",
+            "title.debuffs":
+              "Anota los Debuffs activos y su duración restante o condición de finalización. No hay límite; las copias solo se aplican si el Debuff es Stackable.",
+            "title.drBuffs":
+              "Modificador numérico de los efectos activos que modifican la resistencia al daño.",
+            "title.evadeBuffs":
+              "Modificador numérico de los efectos activos que modifican la evasión.",
+            "title.drTotal":
+              "La RD reduce primero el daño recibido. La Resistencia por tipo de daño, Vulnerabilidad, Inmunidad y Perforación de armadura se resuelven manualmente.",
+            "title.attackEffects":
+              "Anota aquí el tipo de daño y las propiedades especiales del ataque, como daño perforante o Perforación de armadura. Los efectos son descriptivos y se resuelven manualmente.",
             "toast.saved": "guardado",
             "chip.health": "Salud",
             "hint.health":
-              "Marca un segmento cuando se pierde — anota los PG que cubre",
+              "Marca una casilla cuando se pierda — cada una vale tu Mod CON actual",
             "chip.identity": "Identidad",
             "f.name": "Nombre",
             "f.race": "Raza",
@@ -1665,7 +1780,7 @@
             "chip.portrait": "Retrato",
             "ph.portraitBox": "retrato — haz clic o suelta una imagen",
             "ph.diagramBox": "diagrama — haz clic o suelta una imagen",
-            "ph.hp": "PG",
+            "ph.hp": "Valor de BS",
             "ph.layoutNotes": "Notas de distribución",
             "alt.portrait": "Retrato",
             "alt.spaceDiagram": "Diagrama del espacio personal",
@@ -1686,10 +1801,15 @@
             "chip.attacks": "Ataques",
             "col.rank": "Rango",
             "col.stat": "Car.",
+            "col.hitStat": "Car. de impacto",
             "col.toHit": "Impacto",
             "col.damage": "Daño",
+            "col.damageDice": "Dados de daño",
+            "col.damageStat": "Car. de daño",
+            "col.damageMod": "Mod de daño",
             "col.effects": "Efectos",
             "chip.skills": "Habilidades",
+            "col.statMod": "Mod de car.",
             "col.check": "Tipo de tirada",
             "col.notesUpgrades": "Notas y mejoras",
             "check.Unopposed": "Sin oposición",
@@ -1744,6 +1864,7 @@
             "stat.CHA": "Carisma",
             "f.enhanced": "Mejorado",
             "f.unenhanced": "Sin mejorar",
+            "f.mod": "Mod",
             "alert.badImage": "No se puede leer esta imagen.",
             "alert.badImport":
               "Ese archivo no es una exportación de hoja válida.",
@@ -1767,10 +1888,42 @@
             "title.imgbox": "Klicken oder Bild ablegen",
             "title.mirrorDR": "Wie Schadensresistenz",
             "title.modFromStat": "Mod des gewählten Attributs",
+            "title.skillAdvancement": "Für Fertigkeitssteigerung markieren",
+            "title.aiFavor":
+              "Gib 1 aus, um einen W20 neu zu würfeln (außer Natürliche 1) oder einmal pro Runde eine zusätzliche Nicht-Angriffsaktion zu erhalten.",
+            "title.move": "Standardmäßig 20 Fuß. Eine Bewegungsaktion nutzt diese Distanz.",
+            "title.step":
+              "Standardmäßig 10 Fuß. Bei jeder Aktion darfst du einen Schritt machen; der Schritt ist keine eigene Aktion.",
+            "title.hotlist":
+              "10 Schnellzugriffsplätze. Ein Platz kann bis zu 999 gleichnamige Gegenstände enthalten.",
+            "title.gearSlots":
+              "Trage den Gegenstand ein, der den jeweiligen Ausrüstungsplatz belegt. Angelegte Ausrüstung kann ihre aufgeführten Vorteile gewähren.",
+            "title.accessories":
+              "Jedes Feld stellt einen Accessoire-Ausrüstungsplatz dar. Crawler haben normalerweise bis zu 10.",
+            "title.level":
+              "Tutorial-Crawler beginnen auf Stufe 1. Aktuelle Stufengrenze: 250. Stufenaufstiege können Attributspunkte gewähren; wende den Aufstieg manuell an.",
+            "title.floor":
+              "Tutorial-Crawler beginnen auf Ebene 1. Ebene und Stufe werden unabhängig erfasst.",
+            "title.statEnhanced":
+              "Aktuelles verbessertes Attribut: unverbesserter Wert plus anwendbare Boni durch Ausrüstung, Zauber, Buffs und andere Quellen. Der Attributsmodifikator basiert auf diesem Wert.",
+            "title.statUnenhanced":
+              "Basisattribut. Durch Stufenaufstiege erhaltene Attributspunkte und andere anwendbare dauerhafte Erhöhungen verändern diesen Wert.",
+            "title.extBuffs":
+              "Trage deine drei derzeit aktiven externen Buffs ein. Wähle sie zu Beginn des Crawler-Tages. Erhältst du im Tagesverlauf Zugang zu einem neuen externen Buff, darfst du die aktive Auswahl während einer kurzen Rast ändern.",
+            "title.debuffs":
+              "Trage aktive Debuffs und ihre verbleibende Dauer oder Endbedingung ein. Ihre Anzahl ist unbegrenzt; Kopien gelten nur, wenn der Debuff Stackable ist.",
+            "title.drBuffs":
+              "Numerischer Modifikator aus aktiven Effekten, die die Schadensresistenz verändern.",
+            "title.evadeBuffs":
+              "Numerischer Modifikator aus aktiven Effekten, die Ausweichen verändern.",
+            "title.drTotal":
+              "SR reduziert eingehenden Schaden zuerst. Schadenstyp-Resistenz, Verwundbarkeit, Immunität und Rüstungsdurchdringung werden manuell abgehandelt.",
+            "title.attackEffects":
+              "Trage hier Schadenstyp und besondere Angriffseigenschaften ein, etwa Stichschaden oder Rüstungsdurchdringung. Effekte sind beschreibend und werden manuell abgehandelt.",
             "toast.saved": "gespeichert",
             "chip.health": "Gesundheit",
             "hint.health":
-              "Markiere ein Segment, sobald es verloren ist — notiere die abgedeckten TP",
+              "Markiere einen Slot, wenn er verloren geht — jeder ist deinen aktuellen KON-Mod wert",
             "chip.identity": "Identität",
             "f.name": "Name",
             "f.race": "Volk",
@@ -1794,7 +1947,7 @@
             "chip.portrait": "Porträt",
             "ph.portraitBox": "Porträt — klicken oder Bild ablegen",
             "ph.diagramBox": "Diagramm — klicken oder Bild ablegen",
-            "ph.hp": "TP",
+            "ph.hp": "LB-Wert",
             "ph.layoutNotes": "Layout-Notizen",
             "alt.portrait": "Porträt",
             "alt.spaceDiagram": "Diagramm des persönlichen Raums",
@@ -1815,10 +1968,15 @@
             "chip.attacks": "Angriffe",
             "col.rank": "Rang",
             "col.stat": "Attr.",
+            "col.hitStat": "Trefferattribut",
             "col.toHit": "Treffer",
             "col.damage": "Schaden",
+            "col.damageDice": "Schadenswürfel",
+            "col.damageStat": "Schadensattribut",
+            "col.damageMod": "Schadensmod.",
             "col.effects": "Effekte",
             "chip.skills": "Fertigkeiten",
+            "col.statMod": "Attributsmod.",
             "col.check": "Probenart",
             "col.notesUpgrades": "Notizen & Verbesserungen",
             "check.Unopposed": "Ohne Gegner",
@@ -1874,6 +2032,7 @@
             "stat.CHA": "Charisma",
             "f.enhanced": "Verbessert",
             "f.unenhanced": "Unverbessert",
+            "f.mod": "Mod.",
             "alert.badImage": "Dieses Bild kann nicht gelesen werden.",
             "alert.badImport": "Diese Datei ist kein gültiger Bogen-Export.",
             "confirm.reset":
@@ -1896,10 +2055,42 @@
             "title.imgbox": "Clique ou solte uma imagem",
             "title.mirrorDR": "Igual à resistência a dano",
             "title.modFromStat": "Mod do atributo escolhido",
+            "title.skillAdvancement": "Marcar para avanço da perícia",
+            "title.aiFavor":
+              "Gaste 1 para repetir um d20 (exceto 1 natural) ou ganhar uma Ação extra que não seja de Ataque uma vez por rodada.",
+            "title.move": "20 pés por padrão. Uma ação de movimento usa esta distância.",
+            "title.step":
+              "10 pés por padrão. Você pode dar um passo com cada ação; o passo não é uma ação separada.",
+            "title.hotlist":
+              "10 espaços de acesso rápido. Um espaço pode conter até 999 itens iguais com o mesmo nome.",
+            "title.gearSlots":
+              "Registre o item que ocupa atualmente cada espaço de equipamento. Equipamentos em uso podem conceder os benefícios indicados.",
+            "title.accessories":
+              "Cada campo representa um espaço de Acessório. Crawlers normalmente têm até 10.",
+            "title.level":
+              "Crawlers do tutorial começam no nível 1. Limite atual: 250. Ganhos de nível podem conceder pontos de atributo; aplique o avanço manualmente.",
+            "title.floor":
+              "Crawlers do tutorial começam no andar 1. Andar e nível são registrados de forma independente.",
+            "title.statEnhanced":
+              "Atributo Aprimorado atual: valor Sem aprimoramento mais bônus aplicáveis de Equipamentos, Magias, buffs e outras fontes. O Mod de atributo usa este valor.",
+            "title.statUnenhanced":
+              "Camada de atributo base. Pontos de atributo ganhos por nível e outros aumentos permanentes aplicáveis afetam este valor.",
+            "title.extBuffs":
+              "Registre seus três Buffs externos atualmente ativos. Escolha-os no início do dia de exploração. Se você obtiver acesso a um novo Buff externo durante o dia, poderá mudar a seleção ativa durante um descanso curto.",
+            "title.debuffs":
+              "Registre os Debuffs ativos e sua duração restante ou condição de término. Não há limite; cópias só se aplicam quando o Debuff é Stackable.",
+            "title.drBuffs":
+              "Modificador numérico de efeitos ativos que alteram a resistência a dano.",
+            "title.evadeBuffs":
+              "Modificador numérico de efeitos ativos que alteram a esquiva.",
+            "title.drTotal":
+              "A RD reduz primeiro o dano recebido. Resistência por tipo de dano, Vulnerabilidade, Imunidade e Perfuração de armadura são resolvidas manualmente.",
+            "title.attackEffects":
+              "Registre aqui o tipo de dano e propriedades especiais do ataque, como dano perfurante ou Perfuração de armadura. Os efeitos são descritivos e resolvidos manualmente.",
             "toast.saved": "salvo",
             "chip.health": "Saúde",
             "hint.health":
-              "Marque um segmento quando for perdido — anote os PV que ele cobre",
+              "Marque um espaço quando for perdido — cada um vale seu Mod CON atual",
             "chip.identity": "Identidade",
             "f.name": "Nome",
             "f.race": "Raça",
@@ -1923,7 +2114,7 @@
             "chip.portrait": "Retrato",
             "ph.portraitBox": "retrato — clique ou solte uma imagem",
             "ph.diagramBox": "diagrama — clique ou solte uma imagem",
-            "ph.hp": "PV",
+            "ph.hp": "Valor de BV",
             "ph.layoutNotes": "Notas de layout",
             "alt.portrait": "Retrato",
             "alt.spaceDiagram": "Diagrama do espaço pessoal",
@@ -1944,10 +2135,15 @@
             "chip.attacks": "Ataques",
             "col.rank": "Grau",
             "col.stat": "Atrib.",
+            "col.hitStat": "Atrib. de acerto",
             "col.toHit": "Acerto",
             "col.damage": "Dano",
+            "col.damageDice": "Dados de dano",
+            "col.damageStat": "Atrib. de dano",
+            "col.damageMod": "Mod de dano",
             "col.effects": "Efeitos",
             "chip.skills": "Perícias",
+            "col.statMod": "Mod de atrib.",
             "col.check": "Tipo de teste",
             "col.notesUpgrades": "Notas e melhorias",
             "check.Unopposed": "Sem oposição",
@@ -2002,6 +2198,7 @@
             "stat.CHA": "Carisma",
             "f.enhanced": "Aprimorado",
             "f.unenhanced": "Sem aprimoramento",
+            "f.mod": "Mod",
             "alert.badImage": "Não é possível ler esta imagem.",
             "alert.badImport":
               "Esse arquivo não é uma exportação de ficha válida.",
@@ -2209,6 +2406,12 @@
           $$("[data-i18n-title]").forEach(function (el) {
             el.setAttribute("title", t(el.getAttribute("data-i18n-title")));
           });
+          $$("[data-i18n-aria-label]").forEach(function (el) {
+            el.setAttribute(
+              "aria-label",
+              t(el.getAttribute("data-i18n-aria-label")),
+            );
+          });
           $$("[data-i18n-alt]").forEach(function (el) {
             el.setAttribute("alt", t(el.getAttribute("data-i18n-alt")));
           });
@@ -2312,22 +2515,25 @@
             'rank" class="center">' +
             '<select data-k="' +
             b +
-            'statA">' +
+            'hitStat">' +
             STAT_OPTS +
             "</select>" +
             '<input data-k="' +
             b +
             'toHit" data-c="row.toHit" class="center" readonly>' +
-            '<div class="dmg-cell">' +
             '<select data-k="' +
             b +
             'dice">' +
             DICE_OPTS +
             "</select>" +
+            '<select data-k="' +
+            b +
+            'damageStat">' +
+            STAT_OPTS +
+            "</select>" +
             '<input data-k="' +
             b +
-            'modA" data-c="row.mod" data-src="statA" readonly data-i18n-title="title.modFromStat" title="Mod from selected stat">' +
-            "</div>" +
+            'damageMod" data-c="row.mod" data-src="damageStat" class="center" readonly data-i18n-title="title.modFromStat" title="Mod from selected stat">' +
             '<input data-k="' +
             b +
             'effects">' +
@@ -2340,7 +2546,7 @@
             '<div class="row cols-skills" data-row="skills.' +
             i +
             '">' +
-            '<span style="display:flex;justify-content:center;"><input type="checkbox" data-k="' +
+            '<span style="display:flex;justify-content:center;"><input type="checkbox" data-i18n-title="title.skillAdvancement" data-i18n-aria-label="title.skillAdvancement" title="Mark for Skill Advancement" aria-label="Mark for Skill Advancement" data-k="' +
             b +
             'done"></span>' +
             '<input data-k="' +
@@ -2356,7 +2562,7 @@
             "</select>" +
             '<input data-k="' +
             b +
-            'mod" data-c="row.mod" data-src="stat" class="center" readonly>' +
+            'mod" data-c="row.skillStatMod" data-src="stat" class="center" readonly>' +
             '<select data-k="' +
             b +
             'checkType">' +
@@ -2408,6 +2614,13 @@
         function ensureInv(n) {
           while (invCount < n) addInvRow();
         }
+        function resizeInv(n) {
+          ensureInv(n);
+          while (invCount > n) {
+            $("#invRows").lastElementChild.remove();
+            invCount--;
+          }
+        }
 
         /* ---------------- build static repeating DOM ---------------- */
         function build() {
@@ -2426,7 +2639,7 @@
                 '.on"></label>' +
                 '<input data-k="hp.' +
                 pct +
-                '.hp" data-i18n-ph="ph.hp" placeholder="HP">' +
+                '.hp" data-i18n-ph="ph.hp" placeholder="HB Value" readonly>' +
                 "</div>"
               );
             })
@@ -2439,17 +2652,17 @@
               s.key +
               '">' +
               s.label +
-              '</span><span class="mini">Mod</span></div>' +
+              '</span><span class="mini" data-i18n="f.mod">Mod</span></div>' +
               '<input data-k="stats.' +
               s.key +
               '.mod" data-c="stat.mod" readonly placeholder="—">' +
               '<div class="pair">' +
               '<label class="lbl sm"><span data-i18n="f.enhanced">Enhanced</span><input data-k="stats.' +
               s.key +
-              '.enh" class="center"></label>' +
+              '.enh" class="center" data-i18n-title="title.statEnhanced" data-i18n-aria-label="title.statEnhanced" title="Current Enhanced Stat: Unenhanced plus applicable Gear, Spell, Buff, and other bonuses. Stat Mod is based on this value." aria-label="Current Enhanced Stat: Unenhanced plus applicable Gear, Spell, Buff, and other bonuses. Stat Mod is based on this value."></label>' +
               '<label class="lbl sm"><span data-i18n="f.unenhanced">Unenhanced</span><input data-k="stats.' +
               s.key +
-              '.unenh" class="center"></label>' +
+              '.unenh" class="center" data-i18n-title="title.statUnenhanced" data-i18n-aria-label="title.statUnenhanced" title="Base Stat layer. Level-earned Stat Points and other qualifying permanent increases affect this value." aria-label="Base Stat layer. Level-earned Stat Points and other qualifying permanent increases affect this value."></label>' +
               "</div></div>"
             );
           }).join("");
@@ -2601,6 +2814,14 @@
         function field(k) {
           return $('[data-k="' + k + '"]');
         }
+        function setDefaultMovement() {
+          field("def.move").value = "20";
+          field("def.step").value = "10";
+        }
+        function setDefaultLevelAndFloor() {
+          field("identity.level").value = "1";
+          field("identity.floor").value = "1";
+        }
         function val(k) {
           var el = field(k);
           if (!el) return "";
@@ -2608,6 +2829,22 @@
         }
         function num(k) {
           return parseFloat(String(val(k)).replace(/[^0-9.\-]/g, "")) || 0;
+        }
+        function defenseNum(k) {
+          var s = String(val(k)).trim();
+          if (!/^[+-]?(?:\d+(?:\.\d*)?|\.\d+)$/.test(s)) return 0;
+          var n = parseFloat(s);
+          return isFinite(n) ? n : 0;
+        }
+
+        function sanitizeAIFavor(el) {
+          if (
+            el &&
+            el.getAttribute("data-k") === "def.aiFavor" &&
+            el.value !== "" &&
+            !/^-?\d+$/.test(el.value)
+          )
+            el.value = "";
         }
 
         /* ---------------- computed fields ---------------- */
@@ -2622,29 +2859,36 @@
           el.style.opacity = out === "" ? "0.4" : "1";
         }
 
+        function renderHealth() {
+          var conMod = val("stats.CON.mod");
+          var out = conMod === "" ? "" : String(num("stats.CON.mod"));
+          $$('[data-k^="hp."][data-k$=".hp"]').forEach(function (el) {
+            if (el.value !== out) el.value = out;
+          });
+        }
+
         function recompute() {
           var mod = function (s) {
             return s && STATS.indexOf(s) >= 0 ? num("stats." + s + ".mod") : "";
           };
 
-          // stat modifiers from the score table (Enhanced, else Unenhanced)
+          // stat modifiers from the Enhanced score table
           STAT_LIST.forEach(function (s) {
             var el = field("stats." + s.key + ".mod");
             if (el)
               setC(
                 el,
-                scoreToMod(
-                  val("stats." + s.key + ".enh") ||
-                    val("stats." + s.key + ".unenh"),
-                ),
+                scoreToMod(val("stats." + s.key + ".enh")),
               );
           });
+
+          renderHealth();
 
           var dex = $('[data-c="def.dexMod"]');
           if (dex) setC(dex, num("stats.DEX.mod"));
           var dr = $('[data-c="def.drTotal"]');
           if (dr)
-            setC(dr, num("def.armor") + num("def.dexMod") + num("def.drBuffs"));
+            setC(dr, defenseNum("def.armor") + defenseNum("def.drBuffs"));
           $$("[data-mirror]").forEach(function (el) {
             var v = String(val(el.getAttribute("data-mirror")));
             if (el.value !== v) el.value = v;
@@ -2652,7 +2896,7 @@
 
           var ev = $('[data-c="def.evadeTotal"]');
           if (ev) {
-            var eb = num("def.armor") + num("def.evadeBuffs");
+            var eb = num("def.dexMod") + defenseNum("def.evadeBuffs");
             ev.value = "d20 " + (eb > 0 ? "+" + eb : String(eb));
             ev.style.opacity = "1";
           }
@@ -2670,21 +2914,32 @@
               );
               setC(el, src ? mod(src.value) : "");
             });
+            $$('[data-c="row.skillStatMod"]', row).forEach(function (el) {
+              var src = q(
+                'select[data-k$=".' + el.getAttribute("data-src") + '"]',
+              );
+              var statMod = src ? val("stats." + src.value + ".mod") : "";
+              setC(el, String(statMod).trim() === "" ? "" : mod(src.value));
+            });
             var rank = q('[data-k$=".rank"]');
-            var statA = q('select[data-k$=".statA"]');
+            var hitStat = q('select[data-k$=".hitStat"]');
             var hit = q('[data-c="row.toHit"]');
             if (hit) {
               var r = parseFloat(rank && rank.value) || 0;
-              var m = parseFloat(statA ? mod(statA.value) : "") || 0;
+              var m = parseFloat(hitStat ? mod(hitStat.value) : "") || 0;
               setC(
                 hit,
-                (rank && rank.value) || (statA && statA.value) ? r + m : "",
+                (rank && rank.value) || (hitStat && hitStat.value) ? r + m : "",
               );
             }
           });
         }
 
         function renderMana() {
+          var enhancedInt = val("stats.INT.enh");
+          var maxValue = String(enhancedInt).trim() === "" ? "" : String(enhancedInt);
+          var maxField = field("mana.max");
+          if (maxField && maxField.value !== maxValue) maxField.value = maxValue;
           var cur = num("mana.current"),
             max = num("mana.max");
           var pct = max > 0 ? Math.max(0, Math.min(100, (cur / max) * 100)) : 0;
@@ -2696,7 +2951,7 @@
               String(val("mana.current")).trim() === "" ? "0" : cur;
           var m = $('[data-mana="max"]');
           if (m)
-            m.textContent = String(val("mana.max")).trim() === "" ? "0" : max;
+            m.textContent = String(val("mana.max")).trim() === "" ? "" : max;
         }
 
         /* ---------------- image boxes (portrait, diagram) — stored as data URLs ---------------- */
@@ -2812,7 +3067,7 @@
               localStorage.setItem(
                 STORE,
                 JSON.stringify({
-                  v: 1,
+                  v: 2,
                   savedAt: new Date().toISOString(),
                   counts: {
                     attacks: attackCount,
@@ -2864,6 +3119,26 @@
           });
           return max;
         }
+
+        function migrateLegacyAttacks(flat) {
+          Object.keys(flat).forEach(function (k) {
+            var m = k.match(/^attacks\.(\d+)\.statA$/);
+            if (!m) return;
+            var base = "attacks." + m[1] + ".";
+            var hitKey = base + "hitStat";
+            var damageKey = base + "damageStat";
+            if (String(flat[k]).trim() !== "") {
+              if (flat[hitKey] == null || String(flat[hitKey]).trim() === "")
+                flat[hitKey] = flat[k];
+              if (flat[damageKey] == null || String(flat[damageKey]).trim() === "")
+                flat[damageKey] = flat[k];
+            }
+            delete flat[base + "toHit"];
+            delete flat[base + "modA"];
+          });
+          return flat;
+        }
+
         function ensureFromData(flat, counts) {
           counts = counts || {};
           ensureAttacks(
@@ -2880,7 +3155,7 @@
               maxIndex(flat, "skills.") + 1,
             ),
           );
-          ensureInv(
+          resizeInv(
             Math.max(DEFAULT_INV, counts.inv || 0, maxIndex(flat, "inv.") + 1),
           );
         }
@@ -2890,7 +3165,7 @@
             var raw = localStorage.getItem(STORE);
             if (!raw) return;
             var d = JSON.parse(raw);
-            var flat = d.fields || {};
+            var flat = migrateLegacyAttacks(d.fields || {});
             ensureFromData(flat, d.counts);
             apply(flat);
           } catch (err) {
@@ -2935,9 +3210,9 @@
           var flat = collect();
           var payload = {
             format: "dungeon-crawler-sheet",
-            version: 1,
+            version: 2,
             exportedAt: new Date().toISOString(),
-            counts: { skills: skillCount, inv: invCount },
+            counts: { attacks: attackCount, skills: skillCount, inv: invCount },
             character: nest(flat),
             fields: flat,
           };
@@ -2970,6 +3245,7 @@
               var flat = d.fields;
               if (!flat && d.character) flat = flatten(d.character);
               if (!flat) flat = d;
+              migrateLegacyAttacks(flat);
               ensureFromData(flat, d.counts);
               fields().forEach(function (el) {
                 if (el.type === "checkbox") el.checked = false;
@@ -2985,16 +3261,6 @@
           r.readAsText(file);
         }
 
-        /* Type an HP amount in any health cell -> put the same value in every cell. */
-        function syncHP(srcEl) {
-          if (!/^hp\.\d+\.hp$/.test(srcEl.getAttribute("data-k") || "")) return;
-          $$('[data-k^="hp."]').forEach(function (e) {
-            if (e === srcEl || !/\.hp$/.test(e.getAttribute("data-k"))) return;
-            if (e.value !== srcEl.value) e.value = srcEl.value;
-            e.removeAttribute("data-dirty");
-          });
-        }
-
         function resetAll() {
           if (!window.confirm(t("confirm.reset"))) return;
           fields().forEach(function (el) {
@@ -3002,6 +3268,9 @@
             else el.value = "";
             el.removeAttribute("data-dirty");
           });
+          resizeInv(DEFAULT_INV);
+          setDefaultMovement();
+          setDefaultLevelAndFloor();
           recompute();
           header();
           save();
@@ -3067,8 +3336,8 @@
             }
             var el = t.closest ? t.closest("[data-k]") : null;
             if (!el) return;
+            sanitizeAIFavor(el);
             if (e.isTrusted) el.setAttribute("data-dirty", "1");
-            if (/^hp\.\d+\.hp$/.test(el.getAttribute("data-k") || "")) syncHP(el);
             recompute();
             header();
             save();
@@ -3179,6 +3448,8 @@
 
         /* ---------------- init ---------------- */
         build();
+        setDefaultMovement();
+        setDefaultLevelAndFloor();
 
         var theme = "light";
         try {
