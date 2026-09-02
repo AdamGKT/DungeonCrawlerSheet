@@ -885,7 +885,6 @@
                   ><input
                     type="number"
                     inputmode="numeric"
-                    min="0"
                     step="1"
                     data-k="def.aiFavor"
                     data-i18n-title="title.aiFavor"
@@ -2843,7 +2842,7 @@
             el &&
             el.getAttribute("data-k") === "def.aiFavor" &&
             el.value !== "" &&
-            !/^\d+$/.test(el.value)
+            !/^-?\d+$/.test(el.value)
           )
             el.value = "";
         }
