@@ -25,6 +25,8 @@
         --panel: #ffffff;
         --panel-2: #f1efeb;
         --panel-3: #f6f5f2;
+        --paper: #ffffff;
+        --paper-2: #f1efeb;
         --header-bg: #ffffff;
         --ink: #231f20;
         --muted: #55524f;
@@ -52,6 +54,8 @@
         --panel: #191714;
         --panel-2: #14120f;
         --panel-3: #1b1815;
+        --paper: #191714;
+        --paper-2: #14120f;
         --header-bg: #14120f;
         --ink: #e8e1d5;
         --muted: #8d857a;
@@ -856,6 +860,24 @@
       .crawler-switcher {
         min-width: 170px;
         max-width: 240px;
+        font-family: var(--f-disp);
+        cursor: pointer;
+        background: transparent;
+        border: 1px solid var(--line);
+        color: var(--ink);
+        font-size: 12px;
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+        padding: 9px 13px;
+        border-radius: 3px;
+        appearance: none;
+      }
+      .crawler-switcher:hover {
+        border-color: var(--acc);
+      }
+      .crawler-switcher option {
+        background: var(--panel);
+        color: var(--ink);
       }
       .vault-dialog {
         width: min(720px, calc(100% - 24px));
@@ -913,6 +935,39 @@
         font-family: var(--f-mono);
         font-size: 10px;
         color: var(--muted);
+      }
+      .vault-create input,
+      .vault-info input,
+      .vault-filter select {
+        background: transparent;
+        border: 0;
+        border-bottom: 1px solid var(--line);
+        color: var(--ink);
+        font-family: var(--f-mono);
+        font-size: 14px;
+        width: 100%;
+        padding: 7px 6px;
+        outline: none;
+        border-radius: 0;
+        min-height: 34px;
+      }
+      .vault-filter select {
+        appearance: none;
+        cursor: pointer;
+      }
+      .vault-create input:focus,
+      .vault-info input:focus,
+      .vault-filter select:focus {
+        border-color: var(--acc);
+        background: var(--focus-bg);
+      }
+      .vault-filter select option {
+        background: var(--panel);
+        color: var(--ink);
+      }
+      .btn.danger:hover {
+        border-color: var(--hp-lost);
+        color: var(--hp-lost);
       }
       @media (max-width: 640px) {
         .crawler-switcher {
@@ -1033,8 +1088,20 @@
         </div>
         <div class="sub" data-hdr="sub"></div>
         <div class="tools">
-          <select class="crawler-switcher" id="crawlerSelect" data-i18n-title="title.crawlerSelect" title="Switch crawler"></select>
-          <button class="btn" data-act="vault" type="button" data-i18n="btn.vault">Vault</button>
+          <select
+            class="crawler-switcher"
+            id="crawlerSelect"
+            data-i18n-title="title.crawlerSelect"
+            title="Switch crawler"
+          ></select>
+          <button
+            class="btn"
+            data-act="vault"
+            type="button"
+            data-i18n="btn.vault"
+          >
+            Vault
+          </button>
           <select id="langSel" title="Language / Langue">
             <option value="en">EN</option>
             <option value="fr">FR</option>
@@ -1050,11 +1117,28 @@
           >
             Dark
           </button>
-          <button class="btn" data-act="import" type="button" data-i18n="btn.import">Import</button>
-          <button class="btn primary" data-act="export" type="button" data-i18n="btn.export">
+          <button
+            class="btn"
+            data-act="import"
+            type="button"
+            data-i18n="btn.import"
+          >
+            Import
+          </button>
+          <button
+            class="btn primary"
+            data-act="export"
+            type="button"
+            data-i18n="btn.export"
+          >
             Export JSON
           </button>
-          <button class="btn" data-act="print" type="button" data-i18n="btn.print">
+          <button
+            class="btn"
+            data-act="print"
+            type="button"
+            data-i18n="btn.print"
+          >
             Print
           </button>
           <button
@@ -1093,7 +1177,8 @@
             >
               <span class="chip" data-i18n="chip.health">Health</span>
               <span class="hint" data-i18n="hint.health"
-                >Mark a slot when it is lost — each slot is worth your current CON Mod</span
+                >Mark a slot when it is lost — each slot is worth your current
+                CON Mod</span
               >
             </div>
             <div class="hp-grid" id="hpGrid"></div>
@@ -1104,27 +1189,44 @@
               <div class="chip mb" data-i18n="chip.identity">Identity</div>
               <div class="identity-grid">
                 <label class="lbl"
-                  ><span data-i18n="f.name">Name</span><input data-k="identity.name"
+                  ><span data-i18n="f.name">Name</span
+                  ><input data-k="identity.name"
                 /></label>
                 <label class="lbl"
-                  ><span data-i18n="f.race">Race</span><input data-k="identity.race"
+                  ><span data-i18n="f.race">Race</span
+                  ><input data-k="identity.race"
                 /></label>
                 <label class="lbl"
                   ><span data-i18n="f.pronouns">Gender / Pronouns</span
                   ><input data-k="identity.pronouns"
                 /></label>
                 <label class="lbl"
-                  ><span data-i18n="f.level">Level</span><input data-k="identity.level" inputmode="numeric" data-i18n-title="title.level" data-i18n-aria-label="title.level" title="Tutorial crawlers start at Level 1. Current Level limit: 250. Level gains may award Stat points; apply advancement manually." aria-label="Tutorial crawlers start at Level 1. Current Level limit: 250. Level gains may award Stat points; apply advancement manually."
+                  ><span data-i18n="f.level">Level</span
+                  ><input
+                    data-k="identity.level"
+                    inputmode="numeric"
+                    data-i18n-title="title.level"
+                    data-i18n-aria-label="title.level"
+                    title="Tutorial crawlers start at Level 1. Current Level limit: 250. Level gains may award Stat points; apply advancement manually."
+                    aria-label="Tutorial crawlers start at Level 1. Current Level limit: 250. Level gains may award Stat points; apply advancement manually."
                 /></label>
                 <label class="lbl"
                   ><span data-i18n="f.crawlerNumber">Crawler Number</span
                   ><input data-k="identity.crawlerNumber"
                 /></label>
                 <label class="lbl"
-                  ><span data-i18n="f.class">Class</span><input data-k="identity.class"
+                  ><span data-i18n="f.class">Class</span
+                  ><input data-k="identity.class"
                 /></label>
                 <label class="lbl"
-                  ><span data-i18n="f.floor">Floor</span><input data-k="identity.floor" inputmode="numeric" data-i18n-title="title.floor" data-i18n-aria-label="title.floor" title="Tutorial crawlers start on Floor 1. Floor and Level are tracked independently." aria-label="Tutorial crawlers start on Floor 1. Floor and Level are tracked independently."
+                  ><span data-i18n="f.floor">Floor</span
+                  ><input
+                    data-k="identity.floor"
+                    inputmode="numeric"
+                    data-i18n-title="title.floor"
+                    data-i18n-aria-label="title.floor"
+                    title="Tutorial crawlers start on Floor 1. Floor and Level are tracked independently."
+                    aria-label="Tutorial crawlers start on Floor 1. Floor and Level are tracked independently."
                 /></label>
                 <label class="lbl"
                   ><span data-i18n="f.aiFavor">AI Favor</span
@@ -1145,7 +1247,9 @@
                     <option value="1" data-i18n="size.1">1 Tiny</option>
                     <option value="2" data-i18n="size.2">2 Small</option>
                     <option value="3" data-i18n="size.3">3 Petite</option>
-                    <option value="4" data-i18n="size.4">4 Medium (Human)</option>
+                    <option value="4" data-i18n="size.4">
+                      4 Medium (Human)
+                    </option>
                     <option value="5" data-i18n="size.5">5 Large</option>
                     <option value="6" data-i18n="size.6">6 Huge</option>
                     <option value="7" data-i18n="size.7">7 Colossal</option>
@@ -1192,8 +1296,15 @@
                 tabindex="0"
                 data-i18n-title="title.imgbox"
               >
-                <img data-imgbox-img data-i18n-alt="alt.portrait" alt="Portrait" hidden />
-                <span data-imgbox-ph data-i18n="ph.portraitBox">portrait — cliquer ou déposer une image</span>
+                <img
+                  data-imgbox-img
+                  data-i18n-alt="alt.portrait"
+                  alt="Portrait"
+                  hidden
+                />
+                <span data-imgbox-ph data-i18n="ph.portraitBox"
+                  >portrait — cliquer ou déposer une image</span
+                >
               </div>
               <input type="hidden" data-k="identity.portrait" />
               <button
@@ -1216,7 +1327,9 @@
               <div class="chip mb" data-i18n="chip.defense">Defense</div>
               <div class="grid" style="gap: 12px">
                 <div class="inset">
-                  <div class="sub-rule" data-i18n="rule.dr">Damage Resistance</div>
+                  <div class="sub-rule" data-i18n="rule.dr">
+                    Damage Resistance
+                  </div>
                   <div class="def-cols">
                     <label class="lbl def"
                       ><span data-i18n="f.armor">Armor</span
@@ -1224,7 +1337,13 @@
                     /></label>
                     <label class="lbl def"
                       ><span data-i18n="f.buffs">Buffs</span
-                      ><input data-k="def.drBuffs" class="center" data-i18n-title="title.drBuffs" data-i18n-aria-label="title.drBuffs" title="Numeric modifier from active effects that modify Damage Resistance." aria-label="Numeric modifier from active effects that modify Damage Resistance."
+                      ><input
+                        data-k="def.drBuffs"
+                        class="center"
+                        data-i18n-title="title.drBuffs"
+                        data-i18n-aria-label="title.drBuffs"
+                        title="Numeric modifier from active effects that modify Damage Resistance."
+                        aria-label="Numeric modifier from active effects that modify Damage Resistance."
                     /></label>
                     <label class="lbl def acc"
                       ><span data-i18n="f.drTotal">DR Total</span
@@ -1253,7 +1372,13 @@
                     /></label>
                     <label class="lbl def"
                       ><span data-i18n="f.buffs">Buffs</span
-                      ><input data-k="def.evadeBuffs" class="center" data-i18n-title="title.evadeBuffs" data-i18n-aria-label="title.evadeBuffs" title="Numeric modifier from active effects that modify Evade." aria-label="Numeric modifier from active effects that modify Evade."
+                      ><input
+                        data-k="def.evadeBuffs"
+                        class="center"
+                        data-i18n-title="title.evadeBuffs"
+                        data-i18n-aria-label="title.evadeBuffs"
+                        title="Numeric modifier from active effects that modify Evade."
+                        aria-label="Numeric modifier from active effects that modify Evade."
                     /></label>
                     <label class="lbl def acc"
                       ><span data-i18n="f.evadeTotal">Evade Total</span
@@ -1269,10 +1394,24 @@
                   <div class="sub-rule" data-i18n="rule.movement">Movement</div>
                   <div class="def-cols">
                     <label class="lbl def"
-                      ><span data-i18n="f.move">Move</span><input data-k="def.move" class="center" data-i18n-title="title.move" data-i18n-aria-label="title.move" title="Default 20 ft. A Move Action uses this distance." aria-label="Default 20 ft. A Move Action uses this distance."
+                      ><span data-i18n="f.move">Move</span
+                      ><input
+                        data-k="def.move"
+                        class="center"
+                        data-i18n-title="title.move"
+                        data-i18n-aria-label="title.move"
+                        title="Default 20 ft. A Move Action uses this distance."
+                        aria-label="Default 20 ft. A Move Action uses this distance."
                     /></label>
                     <label class="lbl def"
-                      ><span data-i18n="f.step">Step</span><input data-k="def.step" class="center" data-i18n-title="title.step" data-i18n-aria-label="title.step" title="Default 10 ft. You may Step whenever you take an Action; Step is not a separate Action." aria-label="Default 10 ft. You may Step whenever you take an Action; Step is not a separate Action."
+                      ><span data-i18n="f.step">Step</span
+                      ><input
+                        data-k="def.step"
+                        class="center"
+                        data-i18n-title="title.step"
+                        data-i18n-aria-label="title.step"
+                        title="Default 10 ft. You may Step whenever you take an Action; Step is not a separate Action."
+                        aria-label="Default 10 ft. You may Step whenever you take an Action; Step is not a separate Action."
                     /></label>
                   </div>
                 </div>
@@ -1281,7 +1420,16 @@
 
             <div class="stack">
               <div class="card">
-                <div class="chip mb" data-i18n="chip.extBuffs" data-i18n-title="title.extBuffs" data-i18n-aria-label="title.extBuffs" title="Track your three currently active External Buffs. Choose them at the start of the crawling day. If you gain access to a new External Buff during the day, you may change the active selection during a short rest." aria-label="Track your three currently active External Buffs. Choose them at the start of the crawling day. If you gain access to a new External Buff during the day, you may change the active selection during a short rest.">External Buffs (Max 3)</div>
+                <div
+                  class="chip mb"
+                  data-i18n="chip.extBuffs"
+                  data-i18n-title="title.extBuffs"
+                  data-i18n-aria-label="title.extBuffs"
+                  title="Track your three currently active External Buffs. Choose them at the start of the crawling day. If you gain access to a new External Buff during the day, you may change the active selection during a short rest."
+                  aria-label="Track your three currently active External Buffs. Choose them at the start of the crawling day. If you gain access to a new External Buff during the day, you may change the active selection during a short rest."
+                >
+                  External Buffs (Max 3)
+                </div>
                 <div class="grid" style="gap: 8px">
                   <input data-k="buffs.ext.0" placeholder="1." />
                   <input data-k="buffs.ext.1" placeholder="2." />
@@ -1289,14 +1437,39 @@
                 </div>
               </div>
               <div class="card">
-                <div class="chip mb" data-i18n="chip.debuffs" data-i18n-title="title.debuffs" data-i18n-aria-label="title.debuffs" title="Track active Debuffs and their remaining duration or ending condition. There is no limit; duplicate copies apply only when Stackable." aria-label="Track active Debuffs and their remaining duration or ending condition. There is no limit; duplicate copies apply only when Stackable.">Debuffs</div>
-                <textarea data-k="buffs.debuffs" rows="4" data-i18n-title="title.debuffs" data-i18n-aria-label="title.debuffs" title="Track active Debuffs and their remaining duration or ending condition. There is no limit; duplicate copies apply only when Stackable." aria-label="Track active Debuffs and their remaining duration or ending condition. There is no limit; duplicate copies apply only when Stackable."></textarea>
+                <div
+                  class="chip mb"
+                  data-i18n="chip.debuffs"
+                  data-i18n-title="title.debuffs"
+                  data-i18n-aria-label="title.debuffs"
+                  title="Track active Debuffs and their remaining duration or ending condition. There is no limit; duplicate copies apply only when Stackable."
+                  aria-label="Track active Debuffs and their remaining duration or ending condition. There is no limit; duplicate copies apply only when Stackable."
+                >
+                  Debuffs
+                </div>
+                <textarea
+                  data-k="buffs.debuffs"
+                  rows="4"
+                  data-i18n-title="title.debuffs"
+                  data-i18n-aria-label="title.debuffs"
+                  title="Track active Debuffs and their remaining duration or ending condition. There is no limit; duplicate copies apply only when Stackable."
+                  aria-label="Track active Debuffs and their remaining duration or ending condition. There is no limit; duplicate copies apply only when Stackable."
+                ></textarea>
               </div>
             </div>
           </div>
 
           <div class="card mt">
-            <div class="chip mb" data-i18n="chip.hotlist" data-i18n-title="title.hotlist" data-i18n-aria-label="title.hotlist" title="10 quick-access slots. A slot can hold up to 999 of the same item by name." aria-label="10 quick-access slots. A slot can hold up to 999 of the same item by name.">Hotlist</div>
+            <div
+              class="chip mb"
+              data-i18n="chip.hotlist"
+              data-i18n-title="title.hotlist"
+              data-i18n-aria-label="title.hotlist"
+              title="10 quick-access slots. A slot can hold up to 999 of the same item by name."
+              aria-label="10 quick-access slots. A slot can hold up to 999 of the same item by name."
+            >
+              Hotlist
+            </div>
             <div class="hotlist" id="hotlist"></div>
           </div>
         </section>
@@ -1304,17 +1477,39 @@
         <!-- ============ ATTACKS ============ -->
         <section data-pane="combat" hidden>
           <div class="card scrollx">
-            <div class="chip" style="margin-bottom: 6px" data-i18n="chip.attacks">Attacks</div>
+            <div
+              class="chip"
+              style="margin-bottom: 6px"
+              data-i18n="chip.attacks"
+            >
+              Attacks
+            </div>
             <div class="tbl" style="min-width: 960px">
               <div class="head cols-attacks">
-                <span data-i18n="f.name">Name</span><span data-i18n="col.rank">Rank</span><span data-i18n="col.hitStat">Hit Stat</span
-                ><span class="acc" data-i18n="col.toHit">To Hit</span><span data-i18n="col.damageDice">Damage Dice</span
-                ><span data-i18n="col.damageStat">Damage Stat</span><span data-i18n="col.damageMod">Damage Mod</span
-                ><span data-i18n="col.effects" data-i18n-title="title.attackEffects" data-i18n-aria-label="title.attackEffects" title="Record damage type and special attack properties here, such as Piercing damage or Armor-Piercing. Effects are descriptive and resolved manually." aria-label="Record damage type and special attack properties here, such as Piercing damage or Armor-Piercing. Effects are descriptive and resolved manually.">Effects</span>
+                <span data-i18n="f.name">Name</span
+                ><span data-i18n="col.rank">Rank</span
+                ><span data-i18n="col.hitStat">Hit Stat</span
+                ><span class="acc" data-i18n="col.toHit">To Hit</span
+                ><span data-i18n="col.damageDice">Damage Dice</span
+                ><span data-i18n="col.damageStat">Damage Stat</span
+                ><span data-i18n="col.damageMod">Damage Mod</span
+                ><span
+                  data-i18n="col.effects"
+                  data-i18n-title="title.attackEffects"
+                  data-i18n-aria-label="title.attackEffects"
+                  title="Record damage type and special attack properties here, such as Piercing damage or Armor-Piercing. Effects are descriptive and resolved manually."
+                  aria-label="Record damage type and special attack properties here, such as Piercing damage or Armor-Piercing. Effects are descriptive and resolved manually."
+                  >Effects</span
+                >
               </div>
               <div id="attackRows"></div>
             </div>
-            <button class="btn addrow" data-add="attacks" type="button" data-i18n="btn.addRow">
+            <button
+              class="btn addrow"
+              data-add="attacks"
+              type="button"
+              data-i18n="btn.addRow"
+            >
               + Add row
             </button>
           </div>
@@ -1323,16 +1518,36 @@
         <!-- ============ SKILLS ============ -->
         <section data-pane="skills" hidden>
           <div class="card scrollx">
-            <div class="chip" style="margin-bottom: 6px" data-i18n="chip.skills">Skills</div>
+            <div
+              class="chip"
+              style="margin-bottom: 6px"
+              data-i18n="chip.skills"
+            >
+              Skills
+            </div>
             <div class="tbl" style="min-width: 860px">
               <div class="head cols-skills">
-                <span data-i18n-title="title.skillAdvancement" data-i18n-aria-label="title.skillAdvancement" title="Mark for Skill Advancement" aria-label="Mark for Skill Advancement">✔</span><span data-i18n="f.name">Name</span><span data-i18n="col.rank">Rank</span><span data-i18n="col.stat">Stat</span
-                ><span data-i18n="col.statMod">Stat Mod</span><span data-i18n="col.check">Check Type</span
+                <span
+                  data-i18n-title="title.skillAdvancement"
+                  data-i18n-aria-label="title.skillAdvancement"
+                  title="Mark for Skill Advancement"
+                  aria-label="Mark for Skill Advancement"
+                  >✔</span
+                ><span data-i18n="f.name">Name</span
+                ><span data-i18n="col.rank">Rank</span
+                ><span data-i18n="col.stat">Stat</span
+                ><span data-i18n="col.statMod">Stat Mod</span
+                ><span data-i18n="col.check">Check Type</span
                 ><span data-i18n="col.notesUpgrades">Notes &amp; Upgrades</span>
               </div>
               <div id="skillRows"></div>
             </div>
-            <button class="btn addrow" data-add="skills" type="button" data-i18n="btn.addRow">
+            <button
+              class="btn addrow"
+              data-add="skills"
+              type="button"
+              data-i18n="btn.addRow"
+            >
               + Add row
             </button>
           </div>
@@ -1341,14 +1556,27 @@
         <!-- ============ INVENTORY ============ -->
         <section data-pane="inventory" hidden>
           <div class="card">
-            <div class="chip" style="margin-bottom: 6px" data-i18n="chip.inventory">Inventory</div>
+            <div
+              class="chip"
+              style="margin-bottom: 6px"
+              data-i18n="chip.inventory"
+            >
+              Inventory
+            </div>
             <div class="tbl">
               <div class="head cols-inv">
-                <span data-i18n="col.item">Item</span><span data-i18n="col.qty">Qty</span><span data-i18n="col.notes">Notes</span>
+                <span data-i18n="col.item">Item</span
+                ><span data-i18n="col.qty">Qty</span
+                ><span data-i18n="col.notes">Notes</span>
               </div>
               <div id="invRows"></div>
             </div>
-            <button class="btn addrow" data-add="inv" type="button" data-i18n="btn.addRow">
+            <button
+              class="btn addrow"
+              data-add="inv"
+              type="button"
+              data-i18n="btn.addRow"
+            >
               + Add row
             </button>
           </div>
@@ -1358,11 +1586,29 @@
         <section data-pane="gear" hidden>
           <div class="cards-320">
             <div class="card">
-              <div class="chip mb" data-i18n="chip.gearSlots" data-i18n-title="title.gearSlots" data-i18n-aria-label="title.gearSlots" title="Record the item currently occupying each Gear Slot. Equipped Gear may grant its listed benefits." aria-label="Record the item currently occupying each Gear Slot. Equipped Gear may grant its listed benefits.">Gear Slots / Tattoos / Patches</div>
+              <div
+                class="chip mb"
+                data-i18n="chip.gearSlots"
+                data-i18n-title="title.gearSlots"
+                data-i18n-aria-label="title.gearSlots"
+                title="Record the item currently occupying each Gear Slot. Equipped Gear may grant its listed benefits."
+                aria-label="Record the item currently occupying each Gear Slot. Equipped Gear may grant its listed benefits."
+              >
+                Gear Slots / Tattoos / Patches
+              </div>
               <div class="grid" style="gap: 12px" id="gearSlots"></div>
             </div>
             <div class="card">
-              <div class="chip mb" data-i18n="chip.accessories" data-i18n-title="title.accessories" data-i18n-aria-label="title.accessories" title="Each field represents one Accessory Gear Slot. Crawlers normally have up to 10." aria-label="Each field represents one Accessory Gear Slot. Crawlers normally have up to 10.">Accessories (Max 10)</div>
+              <div
+                class="chip mb"
+                data-i18n="chip.accessories"
+                data-i18n-title="title.accessories"
+                data-i18n-aria-label="title.accessories"
+                title="Each field represents one Accessory Gear Slot. Crawlers normally have up to 10."
+                aria-label="Each field represents one Accessory Gear Slot. Crawlers normally have up to 10."
+              >
+                Accessories (Max 10)
+              </div>
               <div class="grid" style="gap: 8px" id="accRows"></div>
             </div>
           </div>
@@ -1381,7 +1627,8 @@
               <div class="card grid" style="gap: 12px">
                 <div class="jsection-lbl" data-i18n="f.race">Race</div>
                 <label class="lbl"
-                  ><span data-i18n="f.raceName">Name of Race</span><input data-k="race.name" data-mirror="identity.race"
+                  ><span data-i18n="f.raceName">Name of Race</span
+                  ><input data-k="race.name" data-mirror="identity.race"
                 /></label>
                 <label class="lbl"
                   ><span data-i18n="f.racialBenefits">Racial Benefits</span
@@ -1391,7 +1638,8 @@
               <div class="card grid" style="gap: 12px">
                 <div class="jsection-lbl" data-i18n="f.class">Class</div>
                 <label class="lbl"
-                  ><span data-i18n="f.className">Name of Class</span><input data-k="class.name" data-mirror="identity.class"
+                  ><span data-i18n="f.className">Name of Class</span
+                  ><input data-k="class.name" data-mirror="identity.class"
                 /></label>
                 <label class="lbl"
                   ><span data-i18n="f.classBenefits">Class Benefits</span
@@ -1404,11 +1652,13 @@
           <div data-jpane="affiliations" hidden>
             <div class="card grid">
               <label class="lbl"
-                ><span class="jsection-lbl" data-i18n="f.clubs">Clubs, Societies, Guilds, Gods</span
+                ><span class="jsection-lbl" data-i18n="f.clubs"
+                  >Clubs, Societies, Guilds, Gods</span
                 ><textarea data-k="journal.clubs" rows="8"></textarea>
               </label>
               <label class="lbl"
-                ><span class="jsection-lbl" data-i18n="f.kills">Important Things I've Killed</span
+                ><span class="jsection-lbl" data-i18n="f.kills"
+                  >Important Things I've Killed</span
                 ><textarea data-k="journal.kills" rows="8"></textarea>
               </label>
             </div>
@@ -1425,7 +1675,9 @@
           <div data-jpane="space" hidden>
             <div class="cards-320">
               <div class="card grid" style="gap: 12px">
-                <div class="jsection-lbl" data-i18n="jnav.space">Personal Space</div>
+                <div class="jsection-lbl" data-i18n="jnav.space">
+                  Personal Space
+                </div>
                 <div
                   style="
                     display: grid;
@@ -1434,10 +1686,12 @@
                   "
                 >
                   <label class="lbl"
-                    ><span data-i18n="f.tier">Tier</span><input data-k="space.tier"
+                    ><span data-i18n="f.tier">Tier</span
+                    ><input data-k="space.tier"
                   /></label>
                   <label class="lbl"
-                    ><span data-i18n="f.size">Size</span><input data-k="space.size"
+                    ><span data-i18n="f.size">Size</span
+                    ><input data-k="space.size"
                   /></label>
                 </div>
                 <label class="lbl"
@@ -1446,7 +1700,9 @@
                 </label>
               </div>
               <div class="card grid" style="gap: 10px">
-                <div class="jsection-lbl" data-i18n="sec.spaceDiagram">Personal Space Diagram</div>
+                <div class="jsection-lbl" data-i18n="sec.spaceDiagram">
+                  Personal Space Diagram
+                </div>
                 <div
                   class="portrait wide"
                   data-imgbox="space.diagramImg"
@@ -1454,7 +1710,12 @@
                   tabindex="0"
                   data-i18n-title="title.imgbox"
                 >
-                  <img data-imgbox-img data-i18n-alt="alt.spaceDiagram" alt="Personal space diagram" hidden />
+                  <img
+                    data-imgbox-img
+                    data-i18n-alt="alt.spaceDiagram"
+                    alt="Personal space diagram"
+                    hidden
+                  />
                   <span data-imgbox-ph data-i18n="ph.diagramBox"
                     >diagram — cliquer ou déposer une image</span
                   >
@@ -1495,13 +1756,28 @@
           Choose the current section or the complete crawler dossier.
         </div>
         <div class="print-dialog-actions">
-          <button class="btn primary" type="button" data-print-mode="current" data-i18n="print.current">
+          <button
+            class="btn primary"
+            type="button"
+            data-print-mode="current"
+            data-i18n="print.current"
+          >
             Current section
           </button>
-          <button class="btn primary" type="button" data-print-mode="all" data-i18n="print.all">
+          <button
+            class="btn primary"
+            type="button"
+            data-print-mode="all"
+            data-i18n="print.all"
+          >
             Complete crawler
           </button>
-          <button class="btn cancel" type="button" data-print-cancel data-i18n="print.cancel">
+          <button
+            class="btn cancel"
+            type="button"
+            data-print-cancel
+            data-i18n="print.cancel"
+          >
             Cancel
           </button>
         </div>
@@ -1512,19 +1788,42 @@
       <div class="vault-body">
         <div class="chip" data-i18n="vault.title">Crawler Vault</div>
         <div class="hint" data-i18n="vault.help">
-          Switch between crawlers stored in this browser. Export JSON backups before clearing browser data.
+          Switch between crawlers stored in this browser. Export JSON backups
+          before clearing browser data.
         </div>
         <div class="vault-create">
-          <input id="newCrawlerName" data-i18n-ph="vault.newName" placeholder="New crawler name" />
-          <input id="newCrawlerFolder" data-i18n-ph="vault.newFolder" placeholder="Campaign / folder" />
-          <button class="btn primary" type="button" data-vault-create data-i18n="vault.create">Create crawler</button>
+          <input
+            id="newCrawlerName"
+            data-i18n-ph="vault.newName"
+            placeholder="New crawler name"
+          />
+          <input
+            id="newCrawlerFolder"
+            data-i18n-ph="vault.newFolder"
+            placeholder="Campaign / folder"
+          />
+          <button
+            class="btn primary"
+            type="button"
+            data-vault-create
+            data-i18n="vault.create"
+          >
+            Create crawler
+          </button>
         </div>
         <label class="vault-filter">
           <span class="jsection-lbl" data-i18n="vault.filter">Folder</span>
           <select id="vaultFolderFilter"></select>
         </label>
         <div class="vault-list" id="vaultList"></div>
-        <button class="btn" type="button" data-vault-close data-i18n="vault.close">Close</button>
+        <button
+          class="btn"
+          type="button"
+          data-vault-close
+          data-i18n="vault.close"
+        >
+          Close
+        </button>
       </div>
     </dialog>
 
@@ -1670,7 +1969,8 @@
             "btn.vault": "Vault",
             "title.crawlerSelect": "Switch crawler",
             "vault.title": "Crawler Vault",
-            "vault.help": "Switch between crawlers stored in this browser. Export JSON backups before clearing browser data.",
+            "vault.help":
+              "Switch between crawlers stored in this browser. Export JSON backups before clearing browser data.",
             "vault.newName": "New crawler name",
             "vault.newFolder": "Campaign / folder",
             "vault.filter": "Folder",
@@ -1684,9 +1984,11 @@
             "vault.close": "Close",
             "vault.unnamed": "Unnamed Crawler",
             "vault.copySuffix": "copy",
-            "confirm.deleteCrawler": "Delete this crawler? This cannot be undone.",
+            "confirm.deleteCrawler":
+              "Delete this crawler? This cannot be undone.",
             "print.title": "Print crawler",
-            "print.help": "Choose the current section or the complete crawler dossier.",
+            "print.help":
+              "Choose the current section or the complete crawler dossier.",
             "print.current": "Current section",
             "print.all": "Complete crawler",
             "print.cancel": "Cancel",
@@ -1827,7 +2129,8 @@
             "f.clubs": "Clubs, Societies, Guilds, Gods",
             "f.kills": "Important Things I've Killed",
             "crawler.title": "Other Crawler {n}",
-            "crawler.relationship": "What is your relationship with this Crawler?",
+            "crawler.relationship":
+              "What is your relationship with this Crawler?",
             "f.tier": "Tier",
             "f.amenities": "Amenities",
             "sec.spaceDiagram": "Personal Space Diagram",
@@ -1851,8 +2154,7 @@
             "f.skillExtendedNotes": "Extended notes",
             "alert.badImage": "Couldn't read that image.",
             "alert.badImport": "This file isn't a valid sheet export.",
-            "confirm.reset":
-              "Reset the entire sheet? This cannot be undone.",
+            "confirm.reset": "Reset the entire sheet? This cannot be undone.",
           },
           fr: {
             "hdr.kicker": "Dossier Crawler",
@@ -1865,7 +2167,8 @@
             "btn.vault": "Coffre",
             "title.crawlerSelect": "Changer de Crawler",
             "vault.title": "Coffre des Crawlers",
-            "vault.help": "Passez d'un Crawler à l'autre dans ce navigateur. Exportez des sauvegardes JSON avant d'effacer les données du navigateur.",
+            "vault.help":
+              "Passez d'un Crawler à l'autre dans ce navigateur. Exportez des sauvegardes JSON avant d'effacer les données du navigateur.",
             "vault.newName": "Nom du nouveau Crawler",
             "vault.newFolder": "Campagne / dossier",
             "vault.filter": "Dossier",
@@ -1879,9 +2182,11 @@
             "vault.close": "Fermer",
             "vault.unnamed": "Crawler sans nom",
             "vault.copySuffix": "copie",
-            "confirm.deleteCrawler": "Supprimer ce Crawler ? Cette action est irréversible.",
+            "confirm.deleteCrawler":
+              "Supprimer ce Crawler ? Cette action est irréversible.",
             "print.title": "Imprimer le Crawler",
-            "print.help": "Choisissez la section actuelle ou le dossier complet du Crawler.",
+            "print.help":
+              "Choisissez la section actuelle ou le dossier complet du Crawler.",
             "print.current": "Section actuelle",
             "print.all": "Crawler complet",
             "print.cancel": "Annuler",
@@ -1900,7 +2205,8 @@
             "title.skillAdvancement": "Marquer pour l'avancement de compétence",
             "title.aiFavor":
               "Dépensez 1 pour relancer un d20 (sauf un 1 naturel) ou gagner une action supplémentaire hors Attaque une fois par round.",
-            "title.move": "20 pieds par défaut. Une action de déplacement utilise cette distance.",
+            "title.move":
+              "20 pieds par défaut. Une action de déplacement utilise cette distance.",
             "title.step":
               "10 pieds par défaut. Vous pouvez faire un pas avec chaque action ; le pas n'est pas une action distincte.",
             "title.hotlist":
@@ -2045,7 +2351,8 @@
             "f.skillUpgrades": "Améliorations de rang",
             "f.skillExtendedNotes": "Notes détaillées",
             "alert.badImage": "Impossible de lire cette image.",
-            "alert.badImport": "Ce fichier n'est pas un export de fiche valide.",
+            "alert.badImport":
+              "Ce fichier n'est pas un export de fiche valide.",
             "confirm.reset":
               "Remettre toute la fiche à zéro ? Cette action est irréversible.",
           },
@@ -2060,7 +2367,8 @@
             "btn.vault": "Bóveda",
             "title.crawlerSelect": "Cambiar de Crawler",
             "vault.title": "Bóveda de Crawlers",
-            "vault.help": "Cambia entre los Crawlers guardados en este navegador. Exporta copias JSON antes de borrar los datos del navegador.",
+            "vault.help":
+              "Cambia entre los Crawlers guardados en este navegador. Exporta copias JSON antes de borrar los datos del navegador.",
             "vault.newName": "Nombre del nuevo Crawler",
             "vault.newFolder": "Campaña / carpeta",
             "vault.filter": "Carpeta",
@@ -2074,9 +2382,11 @@
             "vault.close": "Cerrar",
             "vault.unnamed": "Crawler sin nombre",
             "vault.copySuffix": "copia",
-            "confirm.deleteCrawler": "¿Eliminar este Crawler? Esta acción no se puede deshacer.",
+            "confirm.deleteCrawler":
+              "¿Eliminar este Crawler? Esta acción no se puede deshacer.",
             "print.title": "Imprimir Crawler",
-            "print.help": "Elige la sección actual o el expediente completo del Crawler.",
+            "print.help":
+              "Elige la sección actual o el expediente completo del Crawler.",
             "print.current": "Sección actual",
             "print.all": "Crawler completo",
             "print.cancel": "Cancelar",
@@ -2095,7 +2405,8 @@
             "title.skillAdvancement": "Marcar para avance de habilidad",
             "title.aiFavor":
               "Gasta 1 para repetir un d20 (salvo un 1 natural) u obtener una acción extra que no sea de Ataque una vez por ronda.",
-            "title.move": "20 pies por defecto. Una acción de movimiento usa esta distancia.",
+            "title.move":
+              "20 pies por defecto. Una acción de movimiento usa esta distancia.",
             "title.step":
               "10 pies por defecto. Puedes dar un paso con cada acción; el paso no es una acción separada.",
             "title.hotlist":
@@ -2256,7 +2567,8 @@
             "btn.vault": "Ablage",
             "title.crawlerSelect": "Crawler wechseln",
             "vault.title": "Crawler-Ablage",
-            "vault.help": "Wechsle zwischen Crawlers, die in diesem Browser gespeichert sind. Exportiere JSON-Sicherungen, bevor Browserdaten gelöscht werden.",
+            "vault.help":
+              "Wechsle zwischen Crawlers, die in diesem Browser gespeichert sind. Exportiere JSON-Sicherungen, bevor Browserdaten gelöscht werden.",
             "vault.newName": "Name des neuen Crawlers",
             "vault.newFolder": "Kampagne / Ordner",
             "vault.filter": "Ordner",
@@ -2270,9 +2582,11 @@
             "vault.close": "Schließen",
             "vault.unnamed": "Unbenannter Crawler",
             "vault.copySuffix": "Kopie",
-            "confirm.deleteCrawler": "Diesen Crawler löschen? Dies kann nicht rückgängig gemacht werden.",
+            "confirm.deleteCrawler":
+              "Diesen Crawler löschen? Dies kann nicht rückgängig gemacht werden.",
             "print.title": "Crawler drucken",
-            "print.help": "Wähle den aktuellen Bereich oder das vollständige Crawler-Dossier.",
+            "print.help":
+              "Wähle den aktuellen Bereich oder das vollständige Crawler-Dossier.",
             "print.current": "Aktueller Bereich",
             "print.all": "Vollständiger Crawler",
             "print.cancel": "Abbrechen",
@@ -2291,7 +2605,8 @@
             "title.skillAdvancement": "Für Fertigkeitssteigerung markieren",
             "title.aiFavor":
               "Gib 1 aus, um einen W20 neu zu würfeln (außer Natürliche 1) oder einmal pro Runde eine zusätzliche Nicht-Angriffsaktion zu erhalten.",
-            "title.move": "Standardmäßig 20 Fuß. Eine Bewegungsaktion nutzt diese Distanz.",
+            "title.move":
+              "Standardmäßig 20 Fuß. Eine Bewegungsaktion nutzt diese Distanz.",
             "title.step":
               "Standardmäßig 10 Fuß. Bei jeder Aktion darfst du einen Schritt machen; der Schritt ist keine eigene Aktion.",
             "title.hotlist":
@@ -2452,7 +2767,8 @@
             "btn.vault": "Cofre",
             "title.crawlerSelect": "Trocar de Crawler",
             "vault.title": "Cofre de Crawlers",
-            "vault.help": "Alterne entre Crawlers armazenados neste navegador. Exporte cópias JSON antes de limpar os dados do navegador.",
+            "vault.help":
+              "Alterne entre Crawlers armazenados neste navegador. Exporte cópias JSON antes de limpar os dados do navegador.",
             "vault.newName": "Nome do novo Crawler",
             "vault.newFolder": "Campanha / pasta",
             "vault.filter": "Pasta",
@@ -2466,9 +2782,11 @@
             "vault.close": "Fechar",
             "vault.unnamed": "Crawler sem nome",
             "vault.copySuffix": "cópia",
-            "confirm.deleteCrawler": "Excluir este Crawler? Isso não pode ser desfeito.",
+            "confirm.deleteCrawler":
+              "Excluir este Crawler? Isso não pode ser desfeito.",
             "print.title": "Imprimir Crawler",
-            "print.help": "Escolha a seção atual ou o dossiê completo do Crawler.",
+            "print.help":
+              "Escolha a seção atual ou o dossiê completo do Crawler.",
             "print.current": "Seção atual",
             "print.all": "Crawler completo",
             "print.cancel": "Cancelar",
@@ -2487,7 +2805,8 @@
             "title.skillAdvancement": "Marcar para avanço da perícia",
             "title.aiFavor":
               "Gaste 1 para repetir um d20 (exceto 1 natural) ou ganhar uma Ação extra que não seja de Ataque uma vez por rodada.",
-            "title.move": "20 pés por padrão. Uma ação de movimento usa esta distância.",
+            "title.move":
+              "20 pés por padrão. Uma ação de movimento usa esta distância.",
             "title.step":
               "10 pés por padrão. Você pode dar um passo com cada ação; o passo não é uma ação separada.",
             "title.hotlist":
@@ -3352,11 +3671,7 @@
           // stat modifiers from the Enhanced score table
           STAT_LIST.forEach(function (s) {
             var el = field("stats." + s.key + ".mod");
-            if (el)
-              setC(
-                el,
-                scoreToMod(val("stats." + s.key + ".enh")),
-              );
+            if (el) setC(el, scoreToMod(val("stats." + s.key + ".enh")));
           });
 
           renderHealth();
@@ -3364,8 +3679,7 @@
           var dex = $('[data-c="def.dexMod"]');
           if (dex) setC(dex, num("stats.DEX.mod"));
           var dr = $('[data-c="def.drTotal"]');
-          if (dr)
-            setC(dr, defenseNum("def.armor") + defenseNum("def.drBuffs"));
+          if (dr) setC(dr, defenseNum("def.armor") + defenseNum("def.drBuffs"));
           $$("[data-mirror]").forEach(function (el) {
             var v = String(val(el.getAttribute("data-mirror")));
             if (el.value !== v) el.value = v;
@@ -3414,9 +3728,11 @@
 
         function renderMana() {
           var enhancedInt = val("stats.INT.enh");
-          var maxValue = String(enhancedInt).trim() === "" ? "" : String(enhancedInt);
+          var maxValue =
+            String(enhancedInt).trim() === "" ? "" : String(enhancedInt);
           var maxField = field("mana.max");
-          if (maxField && maxField.value !== maxValue) maxField.value = maxValue;
+          if (maxField && maxField.value !== maxValue)
+            maxField.value = maxValue;
           var cur = num("mana.current"),
             max = num("mana.max");
           var pct = max > 0 ? Math.max(0, Math.min(100, (cur / max) * 100)) : 0;
@@ -3594,7 +3910,9 @@
         function ensureVault() {
           if (vault) return vault;
           try {
-            var stored = JSON.parse(localStorage.getItem(VAULT_STORE) || "null");
+            var stored = JSON.parse(
+              localStorage.getItem(VAULT_STORE) || "null",
+            );
             if (stored && stored.v === 1 && Array.isArray(stored.crawlers))
               vault = stored;
           } catch (err) {}
@@ -3710,7 +4028,10 @@
             if (String(flat[k]).trim() !== "") {
               if (flat[hitKey] == null || String(flat[hitKey]).trim() === "")
                 flat[hitKey] = flat[k];
-              if (flat[damageKey] == null || String(flat[damageKey]).trim() === "")
+              if (
+                flat[damageKey] == null ||
+                String(flat[damageKey]).trim() === ""
+              )
                 flat[damageKey] = flat[k];
             }
             delete flat[base + "toHit"];
@@ -3727,7 +4048,8 @@
             var canonical = pair[0],
               legacy = pair[1];
             if (
-              (flat[canonical] == null || String(flat[canonical]).trim() === "") &&
+              (flat[canonical] == null ||
+                String(flat[canonical]).trim() === "") &&
               flat[legacy] != null &&
               String(flat[legacy]).trim() !== ""
             )
@@ -3769,10 +4091,18 @@
           );
           var counts = d.counts || {};
           resizeAttacks(
-            Math.max(DEFAULT_ATTACKS, counts.attacks || 0, maxIndex(flat, "attacks.") + 1),
+            Math.max(
+              DEFAULT_ATTACKS,
+              counts.attacks || 0,
+              maxIndex(flat, "attacks.") + 1,
+            ),
           );
           resizeSkills(
-            Math.max(DEFAULT_SKILLS, counts.skills || 0, maxIndex(flat, "skills.") + 1),
+            Math.max(
+              DEFAULT_SKILLS,
+              counts.skills || 0,
+              maxIndex(flat, "skills.") + 1,
+            ),
           );
           resizeInv(
             Math.max(DEFAULT_INV, counts.inv || 0, maxIndex(flat, "inv.") + 1),
@@ -3842,7 +4172,11 @@
               folders
                 .map(function (folder) {
                   return (
-                    '<option value="' + esc(folder) + '">' + esc(folder) + "</option>"
+                    '<option value="' +
+                    esc(folder) +
+                    '">' +
+                    esc(folder) +
+                    "</option>"
                   );
                 })
                 .join("");
@@ -4152,7 +4486,7 @@
 
         /* ---------------- printing ---------------- */
         function hasPrintValue(root) {
-          return $$('[data-k]', root).some(function (el) {
+          return $$("[data-k]", root).some(function (el) {
             return el.type === "checkbox"
               ? el.checked
               : String(el.value || "").trim() !== "";
@@ -4355,7 +4689,8 @@
             var skillToggle = t.closest("[data-skill-toggle]");
             if (skillToggle) {
               var details = $(
-                "#skill-details-" + skillToggle.getAttribute("data-skill-toggle"),
+                "#skill-details-" +
+                  skillToggle.getAttribute("data-skill-toggle"),
               );
               if (details) {
                 var opening = details.hidden;
@@ -4401,7 +4736,9 @@
               );
             var vaultDelete = t.closest("[data-vault-delete]");
             if (vaultDelete)
-              return deleteCrawler(vaultDelete.getAttribute("data-vault-delete"));
+              return deleteCrawler(
+                vaultDelete.getAttribute("data-vault-delete"),
+              );
             if (t.closest("[data-vault-close]")) {
               var vaultDialog = $("#vaultDialog");
               if (vaultDialog && vaultDialog.open) vaultDialog.close();
@@ -4418,8 +4755,7 @@
             if (act.getAttribute("data-act") === "vault") {
               renderVault();
               var vaultDialog = $("#vaultDialog");
-              if (vaultDialog && vaultDialog.showModal)
-                vaultDialog.showModal();
+              if (vaultDialog && vaultDialog.showModal) vaultDialog.showModal();
             }
             if (act.getAttribute("data-act") === "import")
               $("[data-file]").click();
@@ -4440,8 +4776,7 @@
           var langSel = $("#langSel");
           if (langSel)
             langSel.addEventListener("change", function () {
-              lang =
-                LANGS.indexOf(langSel.value) >= 0 ? langSel.value : "en";
+              lang = LANGS.indexOf(langSel.value) >= 0 ? langSel.value : "en";
               try {
                 localStorage.setItem(LKEY, lang);
               } catch (e) {}
