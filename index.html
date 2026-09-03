@@ -853,6 +853,62 @@
       .print-dialog-actions .cancel {
         grid-column: 1 / -1;
       }
+      .crawler-switcher {
+        min-width: 170px;
+        max-width: 240px;
+      }
+      .vault-dialog {
+        width: min(720px, calc(100% - 24px));
+        max-height: min(760px, calc(100vh - 24px));
+        padding: 0;
+        border: 1px solid var(--line);
+        border-radius: 4px;
+        background: var(--paper);
+        color: var(--ink);
+      }
+      .vault-dialog::backdrop {
+        background: rgba(0, 0, 0, 0.6);
+      }
+      .vault-body {
+        display: grid;
+        gap: 16px;
+        padding: 22px;
+      }
+      .vault-create {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) auto;
+        gap: 8px;
+      }
+      .vault-list {
+        display: grid;
+        gap: 8px;
+        max-height: 430px;
+        overflow: auto;
+      }
+      .vault-row {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) auto auto auto;
+        gap: 6px;
+        align-items: center;
+        padding: 8px;
+        border: 1px solid var(--line);
+        background: var(--paper-2);
+      }
+      .vault-row.is-active {
+        border-left: 4px solid var(--acc);
+      }
+      @media (max-width: 640px) {
+        .crawler-switcher {
+          width: 100%;
+          max-width: none;
+        }
+        .vault-row {
+          grid-template-columns: 1fr 1fr;
+        }
+        .vault-row input {
+          grid-column: 1 / -1;
+        }
+      }
 
       @page {
         size: A4 portrait;
@@ -957,6 +1013,8 @@
         </div>
         <div class="sub" data-hdr="sub"></div>
         <div class="tools">
+          <select class="crawler-switcher" id="crawlerSelect" data-i18n-title="title.crawlerSelect" title="Switch crawler"></select>
+          <button class="btn" data-act="vault" type="button" data-i18n="btn.vault">Vault</button>
           <select id="langSel" title="Language / Langue">
             <option value="en">EN</option>
             <option value="fr">FR</option>
@@ -1430,12 +1488,28 @@
       </div>
     </dialog>
 
+    <dialog class="vault-dialog" id="vaultDialog">
+      <div class="vault-body">
+        <div class="chip" data-i18n="vault.title">Crawler Vault</div>
+        <div class="hint" data-i18n="vault.help">
+          Switch between crawlers stored in this browser. Export JSON backups before clearing browser data.
+        </div>
+        <div class="vault-create">
+          <input id="newCrawlerName" data-i18n-ph="vault.newName" placeholder="New crawler name" />
+          <button class="btn primary" type="button" data-vault-create data-i18n="vault.create">Create crawler</button>
+        </div>
+        <div class="vault-list" id="vaultList"></div>
+        <button class="btn" type="button" data-vault-close data-i18n="vault.close">Close</button>
+      </div>
+    </dialog>
+
     <script>
       (function () {
         "use strict";
 
         /* ---------------- config ---------------- */
         var STORE = "dcsheet.v1",
+          VAULT_STORE = "dcsheet.vault.v1",
           TKEY = "dcsheet.theme";
         var STATS = ["STR", "INT", "CON", "DEX", "CHA"];
         var STAT_LIST = [
@@ -1568,6 +1642,19 @@
             "btn.import": "Import",
             "btn.export": "Export JSON",
             "btn.print": "Print",
+            "btn.vault": "Vault",
+            "title.crawlerSelect": "Switch crawler",
+            "vault.title": "Crawler Vault",
+            "vault.help": "Switch between crawlers stored in this browser. Export JSON backups before clearing browser data.",
+            "vault.newName": "New crawler name",
+            "vault.create": "Create crawler",
+            "vault.open": "Open",
+            "vault.duplicate": "Duplicate",
+            "vault.delete": "Delete",
+            "vault.close": "Close",
+            "vault.unnamed": "Unnamed Crawler",
+            "vault.copySuffix": "copy",
+            "confirm.deleteCrawler": "Delete this crawler? This cannot be undone.",
             "print.title": "Print crawler",
             "print.help": "Choose the current section or the complete crawler dossier.",
             "print.current": "Current section",
@@ -1745,6 +1832,19 @@
             "btn.import": "Importer",
             "btn.export": "Exporter JSON",
             "btn.print": "Imprimer",
+            "btn.vault": "Coffre",
+            "title.crawlerSelect": "Changer de Crawler",
+            "vault.title": "Coffre des Crawlers",
+            "vault.help": "Passez d'un Crawler à l'autre dans ce navigateur. Exportez des sauvegardes JSON avant d'effacer les données du navigateur.",
+            "vault.newName": "Nom du nouveau Crawler",
+            "vault.create": "Créer un Crawler",
+            "vault.open": "Ouvrir",
+            "vault.duplicate": "Dupliquer",
+            "vault.delete": "Supprimer",
+            "vault.close": "Fermer",
+            "vault.unnamed": "Crawler sans nom",
+            "vault.copySuffix": "copie",
+            "confirm.deleteCrawler": "Supprimer ce Crawler ? Cette action est irréversible.",
             "print.title": "Imprimer le Crawler",
             "print.help": "Choisissez la section actuelle ou le dossier complet du Crawler.",
             "print.current": "Section actuelle",
@@ -1922,6 +2022,19 @@
             "btn.import": "Importar",
             "btn.export": "Exportar JSON",
             "btn.print": "Imprimir",
+            "btn.vault": "Bóveda",
+            "title.crawlerSelect": "Cambiar de Crawler",
+            "vault.title": "Bóveda de Crawlers",
+            "vault.help": "Cambia entre los Crawlers guardados en este navegador. Exporta copias JSON antes de borrar los datos del navegador.",
+            "vault.newName": "Nombre del nuevo Crawler",
+            "vault.create": "Crear Crawler",
+            "vault.open": "Abrir",
+            "vault.duplicate": "Duplicar",
+            "vault.delete": "Eliminar",
+            "vault.close": "Cerrar",
+            "vault.unnamed": "Crawler sin nombre",
+            "vault.copySuffix": "copia",
+            "confirm.deleteCrawler": "¿Eliminar este Crawler? Esta acción no se puede deshacer.",
             "print.title": "Imprimir Crawler",
             "print.help": "Elige la sección actual o el expediente completo del Crawler.",
             "print.current": "Sección actual",
@@ -2100,6 +2213,19 @@
             "btn.import": "Importieren",
             "btn.export": "JSON exportieren",
             "btn.print": "Drucken",
+            "btn.vault": "Ablage",
+            "title.crawlerSelect": "Crawler wechseln",
+            "vault.title": "Crawler-Ablage",
+            "vault.help": "Wechsle zwischen Crawlers, die in diesem Browser gespeichert sind. Exportiere JSON-Sicherungen, bevor Browserdaten gelöscht werden.",
+            "vault.newName": "Name des neuen Crawlers",
+            "vault.create": "Crawler erstellen",
+            "vault.open": "Öffnen",
+            "vault.duplicate": "Duplizieren",
+            "vault.delete": "Löschen",
+            "vault.close": "Schließen",
+            "vault.unnamed": "Unbenannter Crawler",
+            "vault.copySuffix": "Kopie",
+            "confirm.deleteCrawler": "Diesen Crawler löschen? Dies kann nicht rückgängig gemacht werden.",
             "print.title": "Crawler drucken",
             "print.help": "Wähle den aktuellen Bereich oder das vollständige Crawler-Dossier.",
             "print.current": "Aktueller Bereich",
@@ -2278,6 +2404,19 @@
             "btn.import": "Importar",
             "btn.export": "Exportar JSON",
             "btn.print": "Imprimir",
+            "btn.vault": "Cofre",
+            "title.crawlerSelect": "Trocar de Crawler",
+            "vault.title": "Cofre de Crawlers",
+            "vault.help": "Alterne entre Crawlers armazenados neste navegador. Exporte cópias JSON antes de limpar os dados do navegador.",
+            "vault.newName": "Nome do novo Crawler",
+            "vault.create": "Criar Crawler",
+            "vault.open": "Abrir",
+            "vault.duplicate": "Duplicar",
+            "vault.delete": "Excluir",
+            "vault.close": "Fechar",
+            "vault.unnamed": "Crawler sem nome",
+            "vault.copySuffix": "cópia",
+            "confirm.deleteCrawler": "Excluir este Crawler? Isso não pode ser desfeito.",
             "print.title": "Imprimir Crawler",
             "print.help": "Escolha a seção atual ou o dossiê completo do Crawler.",
             "print.current": "Seção atual",
@@ -2673,6 +2812,10 @@
           applyTheme(
             document.documentElement.getAttribute("data-theme") || "light",
           );
+          if (vault) {
+            renderCrawlerSwitcher();
+            renderVault();
+          }
           header();
         }
 
@@ -2889,6 +3032,20 @@
           while (invCount > n) {
             $("#invRows").lastElementChild.remove();
             invCount--;
+          }
+        }
+        function resizeAttacks(n) {
+          ensureAttacks(n);
+          while (attackCount > n) {
+            $("#attackRows").lastElementChild.remove();
+            attackCount--;
+          }
+        }
+        function resizeSkills(n) {
+          ensureSkills(n);
+          while (skillCount > n) {
+            $("#skillRows").lastElementChild.remove();
+            skillCount--;
           }
         }
 
@@ -3329,37 +3486,139 @@
           return flat;
         }
 
-        var saveTimer, toastTimer;
+        var saveTimer, toastTimer, vault;
+
+        function newCrawlerId() {
+          if (window.crypto && window.crypto.randomUUID)
+            return window.crypto.randomUUID();
+          return (
+            "crawler-" +
+            Date.now().toString(36) +
+            "-" +
+            Math.random().toString(36).slice(2, 10)
+          );
+        }
+
+        function sheetDataFromFields() {
+          return {
+            v: 2,
+            savedAt: new Date().toISOString(),
+            counts: {
+              attacks: attackCount,
+              skills: skillCount,
+              inv: invCount,
+            },
+            fields: collect(),
+          };
+        }
+
+        function blankSheetData(name) {
+          var flat = {
+            "identity.level": "1",
+            "identity.floor": "1",
+            "def.move": "20",
+            "def.step": "10",
+          };
+          if (String(name || "").trim())
+            flat["identity.name"] = String(name).trim();
+          return {
+            v: 2,
+            savedAt: new Date().toISOString(),
+            counts: {
+              attacks: DEFAULT_ATTACKS,
+              skills: DEFAULT_SKILLS,
+              inv: DEFAULT_INV,
+            },
+            fields: flat,
+          };
+        }
+
+        function activeCrawler() {
+          if (!vault || !vault.crawlers) return null;
+          for (var i = 0; i < vault.crawlers.length; i++)
+            if (vault.crawlers[i].id === vault.activeId)
+              return vault.crawlers[i];
+          return null;
+        }
+
+        function ensureVault() {
+          if (vault) return vault;
+          try {
+            var stored = JSON.parse(localStorage.getItem(VAULT_STORE) || "null");
+            if (stored && stored.v === 1 && Array.isArray(stored.crawlers))
+              vault = stored;
+          } catch (err) {}
+
+          if (!vault || !vault.crawlers.length) {
+            var legacy = null;
+            try {
+              legacy = JSON.parse(localStorage.getItem(STORE) || "null");
+            } catch (err) {}
+            var data = legacy && legacy.fields ? legacy : blankSheetData("");
+            var flat = data.fields || {};
+            var id = newCrawlerId();
+            vault = {
+              v: 1,
+              activeId: id,
+              crawlers: [
+                {
+                  id: id,
+                  name:
+                    String(flat["identity.name"] || "").trim() ||
+                    t("vault.unnamed"),
+                  createdAt: new Date().toISOString(),
+                  updatedAt: new Date().toISOString(),
+                  data: data,
+                },
+              ],
+            };
+          }
+          if (!activeCrawler() && vault.crawlers.length)
+            vault.activeId = vault.crawlers[0].id;
+          persistVault();
+          return vault;
+        }
+
+        function persistVault() {
+          if (!vault) return;
+          localStorage.setItem(VAULT_STORE, JSON.stringify(vault));
+        }
+
+        function showSavedToast() {
+          var tag = $("[data-saved]");
+          if (!tag) return;
+          tag.textContent =
+            t("toast.saved") + " " + new Date().toLocaleTimeString();
+          tag.style.opacity = "1";
+          clearTimeout(toastTimer);
+          toastTimer = setTimeout(function () {
+            tag.style.opacity = "0";
+          }, 1600);
+        }
+
+        function saveNow(showToast) {
+          try {
+            ensureVault();
+            var crawler = activeCrawler();
+            if (!crawler) return;
+            crawler.data = sheetDataFromFields();
+            crawler.updatedAt = new Date().toISOString();
+            var sheetName = String(val("identity.name") || "").trim();
+            if (sheetName) crawler.name = sheetName;
+            persistVault();
+            localStorage.setItem(STORE, JSON.stringify(crawler.data));
+            renderCrawlerSwitcher();
+            if ($("#vaultDialog") && $("#vaultDialog").open) renderVault();
+            if (showToast) showSavedToast();
+          } catch (err) {
+            /* storage full or blocked */
+          }
+        }
+
         function save() {
           clearTimeout(saveTimer);
           saveTimer = setTimeout(function () {
-            try {
-              localStorage.setItem(
-                STORE,
-                JSON.stringify({
-                  v: 2,
-                  savedAt: new Date().toISOString(),
-                  counts: {
-                    attacks: attackCount,
-                    skills: skillCount,
-                    inv: invCount,
-                  },
-                  fields: collect(),
-                }),
-              );
-              var tag = $("[data-saved]");
-              if (tag) {
-                tag.textContent =
-                  t("toast.saved") + " " + new Date().toLocaleTimeString();
-                tag.style.opacity = "1";
-                clearTimeout(toastTimer);
-                toastTimer = setTimeout(function () {
-                  tag.style.opacity = "0";
-                }, 1600);
-              }
-            } catch (err) {
-              /* storage full or blocked */
-            }
+            saveNow(true);
           }, 500);
         }
 
@@ -3452,19 +3711,203 @@
           );
         }
 
+        function loadSheetData(d) {
+          d = d || blankSheetData("");
+          var flat = migrateLinkedIdentity(
+            migrateLegacyAttacks(d.fields || {}),
+          );
+          var counts = d.counts || {};
+          resizeAttacks(
+            Math.max(DEFAULT_ATTACKS, counts.attacks || 0, maxIndex(flat, "attacks.") + 1),
+          );
+          resizeSkills(
+            Math.max(DEFAULT_SKILLS, counts.skills || 0, maxIndex(flat, "skills.") + 1),
+          );
+          resizeInv(
+            Math.max(DEFAULT_INV, counts.inv || 0, maxIndex(flat, "inv.") + 1),
+          );
+          fields().forEach(function (el) {
+            if (el.type === "checkbox") el.checked = false;
+            else el.value = "";
+            el.removeAttribute("data-dirty");
+          });
+          setDefaultMovement();
+          setDefaultLevelAndFloor();
+          apply(flat, true);
+          renderImages();
+        }
+
         function load() {
           try {
-            var raw = localStorage.getItem(STORE);
-            if (!raw) return;
-            var d = JSON.parse(raw);
-            var flat = migrateLinkedIdentity(
-              migrateLegacyAttacks(d.fields || {}),
-            );
-            ensureFromData(flat, d.counts);
-            apply(flat);
+            ensureVault();
+            var crawler = activeCrawler();
+            if (crawler) loadSheetData(crawler.data);
+            renderCrawlerSwitcher();
+            renderVault();
           } catch (err) {
             /* ignore corrupt save */
           }
+        }
+
+        /* ---------------- crawler vault ---------------- */
+        function renderCrawlerSwitcher() {
+          var select = $("#crawlerSelect");
+          if (!select || !vault) return;
+          select.innerHTML = vault.crawlers
+            .map(function (crawler) {
+              return (
+                '<option value="' +
+                esc(crawler.id) +
+                '"' +
+                (crawler.id === vault.activeId ? " selected" : "") +
+                ">" +
+                esc(crawler.name || t("vault.unnamed")) +
+                "</option>"
+              );
+            })
+            .join("");
+        }
+
+        function renderVault() {
+          var list = $("#vaultList");
+          if (!list || !vault) return;
+          list.innerHTML = vault.crawlers
+            .map(function (crawler) {
+              return (
+                '<div class="vault-row' +
+                (crawler.id === vault.activeId ? " is-active" : "") +
+                '" data-vault-row="' +
+                esc(crawler.id) +
+                '">' +
+                '<input value="' +
+                esc(crawler.name || t("vault.unnamed")) +
+                '" data-vault-name="' +
+                esc(crawler.id) +
+                '" aria-label="Crawler name">' +
+                '<button class="btn primary" type="button" data-vault-open="' +
+                esc(crawler.id) +
+                '" data-i18n="vault.open">' +
+                t("vault.open") +
+                "</button>" +
+                '<button class="btn" type="button" data-vault-duplicate="' +
+                esc(crawler.id) +
+                '" data-i18n="vault.duplicate">' +
+                t("vault.duplicate") +
+                "</button>" +
+                '<button class="btn danger" type="button" data-vault-delete="' +
+                esc(crawler.id) +
+                '" data-i18n="vault.delete">' +
+                t("vault.delete") +
+                "</button></div>"
+              );
+            })
+            .join("");
+        }
+
+        function createCrawler(name, data) {
+          clearTimeout(saveTimer);
+          saveNow(false);
+          name = String(name || "").trim() || t("vault.unnamed");
+          var id = newCrawlerId();
+          var crawlerData = data || blankSheetData(name);
+          crawlerData.fields = crawlerData.fields || {};
+          crawlerData.fields["identity.name"] = name;
+          vault.crawlers.push({
+            id: id,
+            name: name,
+            createdAt: new Date().toISOString(),
+            updatedAt: new Date().toISOString(),
+            data: crawlerData,
+          });
+          vault.activeId = id;
+          persistVault();
+          loadSheetData(crawlerData);
+          localStorage.setItem(STORE, JSON.stringify(crawlerData));
+          renderCrawlerSwitcher();
+          renderVault();
+          header();
+          return id;
+        }
+
+        function switchCrawler(id) {
+          if (!vault || id === vault.activeId) return;
+          clearTimeout(saveTimer);
+          saveNow(false);
+          vault.activeId = id;
+          var crawler = activeCrawler();
+          if (!crawler) return;
+          persistVault();
+          loadSheetData(crawler.data);
+          localStorage.setItem(STORE, JSON.stringify(crawler.data));
+          renderCrawlerSwitcher();
+          renderVault();
+          header();
+        }
+
+        function duplicateCrawler(id) {
+          clearTimeout(saveTimer);
+          saveNow(false);
+          var source = null;
+          vault.crawlers.forEach(function (crawler) {
+            if (crawler.id === id) source = crawler;
+          });
+          if (!source) return;
+          var data = JSON.parse(JSON.stringify(source.data));
+          var name =
+            (source.name || t("vault.unnamed")) +
+            " (" +
+            t("vault.copySuffix") +
+            ")";
+          createCrawler(name, data);
+        }
+
+        function renameCrawler(id, name) {
+          name = String(name || "").trim() || t("vault.unnamed");
+          vault.crawlers.forEach(function (crawler) {
+            if (crawler.id !== id) return;
+            crawler.name = name;
+            crawler.data = crawler.data || blankSheetData(name);
+            crawler.data.fields = crawler.data.fields || {};
+            crawler.data.fields["identity.name"] = name;
+            crawler.updatedAt = new Date().toISOString();
+          });
+          if (id === vault.activeId) {
+            var nameField = field("identity.name");
+            if (nameField) nameField.value = name;
+            header();
+          }
+          persistVault();
+          var active = activeCrawler();
+          if (active) localStorage.setItem(STORE, JSON.stringify(active.data));
+          renderCrawlerSwitcher();
+          renderVault();
+        }
+
+        function deleteCrawler(id) {
+          if (!window.confirm(t("confirm.deleteCrawler"))) return;
+          var wasActive = id === vault.activeId;
+          vault.crawlers = vault.crawlers.filter(function (crawler) {
+            return crawler.id !== id;
+          });
+          if (!vault.crawlers.length) {
+            vault = null;
+            localStorage.removeItem(VAULT_STORE);
+            localStorage.removeItem(STORE);
+            ensureVault();
+          } else if (wasActive) {
+            vault.activeId = vault.crawlers[0].id;
+          }
+          persistVault();
+          if (wasActive) {
+            var active = activeCrawler();
+            if (active) {
+              loadSheetData(active.data);
+              localStorage.setItem(STORE, JSON.stringify(active.data));
+            }
+          }
+          renderCrawlerSwitcher();
+          renderVault();
+          header();
         }
 
         /* ---------------- JSON import / export ---------------- */
@@ -3541,14 +3984,18 @@
               if (!flat) flat = d;
               migrateLegacyAttacks(flat);
               migrateLinkedIdentity(flat);
-              ensureFromData(flat, d.counts);
-              fields().forEach(function (el) {
-                if (el.type === "checkbox") el.checked = false;
-                else el.value = "";
-                el.removeAttribute("data-dirty");
-              });
-              apply(flat, true);
-              save();
+              var importedData = {
+                v: 2,
+                savedAt: new Date().toISOString(),
+                counts: d.counts || {},
+                fields: flat,
+              };
+              createCrawler(
+                String(flat["identity.name"] || "").trim() ||
+                  t("vault.unnamed"),
+                importedData,
+              );
+              saveNow(true);
             } catch (err) {
               alert(t("alert.badImport"));
             }
@@ -3726,6 +4173,11 @@
               recompute();
               save();
             }
+            if (e.target.matches && e.target.matches("[data-vault-name]"))
+              renameCrawler(
+                e.target.getAttribute("data-vault-name"),
+                e.target.value,
+              );
           });
           document.addEventListener("click", function (e) {
             var t = e.target;
@@ -3784,6 +4236,32 @@
               if (printDialog && printDialog.open) printDialog.close();
               return;
             }
+            if (t.closest("[data-vault-create]")) {
+              var newName = $("#newCrawlerName");
+              createCrawler(newName ? newName.value : "");
+              if (newName) newName.value = "";
+              return;
+            }
+            var vaultOpen = t.closest("[data-vault-open]");
+            if (vaultOpen) {
+              switchCrawler(vaultOpen.getAttribute("data-vault-open"));
+              var openDialog = $("#vaultDialog");
+              if (openDialog && openDialog.open) openDialog.close();
+              return;
+            }
+            var vaultDuplicate = t.closest("[data-vault-duplicate]");
+            if (vaultDuplicate)
+              return duplicateCrawler(
+                vaultDuplicate.getAttribute("data-vault-duplicate"),
+              );
+            var vaultDelete = t.closest("[data-vault-delete]");
+            if (vaultDelete)
+              return deleteCrawler(vaultDelete.getAttribute("data-vault-delete"));
+            if (t.closest("[data-vault-close]")) {
+              var vaultDialog = $("#vaultDialog");
+              if (vaultDialog && vaultDialog.open) vaultDialog.close();
+              return;
+            }
             var act = t.closest("[data-act]");
             if (!act) return;
             if (act.getAttribute("data-act") === "export") exportJSON();
@@ -3791,6 +4269,12 @@
               var dialog = $("#printDialog");
               if (dialog && dialog.showModal) dialog.showModal();
               else startPrint("current");
+            }
+            if (act.getAttribute("data-act") === "vault") {
+              renderVault();
+              var vaultDialog = $("#vaultDialog");
+              if (vaultDialog && vaultDialog.showModal)
+                vaultDialog.showModal();
             }
             if (act.getAttribute("data-act") === "import")
               $("[data-file]").click();
@@ -3817,6 +4301,12 @@
                 localStorage.setItem(LKEY, lang);
               } catch (e) {}
               applyI18n();
+            });
+
+          var crawlerSelect = $("#crawlerSelect");
+          if (crawlerSelect)
+            crawlerSelect.addEventListener("change", function () {
+              switchCrawler(crawlerSelect.value);
             });
 
           $$("[data-imgbox]").forEach(function (box) {
