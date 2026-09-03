@@ -1135,7 +1135,7 @@
               <div class="card grid" style="gap: 12px">
                 <div class="jsection-lbl" data-i18n="f.race">Race</div>
                 <label class="lbl"
-                  ><span data-i18n="f.raceName">Name of Race</span><input data-k="race.name"
+                  ><span data-i18n="f.raceName">Name of Race</span><input data-k="race.name" data-mirror="identity.race"
                 /></label>
                 <label class="lbl"
                   ><span data-i18n="f.racialBenefits">Racial Benefits</span
@@ -1145,7 +1145,7 @@
               <div class="card grid" style="gap: 12px">
                 <div class="jsection-lbl" data-i18n="f.class">Class</div>
                 <label class="lbl"
-                  ><span data-i18n="f.className">Name of Class</span><input data-k="class.name"
+                  ><span data-i18n="f.className">Name of Class</span><input data-k="class.name" data-mirror="identity.class"
                 /></label>
                 <label class="lbl"
                   ><span data-i18n="f.classBenefits">Class Benefits</span
@@ -3139,6 +3139,28 @@
           return flat;
         }
 
+        function migrateLinkedIdentity(flat) {
+          [
+            ["identity.race", "race.name"],
+            ["identity.class", "class.name"],
+          ].forEach(function (pair) {
+            var canonical = pair[0],
+              legacy = pair[1];
+            if (
+              (flat[canonical] == null || String(flat[canonical]).trim() === "") &&
+              flat[legacy] != null &&
+              String(flat[legacy]).trim() !== ""
+            )
+              flat[canonical] = flat[legacy];
+            if (
+              flat[canonical] != null &&
+              String(flat[canonical]).trim() !== ""
+            )
+              flat[legacy] = flat[canonical];
+          });
+          return flat;
+        }
+
         function ensureFromData(flat, counts) {
           counts = counts || {};
           ensureAttacks(
@@ -3165,7 +3187,9 @@
             var raw = localStorage.getItem(STORE);
             if (!raw) return;
             var d = JSON.parse(raw);
-            var flat = migrateLegacyAttacks(d.fields || {});
+            var flat = migrateLinkedIdentity(
+              migrateLegacyAttacks(d.fields || {}),
+            );
             ensureFromData(flat, d.counts);
             apply(flat);
           } catch (err) {
@@ -3246,6 +3270,7 @@
               if (!flat && d.character) flat = flatten(d.character);
               if (!flat) flat = d;
               migrateLegacyAttacks(flat);
+              migrateLinkedIdentity(flat);
               ensureFromData(flat, d.counts);
               fields().forEach(function (el) {
                 if (el.type === "checkbox") el.checked = false;
