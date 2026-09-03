@@ -821,6 +821,23 @@
         background: var(--acc);
       }
 
+      @media screen and (max-width: 640px) {
+        .two-start,
+        .cards-340,
+        .cards-320,
+        .cards-300,
+        .cards-280 {
+          grid-template-columns: minmax(0, 1fr);
+        }
+        .two-start > *,
+        .cards-340 > *,
+        .cards-320 > *,
+        .cards-300 > *,
+        .cards-280 > * {
+          min-width: 0;
+        }
+      }
+
       @media (max-width: 640px) {
         .bar .sub {
           text-align: left;
