@@ -826,6 +826,126 @@
           padding: 14px;
         }
       }
+
+      /* ---------- printing ---------- */
+      .print-dialog {
+        width: min(460px, calc(100% - 32px));
+        padding: 0;
+        border: 1px solid var(--line);
+        border-radius: 4px;
+        background: var(--paper);
+        color: var(--ink);
+        box-shadow: 0 24px 80px rgba(0, 0, 0, 0.35);
+      }
+      .print-dialog::backdrop {
+        background: rgba(0, 0, 0, 0.55);
+      }
+      .print-dialog-body {
+        display: grid;
+        gap: 14px;
+        padding: 22px;
+      }
+      .print-dialog-actions {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 8px;
+      }
+      .print-dialog-actions .cancel {
+        grid-column: 1 / -1;
+      }
+
+      @page {
+        size: A4 portrait;
+        margin: 12mm;
+      }
+      @media print {
+        :root,
+        :root[data-theme="dark"] {
+          --paper: #fff;
+          --paper-2: #fff;
+          --ink: #111;
+          --muted: #444;
+          --faint: #666;
+          --line: #777;
+          --acc: #111;
+          --acc-ink: #fff;
+        }
+        html,
+        body {
+          background: #fff !important;
+          color: #111 !important;
+          print-color-adjust: exact;
+          -webkit-print-color-adjust: exact;
+        }
+        body {
+          padding: 0;
+        }
+        .page {
+          max-width: none;
+          margin: 0;
+        }
+        header.bar,
+        nav.tabbar,
+        .saved,
+        .addrow,
+        .skill-toggle,
+        .print-dialog,
+        [data-imgbox-clear] {
+          display: none !important;
+        }
+        main {
+          padding: 0;
+        }
+        body.print-all [data-pane][hidden],
+        body.print-all [data-jpane][hidden] {
+          display: block !important;
+        }
+        body.print-all [data-pane] + [data-pane],
+        body.print-all [data-jpane] + [data-jpane] {
+          break-before: page;
+        }
+        body.print-current [data-pane][hidden],
+        body.print-current [data-jpane][hidden] {
+          display: none !important;
+        }
+        .card,
+        .inset,
+        .skill-entry,
+        .note-card,
+        label {
+          break-inside: avoid;
+        }
+        .scrollx {
+          overflow: visible;
+        }
+        .tbl,
+        .tbl[style] {
+          min-width: 0 !important;
+          font-size: 9px;
+        }
+        .tbl input,
+        .tbl select,
+        .tbl textarea {
+          font-size: 9px;
+          padding: 4px;
+        }
+        input,
+        select,
+        textarea {
+          color: #111 !important;
+          background: #fff !important;
+          border-color: #777 !important;
+        }
+        textarea {
+          overflow: visible !important;
+        }
+        [data-print-hide="true"] {
+          display: none !important;
+        }
+        .skill-details[data-print-open="true"] {
+          display: grid !important;
+        }
+      }
     </style>
   </head>
   <body>
@@ -855,6 +975,9 @@
           <button class="btn" data-act="import" type="button" data-i18n="btn.import">Import</button>
           <button class="btn primary" data-act="export" type="button" data-i18n="btn.export">
             Export JSON
+          </button>
+          <button class="btn" data-act="print" type="button" data-i18n="btn.print">
+            Print
           </button>
           <button
             class="btn"
@@ -1287,6 +1410,26 @@
       <nav class="tabbar" id="tabbar"></nav>
     </div>
 
+    <dialog class="print-dialog" id="printDialog">
+      <div class="print-dialog-body">
+        <div class="chip" data-i18n="print.title">Print crawler</div>
+        <div class="hint" data-i18n="print.help">
+          Choose the current section or the complete crawler dossier.
+        </div>
+        <div class="print-dialog-actions">
+          <button class="btn primary" type="button" data-print-mode="current" data-i18n="print.current">
+            Current section
+          </button>
+          <button class="btn primary" type="button" data-print-mode="all" data-i18n="print.all">
+            Complete crawler
+          </button>
+          <button class="btn cancel" type="button" data-print-cancel data-i18n="print.cancel">
+            Cancel
+          </button>
+        </div>
+      </div>
+    </dialog>
+
     <script>
       (function () {
         "use strict";
@@ -1424,6 +1567,12 @@
             "hdr.floor": "FLOOR",
             "btn.import": "Import",
             "btn.export": "Export JSON",
+            "btn.print": "Print",
+            "print.title": "Print crawler",
+            "print.help": "Choose the current section or the complete crawler dossier.",
+            "print.current": "Current section",
+            "print.all": "Complete crawler",
+            "print.cancel": "Cancel",
             "btn.reset": "Reset",
             "btn.addRow": "+ Add row",
             "btn.skillDetails": "Details",
@@ -1595,6 +1744,12 @@
             "hdr.floor": "ÉTAGE",
             "btn.import": "Importer",
             "btn.export": "Exporter JSON",
+            "btn.print": "Imprimer",
+            "print.title": "Imprimer le Crawler",
+            "print.help": "Choisissez la section actuelle ou le dossier complet du Crawler.",
+            "print.current": "Section actuelle",
+            "print.all": "Crawler complet",
+            "print.cancel": "Annuler",
             "btn.reset": "Réinitialiser",
             "btn.addRow": "+ Ajouter une ligne",
             "btn.skillDetails": "Détails",
@@ -1766,6 +1921,12 @@
             "hdr.floor": "PISO",
             "btn.import": "Importar",
             "btn.export": "Exportar JSON",
+            "btn.print": "Imprimir",
+            "print.title": "Imprimir Crawler",
+            "print.help": "Elige la sección actual o el expediente completo del Crawler.",
+            "print.current": "Sección actual",
+            "print.all": "Crawler completo",
+            "print.cancel": "Cancelar",
             "btn.reset": "Reiniciar",
             "btn.addRow": "+ Añadir fila",
             "btn.skillDetails": "Detalles",
@@ -1938,6 +2099,12 @@
             "hdr.floor": "EBENE",
             "btn.import": "Importieren",
             "btn.export": "JSON exportieren",
+            "btn.print": "Drucken",
+            "print.title": "Crawler drucken",
+            "print.help": "Wähle den aktuellen Bereich oder das vollständige Crawler-Dossier.",
+            "print.current": "Aktueller Bereich",
+            "print.all": "Vollständiger Crawler",
+            "print.cancel": "Abbrechen",
             "btn.reset": "Zurücksetzen",
             "btn.addRow": "+ Zeile hinzufügen",
             "btn.skillDetails": "Details",
@@ -2110,6 +2277,12 @@
             "hdr.floor": "ANDAR",
             "btn.import": "Importar",
             "btn.export": "Exportar JSON",
+            "btn.print": "Imprimir",
+            "print.title": "Imprimir Crawler",
+            "print.help": "Escolha a seção atual ou o dossiê completo do Crawler.",
+            "print.current": "Seção atual",
+            "print.all": "Crawler completo",
+            "print.cancel": "Cancelar",
             "btn.reset": "Redefinir",
             "btn.addRow": "+ Adicionar linha",
             "btn.skillDetails": "Detalhes",
@@ -3398,6 +3571,90 @@
           save();
         }
 
+        /* ---------------- printing ---------------- */
+        function hasPrintValue(root) {
+          return $$('[data-k]', root).some(function (el) {
+            return el.type === "checkbox"
+              ? el.checked
+              : String(el.value || "").trim() !== "";
+          });
+        }
+
+        function markPrintRows(prefix, minimumBlankRows) {
+          var blankRows = 0;
+          $$('[data-row^="' + prefix + '."]').forEach(function (row) {
+            var populated = hasPrintValue(row);
+            var keepBlank = !populated && blankRows < minimumBlankRows;
+            if (!populated) blankRows += 1;
+            row.setAttribute(
+              "data-print-hide",
+              String(!populated && !keepBlank),
+            );
+          });
+        }
+
+        function preparePrint(mode) {
+          document.body.classList.remove("print-all", "print-current");
+          document.body.classList.add(
+            mode === "all" ? "print-all" : "print-current",
+          );
+          markPrintRows("attacks", 4);
+          markPrintRows("skills", 8);
+          markPrintRows("inv", 10);
+
+          var blankNotes = 0;
+          $$(".note-card").forEach(function (card) {
+            var populated = hasPrintValue(card);
+            var keepBlank = !populated && blankNotes < 1;
+            if (!populated) blankNotes += 1;
+            card.setAttribute(
+              "data-print-hide",
+              String(!populated && !keepBlank),
+            );
+          });
+
+          $$(".skill-details").forEach(function (details) {
+            var toggle = $('[aria-controls="' + details.id + '"]');
+            if (
+              hasPrintValue(details) ||
+              (toggle && toggle.getAttribute("aria-expanded") === "true")
+            )
+              details.setAttribute("data-print-open", "true");
+          });
+        }
+
+        function expandPrintTextareas() {
+          $$("textarea").forEach(function (el) {
+            el.setAttribute("data-print-height", el.style.height || "");
+            el.style.height = "auto";
+            if (el.scrollHeight) el.style.height = el.scrollHeight + 2 + "px";
+          });
+        }
+
+        function cleanupPrint() {
+          document.body.classList.remove("print-all", "print-current");
+          $$("[data-print-hide]").forEach(function (el) {
+            el.removeAttribute("data-print-hide");
+          });
+          $$("[data-print-open]").forEach(function (el) {
+            el.removeAttribute("data-print-open");
+          });
+          $$("textarea[data-print-height]").forEach(function (el) {
+            el.style.height = el.getAttribute("data-print-height");
+            el.removeAttribute("data-print-height");
+          });
+        }
+
+        function startPrint(mode) {
+          var dialog = $("#printDialog");
+          if (dialog && dialog.open) dialog.close();
+          preparePrint(mode);
+          setTimeout(function () {
+            expandPrintTextareas();
+            window.print();
+          }, 50);
+        }
+
         /* ---------------- tabs ---------------- */
         var curTab = "sheet",
           curJTab = "popularity";
@@ -3519,9 +3776,22 @@
               }
               return;
             }
+            var printMode = t.closest("[data-print-mode]");
+            if (printMode)
+              return startPrint(printMode.getAttribute("data-print-mode"));
+            if (t.closest("[data-print-cancel]")) {
+              var printDialog = $("#printDialog");
+              if (printDialog && printDialog.open) printDialog.close();
+              return;
+            }
             var act = t.closest("[data-act]");
             if (!act) return;
             if (act.getAttribute("data-act") === "export") exportJSON();
+            if (act.getAttribute("data-act") === "print") {
+              var dialog = $("#printDialog");
+              if (dialog && dialog.showModal) dialog.showModal();
+              else startPrint("current");
+            }
             if (act.getAttribute("data-act") === "import")
               $("[data-file]").click();
             if (act.getAttribute("data-act") === "reset") resetAll();
@@ -3581,6 +3851,7 @@
               }
             });
           });
+          window.addEventListener("afterprint", cleanupPrint);
         }
 
         /* ---------------- init ---------------- */
