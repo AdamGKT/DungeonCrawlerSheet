@@ -876,8 +876,14 @@
       }
       .vault-create {
         display: grid;
-        grid-template-columns: minmax(0, 1fr) auto;
+        grid-template-columns: minmax(0, 1fr) minmax(140px, 0.7fr) auto;
         gap: 8px;
+      }
+      .vault-filter {
+        display: grid;
+        grid-template-columns: auto minmax(160px, 260px);
+        gap: 8px;
+        align-items: center;
       }
       .vault-list {
         display: grid;
@@ -897,6 +903,17 @@
       .vault-row.is-active {
         border-left: 4px solid var(--acc);
       }
+      .vault-info {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) minmax(110px, 0.65fr);
+        gap: 6px;
+      }
+      .vault-summary {
+        grid-column: 1 / -1;
+        font-family: var(--f-mono);
+        font-size: 10px;
+        color: var(--muted);
+      }
       @media (max-width: 640px) {
         .crawler-switcher {
           width: 100%;
@@ -905,8 +922,11 @@
         .vault-row {
           grid-template-columns: 1fr 1fr;
         }
-        .vault-row input {
+        .vault-info {
           grid-column: 1 / -1;
+        }
+        .vault-create {
+          grid-template-columns: 1fr;
         }
       }
 
@@ -1496,8 +1516,13 @@
         </div>
         <div class="vault-create">
           <input id="newCrawlerName" data-i18n-ph="vault.newName" placeholder="New crawler name" />
+          <input id="newCrawlerFolder" data-i18n-ph="vault.newFolder" placeholder="Campaign / folder" />
           <button class="btn primary" type="button" data-vault-create data-i18n="vault.create">Create crawler</button>
         </div>
+        <label class="vault-filter">
+          <span class="jsection-lbl" data-i18n="vault.filter">Folder</span>
+          <select id="vaultFolderFilter"></select>
+        </label>
         <div class="vault-list" id="vaultList"></div>
         <button class="btn" type="button" data-vault-close data-i18n="vault.close">Close</button>
       </div>
@@ -1647,6 +1672,11 @@
             "vault.title": "Crawler Vault",
             "vault.help": "Switch between crawlers stored in this browser. Export JSON backups before clearing browser data.",
             "vault.newName": "New crawler name",
+            "vault.newFolder": "Campaign / folder",
+            "vault.filter": "Folder",
+            "vault.allFolders": "All folders",
+            "vault.noFolder": "No folder",
+            "vault.activeDebuffs": "active Debuffs",
             "vault.create": "Create crawler",
             "vault.open": "Open",
             "vault.duplicate": "Duplicate",
@@ -1837,6 +1867,11 @@
             "vault.title": "Coffre des Crawlers",
             "vault.help": "Passez d'un Crawler à l'autre dans ce navigateur. Exportez des sauvegardes JSON avant d'effacer les données du navigateur.",
             "vault.newName": "Nom du nouveau Crawler",
+            "vault.newFolder": "Campagne / dossier",
+            "vault.filter": "Dossier",
+            "vault.allFolders": "Tous les dossiers",
+            "vault.noFolder": "Sans dossier",
+            "vault.activeDebuffs": "Debuffs actifs",
             "vault.create": "Créer un Crawler",
             "vault.open": "Ouvrir",
             "vault.duplicate": "Dupliquer",
@@ -2027,6 +2062,11 @@
             "vault.title": "Bóveda de Crawlers",
             "vault.help": "Cambia entre los Crawlers guardados en este navegador. Exporta copias JSON antes de borrar los datos del navegador.",
             "vault.newName": "Nombre del nuevo Crawler",
+            "vault.newFolder": "Campaña / carpeta",
+            "vault.filter": "Carpeta",
+            "vault.allFolders": "Todas las carpetas",
+            "vault.noFolder": "Sin carpeta",
+            "vault.activeDebuffs": "Debuffs activos",
             "vault.create": "Crear Crawler",
             "vault.open": "Abrir",
             "vault.duplicate": "Duplicar",
@@ -2218,6 +2258,11 @@
             "vault.title": "Crawler-Ablage",
             "vault.help": "Wechsle zwischen Crawlers, die in diesem Browser gespeichert sind. Exportiere JSON-Sicherungen, bevor Browserdaten gelöscht werden.",
             "vault.newName": "Name des neuen Crawlers",
+            "vault.newFolder": "Kampagne / Ordner",
+            "vault.filter": "Ordner",
+            "vault.allFolders": "Alle Ordner",
+            "vault.noFolder": "Kein Ordner",
+            "vault.activeDebuffs": "aktive Debuffs",
             "vault.create": "Crawler erstellen",
             "vault.open": "Öffnen",
             "vault.duplicate": "Duplizieren",
@@ -2409,6 +2454,11 @@
             "vault.title": "Cofre de Crawlers",
             "vault.help": "Alterne entre Crawlers armazenados neste navegador. Exporte cópias JSON antes de limpar os dados do navegador.",
             "vault.newName": "Nome do novo Crawler",
+            "vault.newFolder": "Campanha / pasta",
+            "vault.filter": "Pasta",
+            "vault.allFolders": "Todas as pastas",
+            "vault.noFolder": "Sem pasta",
+            "vault.activeDebuffs": "Debuffs ativos",
             "vault.create": "Criar Crawler",
             "vault.open": "Abrir",
             "vault.duplicate": "Duplicar",
@@ -3566,6 +3616,7 @@
                   name:
                     String(flat["identity.name"] || "").trim() ||
                     t("vault.unnamed"),
+                  folder: "",
                   createdAt: new Date().toISOString(),
                   updatedAt: new Date().toISOString(),
                   data: data,
@@ -3771,7 +3822,44 @@
         function renderVault() {
           var list = $("#vaultList");
           if (!list || !vault) return;
+          var filter = $("#vaultFolderFilter");
+          var selectedFolder = filter ? filter.value : "*";
+          var folders = [];
+          vault.crawlers.forEach(function (crawler) {
+            var folder = String(crawler.folder || "").trim();
+            if (folder && folders.indexOf(folder) < 0) folders.push(folder);
+          });
+          folders.sort(function (a, b) {
+            return a.localeCompare(b);
+          });
+          if (filter) {
+            filter.innerHTML =
+              '<option value="*">' +
+              esc(t("vault.allFolders")) +
+              '</option><option value="">' +
+              esc(t("vault.noFolder")) +
+              "</option>" +
+              folders
+                .map(function (folder) {
+                  return (
+                    '<option value="' + esc(folder) + '">' + esc(folder) + "</option>"
+                  );
+                })
+                .join("");
+            var validSelection =
+              selectedFolder === "*" ||
+              selectedFolder === "" ||
+              folders.indexOf(selectedFolder) >= 0;
+            filter.value = validSelection ? selectedFolder : "*";
+            selectedFolder = filter.value;
+          }
           list.innerHTML = vault.crawlers
+            .filter(function (crawler) {
+              return (
+                selectedFolder === "*" ||
+                String(crawler.folder || "").trim() === selectedFolder
+              );
+            })
             .map(function (crawler) {
               return (
                 '<div class="vault-row' +
@@ -3779,11 +3867,18 @@
                 '" data-vault-row="' +
                 esc(crawler.id) +
                 '">' +
-                '<input value="' +
+                '<div class="vault-info"><input value="' +
                 esc(crawler.name || t("vault.unnamed")) +
                 '" data-vault-name="' +
                 esc(crawler.id) +
-                '" aria-label="Crawler name">' +
+                '" aria-label="Crawler name"><input value="' +
+                esc(crawler.folder || "") +
+                '" data-vault-folder="' +
+                esc(crawler.id) +
+                '" data-i18n-ph="vault.newFolder" placeholder="Campaign / folder" aria-label="Campaign or folder">' +
+                '<div class="vault-summary">' +
+                crawlerSummary(crawler) +
+                "</div></div>" +
                 '<button class="btn primary" type="button" data-vault-open="' +
                 esc(crawler.id) +
                 '" data-i18n="vault.open">' +
@@ -3804,7 +3899,31 @@
             .join("");
         }
 
-        function createCrawler(name, data) {
+        function crawlerSummary(crawler) {
+          var flat = (crawler.data && crawler.data.fields) || {};
+          var lost = 0;
+          Object.keys(flat).forEach(function (key) {
+            if (/^hp\.\d+\.on$/.test(key) && flat[key]) lost += 1;
+          });
+          var debuffs = String(flat["buffs.debuffs"] || "")
+            .split(/\n+/)
+            .filter(function (line) {
+              return line.trim() !== "";
+            }).length;
+          var parts = [
+            t("hdr.lvl") + " " + (flat["identity.level"] || "—"),
+            t("hdr.floor") + " " + (flat["identity.floor"] || "—"),
+            "HB " + (10 - lost) + "/10",
+            "Mana " +
+              (flat["mana.current"] || 0) +
+              "/" +
+              (flat["mana.max"] || flat["stats.INT.enh"] || "—"),
+          ];
+          if (debuffs) parts.push(debuffs + " " + t("vault.activeDebuffs"));
+          return esc(parts.join(" · "));
+        }
+
+        function createCrawler(name, data, folder) {
           clearTimeout(saveTimer);
           saveNow(false);
           name = String(name || "").trim() || t("vault.unnamed");
@@ -3815,6 +3934,7 @@
           vault.crawlers.push({
             id: id,
             name: name,
+            folder: String(folder || "").trim(),
             createdAt: new Date().toISOString(),
             updatedAt: new Date().toISOString(),
             data: crawlerData,
@@ -3858,7 +3978,7 @@
             " (" +
             t("vault.copySuffix") +
             ")";
-          createCrawler(name, data);
+          createCrawler(name, data, source.folder || "");
         }
 
         function renameCrawler(id, name) {
@@ -3879,6 +3999,18 @@
           persistVault();
           var active = activeCrawler();
           if (active) localStorage.setItem(STORE, JSON.stringify(active.data));
+          renderCrawlerSwitcher();
+          renderVault();
+        }
+
+        function moveCrawlerToFolder(id, folder) {
+          vault.crawlers.forEach(function (crawler) {
+            if (crawler.id === id) {
+              crawler.folder = String(folder || "").trim();
+              crawler.updatedAt = new Date().toISOString();
+            }
+          });
+          persistVault();
           renderCrawlerSwitcher();
           renderVault();
         }
@@ -4178,6 +4310,13 @@
                 e.target.getAttribute("data-vault-name"),
                 e.target.value,
               );
+            if (e.target.matches && e.target.matches("[data-vault-folder]"))
+              moveCrawlerToFolder(
+                e.target.getAttribute("data-vault-folder"),
+                e.target.value,
+              );
+            if (e.target.matches && e.target.matches("#vaultFolderFilter"))
+              renderVault();
           });
           document.addEventListener("click", function (e) {
             var t = e.target;
@@ -4238,8 +4377,14 @@
             }
             if (t.closest("[data-vault-create]")) {
               var newName = $("#newCrawlerName");
-              createCrawler(newName ? newName.value : "");
+              var newFolder = $("#newCrawlerFolder");
+              createCrawler(
+                newName ? newName.value : "",
+                null,
+                newFolder ? newFolder.value : "",
+              );
               if (newName) newName.value = "";
+              if (newFolder) newFolder.value = "";
               return;
             }
             var vaultOpen = t.closest("[data-vault-open]");
