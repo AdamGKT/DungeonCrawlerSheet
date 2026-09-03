@@ -619,6 +619,51 @@
       .cols-skills {
         grid-template-columns: 34px 1.6fr 0.6fr 0.85fr 0.55fr 1fr 2.2fr;
       }
+      .skill-entry + .skill-entry {
+        margin-top: 4px;
+      }
+      .skill-notes-cell {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) auto;
+        gap: 6px;
+        align-items: center;
+      }
+      .skill-toggle {
+        min-height: 36px;
+        padding: 6px 9px;
+        border: 1px solid var(--line);
+        background: var(--paper-2);
+        color: var(--ink);
+        font-family: var(--f-disp);
+        font-size: 9px;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        cursor: pointer;
+      }
+      .skill-toggle[aria-expanded="true"] {
+        border-color: var(--acc);
+        color: var(--acc);
+      }
+      .skill-details {
+        display: grid;
+        grid-template-columns: 2fr 1.25fr 1.25fr;
+        gap: 10px;
+        margin: 6px 0 12px 40px;
+        padding: 12px;
+        border: 1px solid var(--line);
+        border-left: 3px solid var(--acc);
+        background: var(--paper-2);
+      }
+      .skill-details textarea {
+        min-height: 112px;
+        resize: vertical;
+      }
+      @media (max-width: 720px) {
+        .skill-details {
+          grid-template-columns: 1fr;
+          margin-left: 0;
+        }
+      }
       .cols-inv {
         grid-template-columns: 2fr 0.6fr 3fr;
       }
@@ -1381,6 +1426,8 @@
             "btn.export": "Export JSON",
             "btn.reset": "Reset",
             "btn.addRow": "+ Add row",
+            "btn.skillDetails": "Details",
+            "btn.hideSkillDetails": "Hide",
             "btn.removeImg": "Remove image",
             "btn.theme.dark": "Dark",
             "btn.theme.light": "Light",
@@ -1533,6 +1580,9 @@
             "f.enhanced": "Enhanced",
             "f.unenhanced": "Unenhanced",
             "f.mod": "Mod",
+            "f.skillDescription": "Description",
+            "f.skillUpgrades": "Rank upgrades",
+            "f.skillExtendedNotes": "Extended notes",
             "alert.badImage": "Couldn't read that image.",
             "alert.badImport": "This file isn't a valid sheet export.",
             "confirm.reset":
@@ -1547,6 +1597,8 @@
             "btn.export": "Exporter JSON",
             "btn.reset": "Réinitialiser",
             "btn.addRow": "+ Ajouter une ligne",
+            "btn.skillDetails": "Détails",
+            "btn.hideSkillDetails": "Masquer",
             "btn.removeImg": "Retirer l'image",
             "btn.theme.dark": "Sombre",
             "btn.theme.light": "Clair",
@@ -1699,6 +1751,9 @@
             "f.enhanced": "Amélioré",
             "f.unenhanced": "Non amélioré",
             "f.mod": "Mod",
+            "f.skillDescription": "Description",
+            "f.skillUpgrades": "Améliorations de rang",
+            "f.skillExtendedNotes": "Notes détaillées",
             "alert.badImage": "Impossible de lire cette image.",
             "alert.badImport": "Ce fichier n'est pas un export de fiche valide.",
             "confirm.reset":
@@ -1713,6 +1768,8 @@
             "btn.export": "Exportar JSON",
             "btn.reset": "Reiniciar",
             "btn.addRow": "+ Añadir fila",
+            "btn.skillDetails": "Detalles",
+            "btn.hideSkillDetails": "Ocultar",
             "btn.removeImg": "Quitar la imagen",
             "btn.theme.dark": "Oscuro",
             "btn.theme.light": "Claro",
@@ -1865,6 +1922,9 @@
             "f.enhanced": "Mejorado",
             "f.unenhanced": "Sin mejorar",
             "f.mod": "Mod",
+            "f.skillDescription": "Descripción",
+            "f.skillUpgrades": "Mejoras de rango",
+            "f.skillExtendedNotes": "Notas ampliadas",
             "alert.badImage": "No se puede leer esta imagen.",
             "alert.badImport":
               "Ese archivo no es una exportación de hoja válida.",
@@ -1880,6 +1940,8 @@
             "btn.export": "JSON exportieren",
             "btn.reset": "Zurücksetzen",
             "btn.addRow": "+ Zeile hinzufügen",
+            "btn.skillDetails": "Details",
+            "btn.hideSkillDetails": "Ausblenden",
             "btn.removeImg": "Bild entfernen",
             "btn.theme.dark": "Dunkel",
             "btn.theme.light": "Hell",
@@ -2033,6 +2095,9 @@
             "f.enhanced": "Verbessert",
             "f.unenhanced": "Unverbessert",
             "f.mod": "Mod.",
+            "f.skillDescription": "Beschreibung",
+            "f.skillUpgrades": "Rangverbesserungen",
+            "f.skillExtendedNotes": "Ausführliche Notizen",
             "alert.badImage": "Dieses Bild kann nicht gelesen werden.",
             "alert.badImport": "Diese Datei ist kein gültiger Bogen-Export.",
             "confirm.reset":
@@ -2047,6 +2112,8 @@
             "btn.export": "Exportar JSON",
             "btn.reset": "Redefinir",
             "btn.addRow": "+ Adicionar linha",
+            "btn.skillDetails": "Detalhes",
+            "btn.hideSkillDetails": "Ocultar",
             "btn.removeImg": "Remover a imagem",
             "btn.theme.dark": "Escuro",
             "btn.theme.light": "Claro",
@@ -2199,6 +2266,12 @@
             "f.enhanced": "Aprimorado",
             "f.unenhanced": "Sem aprimoramento",
             "f.mod": "Mod",
+            "f.skillDescription": "Descrição",
+            "f.skillUpgrades": "Melhorias de nível",
+            "f.skillExtendedNotes": "Notas detalhadas",
+            "f.skillDescription": "Descrição",
+            "f.skillUpgrades": "Melhorias de nível",
+            "f.skillExtendedNotes": "Notas detalhadas",
             "alert.badImage": "Não é possível ler esta imagem.",
             "alert.badImport":
               "Esse arquivo não é uma exportação de ficha válida.",
@@ -2415,6 +2488,13 @@
           $$("[data-i18n-alt]").forEach(function (el) {
             el.setAttribute("alt", t(el.getAttribute("data-i18n-alt")));
           });
+          $$("[data-skill-toggle]").forEach(function (el) {
+            el.textContent = t(
+              el.getAttribute("aria-expanded") === "true"
+                ? "btn.hideSkillDetails"
+                : "btn.skillDetails",
+            );
+          });
           var ls = $("#langSel");
           if (ls && ls.value !== lang) ls.value = lang;
           applyTheme(
@@ -2543,9 +2623,9 @@
         function skillRowHTML(i) {
           var b = "skills." + i + ".";
           return (
-            '<div class="row cols-skills" data-row="skills.' +
+            '<div class="skill-entry" data-row="skills.' +
             i +
-            '">' +
+            '"><div class="row cols-skills">' +
             '<span style="display:flex;justify-content:center;"><input type="checkbox" data-i18n-title="title.skillAdvancement" data-i18n-aria-label="title.skillAdvancement" title="Mark for Skill Advancement" aria-label="Mark for Skill Advancement" data-k="' +
             b +
             'done"></span>' +
@@ -2568,9 +2648,26 @@
             'checkType">' +
             CHECK_OPTS +
             "</select>" +
-            '<input data-k="' +
+            '<div class="skill-notes-cell"><input data-k="' +
             b +
-            'notes">' +
+            'notes"><button class="skill-toggle" type="button" data-skill-toggle="' +
+            i +
+            '" aria-expanded="false" aria-controls="skill-details-' +
+            i +
+            '" data-i18n="btn.skillDetails">Details</button></div>' +
+            '</div><div class="skill-details" id="skill-details-' +
+            i +
+            '" hidden>' +
+            '<label class="lbl"><span data-i18n="f.skillDescription">Description</span><textarea data-k="' +
+            b +
+            'description"></textarea></label>' +
+            '<label class="lbl"><span data-i18n="f.skillUpgrades">Rank upgrades</span><textarea data-k="' +
+            b +
+            'upgrades"></textarea></label>' +
+            '<label class="lbl"><span data-i18n="f.skillExtendedNotes">Extended notes</span><textarea data-k="' +
+            b +
+            'extendedNotes"></textarea></label>' +
+            "</div>" +
             "</div>"
           );
         }
@@ -3405,6 +3502,21 @@
               applyI18n();
               recompute();
               save();
+              return;
+            }
+            var skillToggle = t.closest("[data-skill-toggle]");
+            if (skillToggle) {
+              var details = $(
+                "#skill-details-" + skillToggle.getAttribute("data-skill-toggle"),
+              );
+              if (details) {
+                var opening = details.hidden;
+                details.hidden = !opening;
+                skillToggle.setAttribute("aria-expanded", String(opening));
+                skillToggle.textContent = opening
+                  ? t("btn.hideSkillDetails")
+                  : t("btn.skillDetails");
+              }
               return;
             }
             var act = t.closest("[data-act]");
