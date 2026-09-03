@@ -20,10 +20,17 @@ automatically in that browser, and nothing ever leaves your machine.
 - **Auto-calculated fields** — stat modifiers, DEX mod, Damage Resistance total,
   Evade total, attack To Hit, skill mods and the mana gauge all update as you
   type. Computed fields are read-only.
-- **Local autosave** — the sheet is written to `localStorage` half a second after
-  every change. Reopen the page and your crawler is still there.
+- **Local autosave & Crawler Vault** — multiple crawlers are written to
+  `localStorage` half a second after every change. Switch from the header, group
+  crawlers into campaign folders, duplicate them, or use the Vault's compact DM
+  overview for Health, Mana, Level, Floor and active Debuffs.
 - **Import / Export JSON** — back up a crawler or move it between devices and
-  browsers with a single file.
+  browsers with a single file. Importing creates a new Vault crawler instead of
+  overwriting the one currently open.
+- **Expandable Skill details** — every Skill row has multiline Description,
+  Rank Upgrades and Extended Notes fields without making the play view wider.
+- **A4 printing** — print the current section or a complete crawler dossier.
+  Print mode includes populated Skill details and trims excessive blank rows.
 - **Portraits & diagrams** — click or drag-and-drop an image onto the portrait or
   personal-space box; it is resized to 640 px and embedded directly in the sheet
   (and in the JSON export).
@@ -105,6 +112,8 @@ Necrotic, Piercing, Poison, Psychic, Slashing and Sonic.
 Starts with 24 rows, add more as needed: Skill Advancement mark, Name, Rank,
 Stat, automatically derived **Stat Mod**, Check Type (Unopposed / Opposed /
 Passive / Evade) and Notes & Upgrades. Rank is tracked separately from Stat Mod.
+Use a row's **Details** button for a full Skill description, Rank Upgrades and
+extended or homebrew notes.
 
 ### Inventory
 Starts with 36 rows of UI space, not a game-rule capacity; add more as needed.
@@ -147,16 +156,19 @@ GitHub Pages, Netlify, a USB stick, a local folder.
 | --- | --- |
 | Language selector | Switch the interface language. |
 | Dark / Light | Toggle the colour theme. |
-| Import | Load a previously exported `*-sheet.json` file (replaces the current sheet). |
+| Import | Load a previously exported `*-sheet.json` file as a new Vault crawler. |
 | Export JSON | Download the current crawler as JSON. |
+| Print | Print the current section or the complete crawler dossier. |
+| Vault | Create, switch, duplicate, rename, group or delete local crawlers. |
 | Reset | Clear every field. This cannot be undone — export first. |
 
 ---
 
 ## Data & privacy
 
-- Everything lives in your browser's `localStorage` (key `dcsheet.v1`) plus a
-  separate key for the theme and the chosen language.
+- Everything lives in your browser's `localStorage`. The Vault uses
+  `dcsheet.vault.v1`; the active crawler is also mirrored to `dcsheet.v1` for
+  backwards compatibility. Theme and language use separate keys.
 - No account, no network requests, no analytics. The sheet never sends your data
   anywhere.
 - Clearing your browser data, using private browsing, or switching browsers means
@@ -166,7 +178,7 @@ GitHub Pages, Netlify, a USB stick, a local folder.
 
 ## Tech notes
 
-- One file: HTML + CSS + vanilla JavaScript, ES5-compatible, ~2,200 lines.
+- One file: HTML + CSS + vanilla JavaScript, ES5-compatible, ~4,500 lines.
 - No dependencies or build tooling. The repeating parts of the sheet (stat cards,
   table rows, journal pages, tab bar, translations) are generated at load time.
 - Fields are bound by a `data-k` attribute to a flat key (e.g. `stats.STR.enh`);

@@ -619,6 +619,51 @@
       .cols-skills {
         grid-template-columns: 34px 1.6fr 0.6fr 0.85fr 0.55fr 1fr 2.2fr;
       }
+      .skill-entry + .skill-entry {
+        margin-top: 4px;
+      }
+      .skill-notes-cell {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) auto;
+        gap: 6px;
+        align-items: center;
+      }
+      .skill-toggle {
+        min-height: 36px;
+        padding: 6px 9px;
+        border: 1px solid var(--line);
+        background: var(--paper-2);
+        color: var(--ink);
+        font-family: var(--f-disp);
+        font-size: 9px;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        cursor: pointer;
+      }
+      .skill-toggle[aria-expanded="true"] {
+        border-color: var(--acc);
+        color: var(--acc);
+      }
+      .skill-details {
+        display: grid;
+        grid-template-columns: 2fr 1.25fr 1.25fr;
+        gap: 10px;
+        margin: 6px 0 12px 40px;
+        padding: 12px;
+        border: 1px solid var(--line);
+        border-left: 3px solid var(--acc);
+        background: var(--paper-2);
+      }
+      .skill-details textarea {
+        min-height: 112px;
+        resize: vertical;
+      }
+      @media (max-width: 720px) {
+        .skill-details {
+          grid-template-columns: 1fr;
+          margin-left: 0;
+        }
+      }
       .cols-inv {
         grid-template-columns: 2fr 0.6fr 3fr;
       }
@@ -781,6 +826,202 @@
           padding: 14px;
         }
       }
+
+      /* ---------- printing ---------- */
+      .print-dialog {
+        width: min(460px, calc(100% - 32px));
+        padding: 0;
+        border: 1px solid var(--line);
+        border-radius: 4px;
+        background: var(--paper);
+        color: var(--ink);
+        box-shadow: 0 24px 80px rgba(0, 0, 0, 0.35);
+      }
+      .print-dialog::backdrop {
+        background: rgba(0, 0, 0, 0.55);
+      }
+      .print-dialog-body {
+        display: grid;
+        gap: 14px;
+        padding: 22px;
+      }
+      .print-dialog-actions {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 8px;
+      }
+      .print-dialog-actions .cancel {
+        grid-column: 1 / -1;
+      }
+      .crawler-switcher {
+        min-width: 170px;
+        max-width: 240px;
+      }
+      .vault-dialog {
+        width: min(720px, calc(100% - 24px));
+        max-height: min(760px, calc(100vh - 24px));
+        padding: 0;
+        border: 1px solid var(--line);
+        border-radius: 4px;
+        background: var(--paper);
+        color: var(--ink);
+      }
+      .vault-dialog::backdrop {
+        background: rgba(0, 0, 0, 0.6);
+      }
+      .vault-body {
+        display: grid;
+        gap: 16px;
+        padding: 22px;
+      }
+      .vault-create {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) minmax(140px, 0.7fr) auto;
+        gap: 8px;
+      }
+      .vault-filter {
+        display: grid;
+        grid-template-columns: auto minmax(160px, 260px);
+        gap: 8px;
+        align-items: center;
+      }
+      .vault-list {
+        display: grid;
+        gap: 8px;
+        max-height: 430px;
+        overflow: auto;
+      }
+      .vault-row {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) auto auto auto;
+        gap: 6px;
+        align-items: center;
+        padding: 8px;
+        border: 1px solid var(--line);
+        background: var(--paper-2);
+      }
+      .vault-row.is-active {
+        border-left: 4px solid var(--acc);
+      }
+      .vault-info {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) minmax(110px, 0.65fr);
+        gap: 6px;
+      }
+      .vault-summary {
+        grid-column: 1 / -1;
+        font-family: var(--f-mono);
+        font-size: 10px;
+        color: var(--muted);
+      }
+      @media (max-width: 640px) {
+        .crawler-switcher {
+          width: 100%;
+          max-width: none;
+        }
+        .vault-row {
+          grid-template-columns: 1fr 1fr;
+        }
+        .vault-info {
+          grid-column: 1 / -1;
+        }
+        .vault-create {
+          grid-template-columns: 1fr;
+        }
+      }
+
+      @page {
+        size: A4 portrait;
+        margin: 12mm;
+      }
+      @media print {
+        :root,
+        :root[data-theme="dark"] {
+          --paper: #fff;
+          --paper-2: #fff;
+          --ink: #111;
+          --muted: #444;
+          --faint: #666;
+          --line: #777;
+          --acc: #111;
+          --acc-ink: #fff;
+        }
+        html,
+        body {
+          background: #fff !important;
+          color: #111 !important;
+          print-color-adjust: exact;
+          -webkit-print-color-adjust: exact;
+        }
+        body {
+          padding: 0;
+        }
+        .page {
+          max-width: none;
+          margin: 0;
+        }
+        header.bar,
+        nav.tabbar,
+        .saved,
+        .addrow,
+        .skill-toggle,
+        .print-dialog,
+        [data-imgbox-clear] {
+          display: none !important;
+        }
+        main {
+          padding: 0;
+        }
+        body.print-all [data-pane][hidden],
+        body.print-all [data-jpane][hidden] {
+          display: block !important;
+        }
+        body.print-all [data-pane] + [data-pane],
+        body.print-all [data-jpane] + [data-jpane] {
+          break-before: page;
+        }
+        body.print-current [data-pane][hidden],
+        body.print-current [data-jpane][hidden] {
+          display: none !important;
+        }
+        .card,
+        .inset,
+        .skill-entry,
+        .note-card,
+        label {
+          break-inside: avoid;
+        }
+        .scrollx {
+          overflow: visible;
+        }
+        .tbl,
+        .tbl[style] {
+          min-width: 0 !important;
+          font-size: 9px;
+        }
+        .tbl input,
+        .tbl select,
+        .tbl textarea {
+          font-size: 9px;
+          padding: 4px;
+        }
+        input,
+        select,
+        textarea {
+          color: #111 !important;
+          background: #fff !important;
+          border-color: #777 !important;
+        }
+        textarea {
+          overflow: visible !important;
+        }
+        [data-print-hide="true"] {
+          display: none !important;
+        }
+        .skill-details[data-print-open="true"] {
+          display: grid !important;
+        }
+      }
     </style>
   </head>
   <body>
@@ -792,6 +1033,8 @@
         </div>
         <div class="sub" data-hdr="sub"></div>
         <div class="tools">
+          <select class="crawler-switcher" id="crawlerSelect" data-i18n-title="title.crawlerSelect" title="Switch crawler"></select>
+          <button class="btn" data-act="vault" type="button" data-i18n="btn.vault">Vault</button>
           <select id="langSel" title="Language / Langue">
             <option value="en">EN</option>
             <option value="fr">FR</option>
@@ -810,6 +1053,9 @@
           <button class="btn" data-act="import" type="button" data-i18n="btn.import">Import</button>
           <button class="btn primary" data-act="export" type="button" data-i18n="btn.export">
             Export JSON
+          </button>
+          <button class="btn" data-act="print" type="button" data-i18n="btn.print">
+            Print
           </button>
           <button
             class="btn"
@@ -1135,7 +1381,7 @@
               <div class="card grid" style="gap: 12px">
                 <div class="jsection-lbl" data-i18n="f.race">Race</div>
                 <label class="lbl"
-                  ><span data-i18n="f.raceName">Name of Race</span><input data-k="race.name"
+                  ><span data-i18n="f.raceName">Name of Race</span><input data-k="race.name" data-mirror="identity.race"
                 /></label>
                 <label class="lbl"
                   ><span data-i18n="f.racialBenefits">Racial Benefits</span
@@ -1145,7 +1391,7 @@
               <div class="card grid" style="gap: 12px">
                 <div class="jsection-lbl" data-i18n="f.class">Class</div>
                 <label class="lbl"
-                  ><span data-i18n="f.className">Name of Class</span><input data-k="class.name"
+                  ><span data-i18n="f.className">Name of Class</span><input data-k="class.name" data-mirror="identity.class"
                 /></label>
                 <label class="lbl"
                   ><span data-i18n="f.classBenefits">Class Benefits</span
@@ -1242,12 +1488,53 @@
       <nav class="tabbar" id="tabbar"></nav>
     </div>
 
+    <dialog class="print-dialog" id="printDialog">
+      <div class="print-dialog-body">
+        <div class="chip" data-i18n="print.title">Print crawler</div>
+        <div class="hint" data-i18n="print.help">
+          Choose the current section or the complete crawler dossier.
+        </div>
+        <div class="print-dialog-actions">
+          <button class="btn primary" type="button" data-print-mode="current" data-i18n="print.current">
+            Current section
+          </button>
+          <button class="btn primary" type="button" data-print-mode="all" data-i18n="print.all">
+            Complete crawler
+          </button>
+          <button class="btn cancel" type="button" data-print-cancel data-i18n="print.cancel">
+            Cancel
+          </button>
+        </div>
+      </div>
+    </dialog>
+
+    <dialog class="vault-dialog" id="vaultDialog">
+      <div class="vault-body">
+        <div class="chip" data-i18n="vault.title">Crawler Vault</div>
+        <div class="hint" data-i18n="vault.help">
+          Switch between crawlers stored in this browser. Export JSON backups before clearing browser data.
+        </div>
+        <div class="vault-create">
+          <input id="newCrawlerName" data-i18n-ph="vault.newName" placeholder="New crawler name" />
+          <input id="newCrawlerFolder" data-i18n-ph="vault.newFolder" placeholder="Campaign / folder" />
+          <button class="btn primary" type="button" data-vault-create data-i18n="vault.create">Create crawler</button>
+        </div>
+        <label class="vault-filter">
+          <span class="jsection-lbl" data-i18n="vault.filter">Folder</span>
+          <select id="vaultFolderFilter"></select>
+        </label>
+        <div class="vault-list" id="vaultList"></div>
+        <button class="btn" type="button" data-vault-close data-i18n="vault.close">Close</button>
+      </div>
+    </dialog>
+
     <script>
       (function () {
         "use strict";
 
         /* ---------------- config ---------------- */
         var STORE = "dcsheet.v1",
+          VAULT_STORE = "dcsheet.vault.v1",
           TKEY = "dcsheet.theme";
         var STATS = ["STR", "INT", "CON", "DEX", "CHA"];
         var STAT_LIST = [
@@ -1379,8 +1666,34 @@
             "hdr.floor": "FLOOR",
             "btn.import": "Import",
             "btn.export": "Export JSON",
+            "btn.print": "Print",
+            "btn.vault": "Vault",
+            "title.crawlerSelect": "Switch crawler",
+            "vault.title": "Crawler Vault",
+            "vault.help": "Switch between crawlers stored in this browser. Export JSON backups before clearing browser data.",
+            "vault.newName": "New crawler name",
+            "vault.newFolder": "Campaign / folder",
+            "vault.filter": "Folder",
+            "vault.allFolders": "All folders",
+            "vault.noFolder": "No folder",
+            "vault.activeDebuffs": "active Debuffs",
+            "vault.create": "Create crawler",
+            "vault.open": "Open",
+            "vault.duplicate": "Duplicate",
+            "vault.delete": "Delete",
+            "vault.close": "Close",
+            "vault.unnamed": "Unnamed Crawler",
+            "vault.copySuffix": "copy",
+            "confirm.deleteCrawler": "Delete this crawler? This cannot be undone.",
+            "print.title": "Print crawler",
+            "print.help": "Choose the current section or the complete crawler dossier.",
+            "print.current": "Current section",
+            "print.all": "Complete crawler",
+            "print.cancel": "Cancel",
             "btn.reset": "Reset",
             "btn.addRow": "+ Add row",
+            "btn.skillDetails": "Details",
+            "btn.hideSkillDetails": "Hide",
             "btn.removeImg": "Remove image",
             "btn.theme.dark": "Dark",
             "btn.theme.light": "Light",
@@ -1533,6 +1846,9 @@
             "f.enhanced": "Enhanced",
             "f.unenhanced": "Unenhanced",
             "f.mod": "Mod",
+            "f.skillDescription": "Description",
+            "f.skillUpgrades": "Rank upgrades",
+            "f.skillExtendedNotes": "Extended notes",
             "alert.badImage": "Couldn't read that image.",
             "alert.badImport": "This file isn't a valid sheet export.",
             "confirm.reset":
@@ -1545,8 +1861,34 @@
             "hdr.floor": "ÉTAGE",
             "btn.import": "Importer",
             "btn.export": "Exporter JSON",
+            "btn.print": "Imprimer",
+            "btn.vault": "Coffre",
+            "title.crawlerSelect": "Changer de Crawler",
+            "vault.title": "Coffre des Crawlers",
+            "vault.help": "Passez d'un Crawler à l'autre dans ce navigateur. Exportez des sauvegardes JSON avant d'effacer les données du navigateur.",
+            "vault.newName": "Nom du nouveau Crawler",
+            "vault.newFolder": "Campagne / dossier",
+            "vault.filter": "Dossier",
+            "vault.allFolders": "Tous les dossiers",
+            "vault.noFolder": "Sans dossier",
+            "vault.activeDebuffs": "Debuffs actifs",
+            "vault.create": "Créer un Crawler",
+            "vault.open": "Ouvrir",
+            "vault.duplicate": "Dupliquer",
+            "vault.delete": "Supprimer",
+            "vault.close": "Fermer",
+            "vault.unnamed": "Crawler sans nom",
+            "vault.copySuffix": "copie",
+            "confirm.deleteCrawler": "Supprimer ce Crawler ? Cette action est irréversible.",
+            "print.title": "Imprimer le Crawler",
+            "print.help": "Choisissez la section actuelle ou le dossier complet du Crawler.",
+            "print.current": "Section actuelle",
+            "print.all": "Crawler complet",
+            "print.cancel": "Annuler",
             "btn.reset": "Réinitialiser",
             "btn.addRow": "+ Ajouter une ligne",
+            "btn.skillDetails": "Détails",
+            "btn.hideSkillDetails": "Masquer",
             "btn.removeImg": "Retirer l'image",
             "btn.theme.dark": "Sombre",
             "btn.theme.light": "Clair",
@@ -1699,6 +2041,9 @@
             "f.enhanced": "Amélioré",
             "f.unenhanced": "Non amélioré",
             "f.mod": "Mod",
+            "f.skillDescription": "Description",
+            "f.skillUpgrades": "Améliorations de rang",
+            "f.skillExtendedNotes": "Notes détaillées",
             "alert.badImage": "Impossible de lire cette image.",
             "alert.badImport": "Ce fichier n'est pas un export de fiche valide.",
             "confirm.reset":
@@ -1711,8 +2056,34 @@
             "hdr.floor": "PISO",
             "btn.import": "Importar",
             "btn.export": "Exportar JSON",
+            "btn.print": "Imprimir",
+            "btn.vault": "Bóveda",
+            "title.crawlerSelect": "Cambiar de Crawler",
+            "vault.title": "Bóveda de Crawlers",
+            "vault.help": "Cambia entre los Crawlers guardados en este navegador. Exporta copias JSON antes de borrar los datos del navegador.",
+            "vault.newName": "Nombre del nuevo Crawler",
+            "vault.newFolder": "Campaña / carpeta",
+            "vault.filter": "Carpeta",
+            "vault.allFolders": "Todas las carpetas",
+            "vault.noFolder": "Sin carpeta",
+            "vault.activeDebuffs": "Debuffs activos",
+            "vault.create": "Crear Crawler",
+            "vault.open": "Abrir",
+            "vault.duplicate": "Duplicar",
+            "vault.delete": "Eliminar",
+            "vault.close": "Cerrar",
+            "vault.unnamed": "Crawler sin nombre",
+            "vault.copySuffix": "copia",
+            "confirm.deleteCrawler": "¿Eliminar este Crawler? Esta acción no se puede deshacer.",
+            "print.title": "Imprimir Crawler",
+            "print.help": "Elige la sección actual o el expediente completo del Crawler.",
+            "print.current": "Sección actual",
+            "print.all": "Crawler completo",
+            "print.cancel": "Cancelar",
             "btn.reset": "Reiniciar",
             "btn.addRow": "+ Añadir fila",
+            "btn.skillDetails": "Detalles",
+            "btn.hideSkillDetails": "Ocultar",
             "btn.removeImg": "Quitar la imagen",
             "btn.theme.dark": "Oscuro",
             "btn.theme.light": "Claro",
@@ -1865,6 +2236,9 @@
             "f.enhanced": "Mejorado",
             "f.unenhanced": "Sin mejorar",
             "f.mod": "Mod",
+            "f.skillDescription": "Descripción",
+            "f.skillUpgrades": "Mejoras de rango",
+            "f.skillExtendedNotes": "Notas ampliadas",
             "alert.badImage": "No se puede leer esta imagen.",
             "alert.badImport":
               "Ese archivo no es una exportación de hoja válida.",
@@ -1878,8 +2252,34 @@
             "hdr.floor": "EBENE",
             "btn.import": "Importieren",
             "btn.export": "JSON exportieren",
+            "btn.print": "Drucken",
+            "btn.vault": "Ablage",
+            "title.crawlerSelect": "Crawler wechseln",
+            "vault.title": "Crawler-Ablage",
+            "vault.help": "Wechsle zwischen Crawlers, die in diesem Browser gespeichert sind. Exportiere JSON-Sicherungen, bevor Browserdaten gelöscht werden.",
+            "vault.newName": "Name des neuen Crawlers",
+            "vault.newFolder": "Kampagne / Ordner",
+            "vault.filter": "Ordner",
+            "vault.allFolders": "Alle Ordner",
+            "vault.noFolder": "Kein Ordner",
+            "vault.activeDebuffs": "aktive Debuffs",
+            "vault.create": "Crawler erstellen",
+            "vault.open": "Öffnen",
+            "vault.duplicate": "Duplizieren",
+            "vault.delete": "Löschen",
+            "vault.close": "Schließen",
+            "vault.unnamed": "Unbenannter Crawler",
+            "vault.copySuffix": "Kopie",
+            "confirm.deleteCrawler": "Diesen Crawler löschen? Dies kann nicht rückgängig gemacht werden.",
+            "print.title": "Crawler drucken",
+            "print.help": "Wähle den aktuellen Bereich oder das vollständige Crawler-Dossier.",
+            "print.current": "Aktueller Bereich",
+            "print.all": "Vollständiger Crawler",
+            "print.cancel": "Abbrechen",
             "btn.reset": "Zurücksetzen",
             "btn.addRow": "+ Zeile hinzufügen",
+            "btn.skillDetails": "Details",
+            "btn.hideSkillDetails": "Ausblenden",
             "btn.removeImg": "Bild entfernen",
             "btn.theme.dark": "Dunkel",
             "btn.theme.light": "Hell",
@@ -2033,6 +2433,9 @@
             "f.enhanced": "Verbessert",
             "f.unenhanced": "Unverbessert",
             "f.mod": "Mod.",
+            "f.skillDescription": "Beschreibung",
+            "f.skillUpgrades": "Rangverbesserungen",
+            "f.skillExtendedNotes": "Ausführliche Notizen",
             "alert.badImage": "Dieses Bild kann nicht gelesen werden.",
             "alert.badImport": "Diese Datei ist kein gültiger Bogen-Export.",
             "confirm.reset":
@@ -2045,8 +2448,34 @@
             "hdr.floor": "ANDAR",
             "btn.import": "Importar",
             "btn.export": "Exportar JSON",
+            "btn.print": "Imprimir",
+            "btn.vault": "Cofre",
+            "title.crawlerSelect": "Trocar de Crawler",
+            "vault.title": "Cofre de Crawlers",
+            "vault.help": "Alterne entre Crawlers armazenados neste navegador. Exporte cópias JSON antes de limpar os dados do navegador.",
+            "vault.newName": "Nome do novo Crawler",
+            "vault.newFolder": "Campanha / pasta",
+            "vault.filter": "Pasta",
+            "vault.allFolders": "Todas as pastas",
+            "vault.noFolder": "Sem pasta",
+            "vault.activeDebuffs": "Debuffs ativos",
+            "vault.create": "Criar Crawler",
+            "vault.open": "Abrir",
+            "vault.duplicate": "Duplicar",
+            "vault.delete": "Excluir",
+            "vault.close": "Fechar",
+            "vault.unnamed": "Crawler sem nome",
+            "vault.copySuffix": "cópia",
+            "confirm.deleteCrawler": "Excluir este Crawler? Isso não pode ser desfeito.",
+            "print.title": "Imprimir Crawler",
+            "print.help": "Escolha a seção atual ou o dossiê completo do Crawler.",
+            "print.current": "Seção atual",
+            "print.all": "Crawler completo",
+            "print.cancel": "Cancelar",
             "btn.reset": "Redefinir",
             "btn.addRow": "+ Adicionar linha",
+            "btn.skillDetails": "Detalhes",
+            "btn.hideSkillDetails": "Ocultar",
             "btn.removeImg": "Remover a imagem",
             "btn.theme.dark": "Escuro",
             "btn.theme.light": "Claro",
@@ -2199,6 +2628,12 @@
             "f.enhanced": "Aprimorado",
             "f.unenhanced": "Sem aprimoramento",
             "f.mod": "Mod",
+            "f.skillDescription": "Descrição",
+            "f.skillUpgrades": "Melhorias de nível",
+            "f.skillExtendedNotes": "Notas detalhadas",
+            "f.skillDescription": "Descrição",
+            "f.skillUpgrades": "Melhorias de nível",
+            "f.skillExtendedNotes": "Notas detalhadas",
             "alert.badImage": "Não é possível ler esta imagem.",
             "alert.badImport":
               "Esse arquivo não é uma exportação de ficha válida.",
@@ -2415,11 +2850,22 @@
           $$("[data-i18n-alt]").forEach(function (el) {
             el.setAttribute("alt", t(el.getAttribute("data-i18n-alt")));
           });
+          $$("[data-skill-toggle]").forEach(function (el) {
+            el.textContent = t(
+              el.getAttribute("aria-expanded") === "true"
+                ? "btn.hideSkillDetails"
+                : "btn.skillDetails",
+            );
+          });
           var ls = $("#langSel");
           if (ls && ls.value !== lang) ls.value = lang;
           applyTheme(
             document.documentElement.getAttribute("data-theme") || "light",
           );
+          if (vault) {
+            renderCrawlerSwitcher();
+            renderVault();
+          }
           header();
         }
 
@@ -2543,9 +2989,9 @@
         function skillRowHTML(i) {
           var b = "skills." + i + ".";
           return (
-            '<div class="row cols-skills" data-row="skills.' +
+            '<div class="skill-entry" data-row="skills.' +
             i +
-            '">' +
+            '"><div class="row cols-skills">' +
             '<span style="display:flex;justify-content:center;"><input type="checkbox" data-i18n-title="title.skillAdvancement" data-i18n-aria-label="title.skillAdvancement" title="Mark for Skill Advancement" aria-label="Mark for Skill Advancement" data-k="' +
             b +
             'done"></span>' +
@@ -2568,9 +3014,26 @@
             'checkType">' +
             CHECK_OPTS +
             "</select>" +
-            '<input data-k="' +
+            '<div class="skill-notes-cell"><input data-k="' +
             b +
-            'notes">' +
+            'notes"><button class="skill-toggle" type="button" data-skill-toggle="' +
+            i +
+            '" aria-expanded="false" aria-controls="skill-details-' +
+            i +
+            '" data-i18n="btn.skillDetails">Details</button></div>' +
+            '</div><div class="skill-details" id="skill-details-' +
+            i +
+            '" hidden>' +
+            '<label class="lbl"><span data-i18n="f.skillDescription">Description</span><textarea data-k="' +
+            b +
+            'description"></textarea></label>' +
+            '<label class="lbl"><span data-i18n="f.skillUpgrades">Rank upgrades</span><textarea data-k="' +
+            b +
+            'upgrades"></textarea></label>' +
+            '<label class="lbl"><span data-i18n="f.skillExtendedNotes">Extended notes</span><textarea data-k="' +
+            b +
+            'extendedNotes"></textarea></label>' +
+            "</div>" +
             "</div>"
           );
         }
@@ -2619,6 +3082,20 @@
           while (invCount > n) {
             $("#invRows").lastElementChild.remove();
             invCount--;
+          }
+        }
+        function resizeAttacks(n) {
+          ensureAttacks(n);
+          while (attackCount > n) {
+            $("#attackRows").lastElementChild.remove();
+            attackCount--;
+          }
+        }
+        function resizeSkills(n) {
+          ensureSkills(n);
+          while (skillCount > n) {
+            $("#skillRows").lastElementChild.remove();
+            skillCount--;
           }
         }
 
@@ -3059,37 +3536,140 @@
           return flat;
         }
 
-        var saveTimer, toastTimer;
+        var saveTimer, toastTimer, vault;
+
+        function newCrawlerId() {
+          if (window.crypto && window.crypto.randomUUID)
+            return window.crypto.randomUUID();
+          return (
+            "crawler-" +
+            Date.now().toString(36) +
+            "-" +
+            Math.random().toString(36).slice(2, 10)
+          );
+        }
+
+        function sheetDataFromFields() {
+          return {
+            v: 2,
+            savedAt: new Date().toISOString(),
+            counts: {
+              attacks: attackCount,
+              skills: skillCount,
+              inv: invCount,
+            },
+            fields: collect(),
+          };
+        }
+
+        function blankSheetData(name) {
+          var flat = {
+            "identity.level": "1",
+            "identity.floor": "1",
+            "def.move": "20",
+            "def.step": "10",
+          };
+          if (String(name || "").trim())
+            flat["identity.name"] = String(name).trim();
+          return {
+            v: 2,
+            savedAt: new Date().toISOString(),
+            counts: {
+              attacks: DEFAULT_ATTACKS,
+              skills: DEFAULT_SKILLS,
+              inv: DEFAULT_INV,
+            },
+            fields: flat,
+          };
+        }
+
+        function activeCrawler() {
+          if (!vault || !vault.crawlers) return null;
+          for (var i = 0; i < vault.crawlers.length; i++)
+            if (vault.crawlers[i].id === vault.activeId)
+              return vault.crawlers[i];
+          return null;
+        }
+
+        function ensureVault() {
+          if (vault) return vault;
+          try {
+            var stored = JSON.parse(localStorage.getItem(VAULT_STORE) || "null");
+            if (stored && stored.v === 1 && Array.isArray(stored.crawlers))
+              vault = stored;
+          } catch (err) {}
+
+          if (!vault || !vault.crawlers.length) {
+            var legacy = null;
+            try {
+              legacy = JSON.parse(localStorage.getItem(STORE) || "null");
+            } catch (err) {}
+            var data = legacy && legacy.fields ? legacy : blankSheetData("");
+            var flat = data.fields || {};
+            var id = newCrawlerId();
+            vault = {
+              v: 1,
+              activeId: id,
+              crawlers: [
+                {
+                  id: id,
+                  name:
+                    String(flat["identity.name"] || "").trim() ||
+                    t("vault.unnamed"),
+                  folder: "",
+                  createdAt: new Date().toISOString(),
+                  updatedAt: new Date().toISOString(),
+                  data: data,
+                },
+              ],
+            };
+          }
+          if (!activeCrawler() && vault.crawlers.length)
+            vault.activeId = vault.crawlers[0].id;
+          persistVault();
+          return vault;
+        }
+
+        function persistVault() {
+          if (!vault) return;
+          localStorage.setItem(VAULT_STORE, JSON.stringify(vault));
+        }
+
+        function showSavedToast() {
+          var tag = $("[data-saved]");
+          if (!tag) return;
+          tag.textContent =
+            t("toast.saved") + " " + new Date().toLocaleTimeString();
+          tag.style.opacity = "1";
+          clearTimeout(toastTimer);
+          toastTimer = setTimeout(function () {
+            tag.style.opacity = "0";
+          }, 1600);
+        }
+
+        function saveNow(showToast) {
+          try {
+            ensureVault();
+            var crawler = activeCrawler();
+            if (!crawler) return;
+            crawler.data = sheetDataFromFields();
+            crawler.updatedAt = new Date().toISOString();
+            var sheetName = String(val("identity.name") || "").trim();
+            if (sheetName) crawler.name = sheetName;
+            persistVault();
+            localStorage.setItem(STORE, JSON.stringify(crawler.data));
+            renderCrawlerSwitcher();
+            if ($("#vaultDialog") && $("#vaultDialog").open) renderVault();
+            if (showToast) showSavedToast();
+          } catch (err) {
+            /* storage full or blocked */
+          }
+        }
+
         function save() {
           clearTimeout(saveTimer);
           saveTimer = setTimeout(function () {
-            try {
-              localStorage.setItem(
-                STORE,
-                JSON.stringify({
-                  v: 2,
-                  savedAt: new Date().toISOString(),
-                  counts: {
-                    attacks: attackCount,
-                    skills: skillCount,
-                    inv: invCount,
-                  },
-                  fields: collect(),
-                }),
-              );
-              var tag = $("[data-saved]");
-              if (tag) {
-                tag.textContent =
-                  t("toast.saved") + " " + new Date().toLocaleTimeString();
-                tag.style.opacity = "1";
-                clearTimeout(toastTimer);
-                toastTimer = setTimeout(function () {
-                  tag.style.opacity = "0";
-                }, 1600);
-              }
-            } catch (err) {
-              /* storage full or blocked */
-            }
+            saveNow(true);
           }, 500);
         }
 
@@ -3139,6 +3719,28 @@
           return flat;
         }
 
+        function migrateLinkedIdentity(flat) {
+          [
+            ["identity.race", "race.name"],
+            ["identity.class", "class.name"],
+          ].forEach(function (pair) {
+            var canonical = pair[0],
+              legacy = pair[1];
+            if (
+              (flat[canonical] == null || String(flat[canonical]).trim() === "") &&
+              flat[legacy] != null &&
+              String(flat[legacy]).trim() !== ""
+            )
+              flat[canonical] = flat[legacy];
+            if (
+              flat[canonical] != null &&
+              String(flat[canonical]).trim() !== ""
+            )
+              flat[legacy] = flat[canonical];
+          });
+          return flat;
+        }
+
         function ensureFromData(flat, counts) {
           counts = counts || {};
           ensureAttacks(
@@ -3160,17 +3762,284 @@
           );
         }
 
+        function loadSheetData(d) {
+          d = d || blankSheetData("");
+          var flat = migrateLinkedIdentity(
+            migrateLegacyAttacks(d.fields || {}),
+          );
+          var counts = d.counts || {};
+          resizeAttacks(
+            Math.max(DEFAULT_ATTACKS, counts.attacks || 0, maxIndex(flat, "attacks.") + 1),
+          );
+          resizeSkills(
+            Math.max(DEFAULT_SKILLS, counts.skills || 0, maxIndex(flat, "skills.") + 1),
+          );
+          resizeInv(
+            Math.max(DEFAULT_INV, counts.inv || 0, maxIndex(flat, "inv.") + 1),
+          );
+          fields().forEach(function (el) {
+            if (el.type === "checkbox") el.checked = false;
+            else el.value = "";
+            el.removeAttribute("data-dirty");
+          });
+          setDefaultMovement();
+          setDefaultLevelAndFloor();
+          apply(flat, true);
+          renderImages();
+        }
+
         function load() {
           try {
-            var raw = localStorage.getItem(STORE);
-            if (!raw) return;
-            var d = JSON.parse(raw);
-            var flat = migrateLegacyAttacks(d.fields || {});
-            ensureFromData(flat, d.counts);
-            apply(flat);
+            ensureVault();
+            var crawler = activeCrawler();
+            if (crawler) loadSheetData(crawler.data);
+            renderCrawlerSwitcher();
+            renderVault();
           } catch (err) {
             /* ignore corrupt save */
           }
+        }
+
+        /* ---------------- crawler vault ---------------- */
+        function renderCrawlerSwitcher() {
+          var select = $("#crawlerSelect");
+          if (!select || !vault) return;
+          select.innerHTML = vault.crawlers
+            .map(function (crawler) {
+              return (
+                '<option value="' +
+                esc(crawler.id) +
+                '"' +
+                (crawler.id === vault.activeId ? " selected" : "") +
+                ">" +
+                esc(crawler.name || t("vault.unnamed")) +
+                "</option>"
+              );
+            })
+            .join("");
+        }
+
+        function renderVault() {
+          var list = $("#vaultList");
+          if (!list || !vault) return;
+          var filter = $("#vaultFolderFilter");
+          var selectedFolder = filter ? filter.value : "*";
+          var folders = [];
+          vault.crawlers.forEach(function (crawler) {
+            var folder = String(crawler.folder || "").trim();
+            if (folder && folders.indexOf(folder) < 0) folders.push(folder);
+          });
+          folders.sort(function (a, b) {
+            return a.localeCompare(b);
+          });
+          if (filter) {
+            filter.innerHTML =
+              '<option value="*">' +
+              esc(t("vault.allFolders")) +
+              '</option><option value="">' +
+              esc(t("vault.noFolder")) +
+              "</option>" +
+              folders
+                .map(function (folder) {
+                  return (
+                    '<option value="' + esc(folder) + '">' + esc(folder) + "</option>"
+                  );
+                })
+                .join("");
+            var validSelection =
+              selectedFolder === "*" ||
+              selectedFolder === "" ||
+              folders.indexOf(selectedFolder) >= 0;
+            filter.value = validSelection ? selectedFolder : "*";
+            selectedFolder = filter.value;
+          }
+          list.innerHTML = vault.crawlers
+            .filter(function (crawler) {
+              return (
+                selectedFolder === "*" ||
+                String(crawler.folder || "").trim() === selectedFolder
+              );
+            })
+            .map(function (crawler) {
+              return (
+                '<div class="vault-row' +
+                (crawler.id === vault.activeId ? " is-active" : "") +
+                '" data-vault-row="' +
+                esc(crawler.id) +
+                '">' +
+                '<div class="vault-info"><input value="' +
+                esc(crawler.name || t("vault.unnamed")) +
+                '" data-vault-name="' +
+                esc(crawler.id) +
+                '" aria-label="Crawler name"><input value="' +
+                esc(crawler.folder || "") +
+                '" data-vault-folder="' +
+                esc(crawler.id) +
+                '" data-i18n-ph="vault.newFolder" placeholder="Campaign / folder" aria-label="Campaign or folder">' +
+                '<div class="vault-summary">' +
+                crawlerSummary(crawler) +
+                "</div></div>" +
+                '<button class="btn primary" type="button" data-vault-open="' +
+                esc(crawler.id) +
+                '" data-i18n="vault.open">' +
+                t("vault.open") +
+                "</button>" +
+                '<button class="btn" type="button" data-vault-duplicate="' +
+                esc(crawler.id) +
+                '" data-i18n="vault.duplicate">' +
+                t("vault.duplicate") +
+                "</button>" +
+                '<button class="btn danger" type="button" data-vault-delete="' +
+                esc(crawler.id) +
+                '" data-i18n="vault.delete">' +
+                t("vault.delete") +
+                "</button></div>"
+              );
+            })
+            .join("");
+        }
+
+        function crawlerSummary(crawler) {
+          var flat = (crawler.data && crawler.data.fields) || {};
+          var lost = 0;
+          Object.keys(flat).forEach(function (key) {
+            if (/^hp\.\d+\.on$/.test(key) && flat[key]) lost += 1;
+          });
+          var debuffs = String(flat["buffs.debuffs"] || "")
+            .split(/\n+/)
+            .filter(function (line) {
+              return line.trim() !== "";
+            }).length;
+          var parts = [
+            t("hdr.lvl") + " " + (flat["identity.level"] || "—"),
+            t("hdr.floor") + " " + (flat["identity.floor"] || "—"),
+            "HB " + (10 - lost) + "/10",
+            "Mana " +
+              (flat["mana.current"] || 0) +
+              "/" +
+              (flat["mana.max"] || flat["stats.INT.enh"] || "—"),
+          ];
+          if (debuffs) parts.push(debuffs + " " + t("vault.activeDebuffs"));
+          return esc(parts.join(" · "));
+        }
+
+        function createCrawler(name, data, folder) {
+          clearTimeout(saveTimer);
+          saveNow(false);
+          name = String(name || "").trim() || t("vault.unnamed");
+          var id = newCrawlerId();
+          var crawlerData = data || blankSheetData(name);
+          crawlerData.fields = crawlerData.fields || {};
+          crawlerData.fields["identity.name"] = name;
+          vault.crawlers.push({
+            id: id,
+            name: name,
+            folder: String(folder || "").trim(),
+            createdAt: new Date().toISOString(),
+            updatedAt: new Date().toISOString(),
+            data: crawlerData,
+          });
+          vault.activeId = id;
+          persistVault();
+          loadSheetData(crawlerData);
+          localStorage.setItem(STORE, JSON.stringify(crawlerData));
+          renderCrawlerSwitcher();
+          renderVault();
+          header();
+          return id;
+        }
+
+        function switchCrawler(id) {
+          if (!vault || id === vault.activeId) return;
+          clearTimeout(saveTimer);
+          saveNow(false);
+          vault.activeId = id;
+          var crawler = activeCrawler();
+          if (!crawler) return;
+          persistVault();
+          loadSheetData(crawler.data);
+          localStorage.setItem(STORE, JSON.stringify(crawler.data));
+          renderCrawlerSwitcher();
+          renderVault();
+          header();
+        }
+
+        function duplicateCrawler(id) {
+          clearTimeout(saveTimer);
+          saveNow(false);
+          var source = null;
+          vault.crawlers.forEach(function (crawler) {
+            if (crawler.id === id) source = crawler;
+          });
+          if (!source) return;
+          var data = JSON.parse(JSON.stringify(source.data));
+          var name =
+            (source.name || t("vault.unnamed")) +
+            " (" +
+            t("vault.copySuffix") +
+            ")";
+          createCrawler(name, data, source.folder || "");
+        }
+
+        function renameCrawler(id, name) {
+          name = String(name || "").trim() || t("vault.unnamed");
+          vault.crawlers.forEach(function (crawler) {
+            if (crawler.id !== id) return;
+            crawler.name = name;
+            crawler.data = crawler.data || blankSheetData(name);
+            crawler.data.fields = crawler.data.fields || {};
+            crawler.data.fields["identity.name"] = name;
+            crawler.updatedAt = new Date().toISOString();
+          });
+          if (id === vault.activeId) {
+            var nameField = field("identity.name");
+            if (nameField) nameField.value = name;
+            header();
+          }
+          persistVault();
+          var active = activeCrawler();
+          if (active) localStorage.setItem(STORE, JSON.stringify(active.data));
+          renderCrawlerSwitcher();
+          renderVault();
+        }
+
+        function moveCrawlerToFolder(id, folder) {
+          vault.crawlers.forEach(function (crawler) {
+            if (crawler.id === id) {
+              crawler.folder = String(folder || "").trim();
+              crawler.updatedAt = new Date().toISOString();
+            }
+          });
+          persistVault();
+          renderCrawlerSwitcher();
+          renderVault();
+        }
+
+        function deleteCrawler(id) {
+          if (!window.confirm(t("confirm.deleteCrawler"))) return;
+          var wasActive = id === vault.activeId;
+          vault.crawlers = vault.crawlers.filter(function (crawler) {
+            return crawler.id !== id;
+          });
+          if (!vault.crawlers.length) {
+            vault = null;
+            localStorage.removeItem(VAULT_STORE);
+            localStorage.removeItem(STORE);
+            ensureVault();
+          } else if (wasActive) {
+            vault.activeId = vault.crawlers[0].id;
+          }
+          persistVault();
+          if (wasActive) {
+            var active = activeCrawler();
+            if (active) {
+              loadSheetData(active.data);
+              localStorage.setItem(STORE, JSON.stringify(active.data));
+            }
+          }
+          renderCrawlerSwitcher();
+          renderVault();
+          header();
         }
 
         /* ---------------- JSON import / export ---------------- */
@@ -3246,14 +4115,19 @@
               if (!flat && d.character) flat = flatten(d.character);
               if (!flat) flat = d;
               migrateLegacyAttacks(flat);
-              ensureFromData(flat, d.counts);
-              fields().forEach(function (el) {
-                if (el.type === "checkbox") el.checked = false;
-                else el.value = "";
-                el.removeAttribute("data-dirty");
-              });
-              apply(flat, true);
-              save();
+              migrateLinkedIdentity(flat);
+              var importedData = {
+                v: 2,
+                savedAt: new Date().toISOString(),
+                counts: d.counts || {},
+                fields: flat,
+              };
+              createCrawler(
+                String(flat["identity.name"] || "").trim() ||
+                  t("vault.unnamed"),
+                importedData,
+              );
+              saveNow(true);
             } catch (err) {
               alert(t("alert.badImport"));
             }
@@ -3274,6 +4148,90 @@
           recompute();
           header();
           save();
+        }
+
+        /* ---------------- printing ---------------- */
+        function hasPrintValue(root) {
+          return $$('[data-k]', root).some(function (el) {
+            return el.type === "checkbox"
+              ? el.checked
+              : String(el.value || "").trim() !== "";
+          });
+        }
+
+        function markPrintRows(prefix, minimumBlankRows) {
+          var blankRows = 0;
+          $$('[data-row^="' + prefix + '."]').forEach(function (row) {
+            var populated = hasPrintValue(row);
+            var keepBlank = !populated && blankRows < minimumBlankRows;
+            if (!populated) blankRows += 1;
+            row.setAttribute(
+              "data-print-hide",
+              String(!populated && !keepBlank),
+            );
+          });
+        }
+
+        function preparePrint(mode) {
+          document.body.classList.remove("print-all", "print-current");
+          document.body.classList.add(
+            mode === "all" ? "print-all" : "print-current",
+          );
+          markPrintRows("attacks", 4);
+          markPrintRows("skills", 8);
+          markPrintRows("inv", 10);
+
+          var blankNotes = 0;
+          $$(".note-card").forEach(function (card) {
+            var populated = hasPrintValue(card);
+            var keepBlank = !populated && blankNotes < 1;
+            if (!populated) blankNotes += 1;
+            card.setAttribute(
+              "data-print-hide",
+              String(!populated && !keepBlank),
+            );
+          });
+
+          $$(".skill-details").forEach(function (details) {
+            var toggle = $('[aria-controls="' + details.id + '"]');
+            if (
+              hasPrintValue(details) ||
+              (toggle && toggle.getAttribute("aria-expanded") === "true")
+            )
+              details.setAttribute("data-print-open", "true");
+          });
+        }
+
+        function expandPrintTextareas() {
+          $$("textarea").forEach(function (el) {
+            el.setAttribute("data-print-height", el.style.height || "");
+            el.style.height = "auto";
+            if (el.scrollHeight) el.style.height = el.scrollHeight + 2 + "px";
+          });
+        }
+
+        function cleanupPrint() {
+          document.body.classList.remove("print-all", "print-current");
+          $$("[data-print-hide]").forEach(function (el) {
+            el.removeAttribute("data-print-hide");
+          });
+          $$("[data-print-open]").forEach(function (el) {
+            el.removeAttribute("data-print-open");
+          });
+          $$("textarea[data-print-height]").forEach(function (el) {
+            el.style.height = el.getAttribute("data-print-height");
+            el.removeAttribute("data-print-height");
+          });
+        }
+
+        function startPrint(mode) {
+          var dialog = $("#printDialog");
+          if (dialog && dialog.open) dialog.close();
+          preparePrint(mode);
+          setTimeout(function () {
+            expandPrintTextareas();
+            window.print();
+          }, 50);
         }
 
         /* ---------------- tabs ---------------- */
@@ -3347,6 +4305,18 @@
               recompute();
               save();
             }
+            if (e.target.matches && e.target.matches("[data-vault-name]"))
+              renameCrawler(
+                e.target.getAttribute("data-vault-name"),
+                e.target.value,
+              );
+            if (e.target.matches && e.target.matches("[data-vault-folder]"))
+              moveCrawlerToFolder(
+                e.target.getAttribute("data-vault-folder"),
+                e.target.value,
+              );
+            if (e.target.matches && e.target.matches("#vaultFolderFilter"))
+              renderVault();
           });
           document.addEventListener("click", function (e) {
             var t = e.target;
@@ -3382,9 +4352,75 @@
               save();
               return;
             }
+            var skillToggle = t.closest("[data-skill-toggle]");
+            if (skillToggle) {
+              var details = $(
+                "#skill-details-" + skillToggle.getAttribute("data-skill-toggle"),
+              );
+              if (details) {
+                var opening = details.hidden;
+                details.hidden = !opening;
+                skillToggle.setAttribute("aria-expanded", String(opening));
+                skillToggle.textContent = opening
+                  ? t("btn.hideSkillDetails")
+                  : t("btn.skillDetails");
+              }
+              return;
+            }
+            var printMode = t.closest("[data-print-mode]");
+            if (printMode)
+              return startPrint(printMode.getAttribute("data-print-mode"));
+            if (t.closest("[data-print-cancel]")) {
+              var printDialog = $("#printDialog");
+              if (printDialog && printDialog.open) printDialog.close();
+              return;
+            }
+            if (t.closest("[data-vault-create]")) {
+              var newName = $("#newCrawlerName");
+              var newFolder = $("#newCrawlerFolder");
+              createCrawler(
+                newName ? newName.value : "",
+                null,
+                newFolder ? newFolder.value : "",
+              );
+              if (newName) newName.value = "";
+              if (newFolder) newFolder.value = "";
+              return;
+            }
+            var vaultOpen = t.closest("[data-vault-open]");
+            if (vaultOpen) {
+              switchCrawler(vaultOpen.getAttribute("data-vault-open"));
+              var openDialog = $("#vaultDialog");
+              if (openDialog && openDialog.open) openDialog.close();
+              return;
+            }
+            var vaultDuplicate = t.closest("[data-vault-duplicate]");
+            if (vaultDuplicate)
+              return duplicateCrawler(
+                vaultDuplicate.getAttribute("data-vault-duplicate"),
+              );
+            var vaultDelete = t.closest("[data-vault-delete]");
+            if (vaultDelete)
+              return deleteCrawler(vaultDelete.getAttribute("data-vault-delete"));
+            if (t.closest("[data-vault-close]")) {
+              var vaultDialog = $("#vaultDialog");
+              if (vaultDialog && vaultDialog.open) vaultDialog.close();
+              return;
+            }
             var act = t.closest("[data-act]");
             if (!act) return;
             if (act.getAttribute("data-act") === "export") exportJSON();
+            if (act.getAttribute("data-act") === "print") {
+              var dialog = $("#printDialog");
+              if (dialog && dialog.showModal) dialog.showModal();
+              else startPrint("current");
+            }
+            if (act.getAttribute("data-act") === "vault") {
+              renderVault();
+              var vaultDialog = $("#vaultDialog");
+              if (vaultDialog && vaultDialog.showModal)
+                vaultDialog.showModal();
+            }
             if (act.getAttribute("data-act") === "import")
               $("[data-file]").click();
             if (act.getAttribute("data-act") === "reset") resetAll();
@@ -3410,6 +4446,12 @@
                 localStorage.setItem(LKEY, lang);
               } catch (e) {}
               applyI18n();
+            });
+
+          var crawlerSelect = $("#crawlerSelect");
+          if (crawlerSelect)
+            crawlerSelect.addEventListener("change", function () {
+              switchCrawler(crawlerSelect.value);
             });
 
           $$("[data-imgbox]").forEach(function (box) {
@@ -3444,6 +4486,7 @@
               }
             });
           });
+          window.addEventListener("afterprint", cleanupPrint);
         }
 
         /* ---------------- init ---------------- */
