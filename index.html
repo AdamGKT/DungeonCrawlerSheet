@@ -4971,14 +4971,14 @@
               renderVault();
           });
           document.addEventListener("click", function (e) {
-            var t = e.target;
-            if (!t || !t.closest) return;
-            var tab = t.closest("[data-tab]");
+            var target = e.target;
+            if (!target || !target.closest) return;
+            var tab = target.closest("[data-tab]");
             if (tab) return showTab(tab.getAttribute("data-tab"));
-            var jt = t.closest("[data-jtab]");
+            var jt = target.closest("[data-jtab]");
             if (jt) return showJTab(jt.getAttribute("data-jtab"));
-            if (t.closest("#themeBtn")) return toggleTheme();
-            var imgClr = t.closest("[data-imgbox-clear]");
+            if (target.closest("#themeBtn")) return toggleTheme();
+            var imgClr = target.closest("[data-imgbox-clear]");
             if (imgClr) {
               var ck = imgClr.getAttribute("data-imgbox-clear");
               var cf = field(ck);
@@ -4987,13 +4987,13 @@
               save();
               return;
             }
-            var imgBox = t.closest("[data-imgbox]");
+            var imgBox = target.closest("[data-imgbox]");
             if (imgBox) {
               activeImgKey = imgBox.getAttribute("data-imgbox");
               $("#imgFile").click();
               return;
             }
-            var add = t.closest("[data-add]");
+            var add = target.closest("[data-add]");
             if (add) {
               var which = add.getAttribute("data-add");
               if (which === "attacks") addAttackRow();
@@ -5005,7 +5005,7 @@
               save();
               return;
             }
-            var skillToggle = t.closest("[data-skill-toggle]");
+            var skillToggle = target.closest("[data-skill-toggle]");
             if (skillToggle) {
               var details = $(
                 "#skill-details-" +
@@ -5021,7 +5021,7 @@
               }
               return;
             }
-            var spellToggle = t.closest("[data-spell-toggle]");
+            var spellToggle = target.closest("[data-spell-toggle]");
             if (spellToggle) {
               var spellDetails = $(
                 "#spell-details-" +
@@ -5040,15 +5040,15 @@
               }
               return;
             }
-            var printMode = t.closest("[data-print-mode]");
+            var printMode = target.closest("[data-print-mode]");
             if (printMode)
               return startPrint(printMode.getAttribute("data-print-mode"));
-            if (t.closest("[data-print-cancel]")) {
+            if (target.closest("[data-print-cancel]")) {
               var printDialog = $("#printDialog");
               if (printDialog && printDialog.open) printDialog.close();
               return;
             }
-            if (t.closest("[data-vault-create]")) {
+            if (target.closest("[data-vault-create]")) {
               var newName = $("#newCrawlerName");
               var newFolder = $("#newCrawlerFolder");
               createCrawler(
@@ -5060,29 +5060,29 @@
               if (newFolder) newFolder.value = "";
               return;
             }
-            var vaultOpen = t.closest("[data-vault-open]");
+            var vaultOpen = target.closest("[data-vault-open]");
             if (vaultOpen) {
               switchCrawler(vaultOpen.getAttribute("data-vault-open"));
               var openDialog = $("#vaultDialog");
               if (openDialog && openDialog.open) openDialog.close();
               return;
             }
-            var vaultDuplicate = t.closest("[data-vault-duplicate]");
+            var vaultDuplicate = target.closest("[data-vault-duplicate]");
             if (vaultDuplicate)
               return duplicateCrawler(
                 vaultDuplicate.getAttribute("data-vault-duplicate"),
               );
-            var vaultDelete = t.closest("[data-vault-delete]");
+            var vaultDelete = target.closest("[data-vault-delete]");
             if (vaultDelete)
               return deleteCrawler(
                 vaultDelete.getAttribute("data-vault-delete"),
               );
-            if (t.closest("[data-vault-close]")) {
+            if (target.closest("[data-vault-close]")) {
               var vaultDialog = $("#vaultDialog");
               if (vaultDialog && vaultDialog.open) vaultDialog.close();
               return;
             }
-            var act = t.closest("[data-act]");
+            var act = target.closest("[data-act]");
             if (!act) return;
             if (act.getAttribute("data-act") === "export") exportJSON();
             if (act.getAttribute("data-act") === "print") {
