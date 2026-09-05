@@ -673,7 +673,7 @@
       .spell-entry {
         padding: 12px;
         border: 1px solid var(--line);
-        background: var(--panel-2);
+        background: transparent;
       }
       .spell-entry + .spell-entry {
         margin-top: 10px;
@@ -1149,6 +1149,19 @@
         .tbl textarea {
           font-size: 9px;
           padding: 4px;
+        }
+        .spell-summary {
+          grid-template-columns: repeat(2, minmax(0, 1fr));
+          gap: 6px 10px;
+        }
+        .spell-name,
+        .spell-type,
+        .spell-duration,
+        .spell-cooldown {
+          grid-column: span 2;
+        }
+        .spell-details {
+          grid-template-columns: repeat(2, minmax(0, 1fr));
         }
         input,
         select,
