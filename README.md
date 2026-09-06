@@ -16,7 +16,7 @@ automatically in that browser, and nothing ever leaves your machine.
 ## Features
 
 - **Complete crawler sheet** — identity, health, stats, defense, mana, attacks,
-  skills, gear, inventory and a full roleplaying journal.
+  skills, spells, gear, inventory and a full roleplaying journal.
 - **Auto-calculated fields** — stat modifiers, DEX mod, Damage Resistance total,
   Evade total, attack To Hit, skill mods and the mana gauge all update as you
   type. Computed fields are read-only.
@@ -29,8 +29,12 @@ automatically in that browser, and nothing ever leaves your machine.
   overwriting the one currently open.
 - **Expandable Skill details** — every Skill row has multiline Description,
   Rank Upgrades and Extended Notes fields without making the play view wider.
+- **Dedicated Spell register** — record each Spell's type, Mana Cost, range,
+  duration and cooldown, with expandable effect details, limitations, upgrades
+  and notes.
 - **A4 printing** — print the current section or a complete crawler dossier.
-  Print mode includes populated Skill details and trims excessive blank rows.
+  Print mode includes populated Skill and Spell details and trims excessive
+  blank rows.
 - **Portraits & diagrams** — click or drag-and-drop an image onto the portrait or
   personal-space box; it is resized to 640 px and embedded directly in the sheet
   (and in the JSON export).
@@ -115,6 +119,18 @@ Passive / Evade) and Notes & Upgrades. Rank is tracked separately from Stat Mod.
 Use a row's **Details** button for a full Skill description, Rank Upgrades and
 extended or homebrew notes.
 
+### Spells
+Starts with 8 rows, add more as needed: Name, Rank, Type / Traits, **Mana Cost**,
+Range, Duration and Cooldown. Mana Cost is a text field because a Spell may have
+a fixed, variable or no Mana cost. Use a row's **Details** button for
+Description / Effect, Base Damage / Healing, Limitations / Targeting, Rank
+Upgrades and Additional Notes. Spells remain Skills mechanically; the separate
+tab is a reference area for Spell-specific information. A Spell must also be
+placed in the Hotlist for combat or other stressful situations, and Attack Spell
+combat details belong under Attacks. Mana spending, Attack Skill Checks, casting,
+targeting, cooldowns and effects remain manual, and Scroll Spells can be recorded
+with no Mana cost.
+
 ### Inventory
 Starts with 36 rows of UI space, not a game-rule capacity; add more as needed.
 Stored Inventory is not limited by encumbrance. Item, Qty and Notes are tracked
@@ -178,10 +194,12 @@ GitHub Pages, Netlify, a USB stick, a local folder.
 
 ## Tech notes
 
-- One file: HTML + CSS + vanilla JavaScript, ES5-compatible, ~4,500 lines.
+- One file: HTML + CSS + vanilla JavaScript, ES5-compatible, ~5,000 lines.
 - No dependencies or build tooling. The repeating parts of the sheet (stat cards,
   table rows, journal pages, tab bar, translations) are generated at load time.
 - Fields are bound by a `data-k` attribute to a flat key (e.g. `stats.STR.enh`);
   export nests these into a `character` object and also keeps the flat map.
-- Saves and exports use schema version 2. Version 1 attacks with a single `statA`
-  remain compatible and initialize both Hit Stat and Damage Stat from that value.
+- Saves and exports use schema version 2. Spell rows are stored under `spells.*`
+  with their row count in `counts.spells`; older saves without those keys open
+  with 8 blank Spell rows. Version 1 attacks with a single `statA` remain
+  compatible and initialize both Hit Stat and Damage Stat from that value.

@@ -632,7 +632,8 @@
         gap: 6px;
         align-items: center;
       }
-      .skill-toggle {
+      .skill-toggle,
+      .spell-toggle {
         min-height: 36px;
         padding: 6px 9px;
         border: 1px solid var(--line);
@@ -644,7 +645,8 @@
         text-transform: uppercase;
         cursor: pointer;
       }
-      .skill-toggle[aria-expanded="true"] {
+      .skill-toggle[aria-expanded="true"],
+      .spell-toggle[aria-expanded="true"] {
         border-color: var(--acc);
         color: var(--acc);
       }
@@ -666,6 +668,62 @@
         .skill-details {
           grid-template-columns: 1fr;
           margin-left: 0;
+        }
+      }
+      .spell-entry {
+        padding: 12px;
+        border: 1px solid var(--line);
+        background: transparent;
+      }
+      .spell-entry + .spell-entry {
+        margin-top: 10px;
+      }
+      .spell-summary {
+        display: grid;
+        grid-template-columns:
+          minmax(150px, 1.6fr) minmax(52px, 0.45fr)
+          minmax(110px, 1fr) minmax(82px, 0.65fr)
+          minmax(88px, 0.75fr) minmax(105px, 0.9fr)
+          minmax(105px, 0.9fr) auto;
+        gap: 8px;
+        align-items: end;
+      }
+      .spell-summary .lbl,
+      .spell-details .lbl {
+        min-width: 0;
+      }
+      .spell-details {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+        gap: 10px;
+        margin-top: 12px;
+        padding-top: 12px;
+        border-top: 1px solid var(--line);
+      }
+      .spell-details textarea {
+        min-height: 112px;
+        resize: vertical;
+      }
+      @media (max-width: 900px) {
+        .spell-summary {
+          grid-template-columns: repeat(2, minmax(0, 1fr));
+        }
+        .spell-name,
+        .spell-type,
+        .spell-duration,
+        .spell-cooldown {
+          grid-column: span 2;
+        }
+      }
+      @media (max-width: 480px) {
+        .spell-summary {
+          grid-template-columns: minmax(0, 1fr);
+        }
+        .spell-name,
+        .spell-type,
+        .spell-duration,
+        .spell-cooldown {
+          grid-column: auto;
         }
       }
       .cols-inv {
@@ -819,6 +877,19 @@
       nav.tabbar .tab.is-active {
         color: var(--acc-ink);
         background: var(--acc);
+      }
+
+      @media screen and (max-width: 720px) {
+        nav.tabbar {
+          justify-content: flex-start;
+          overflow-x: auto;
+          overscroll-behavior-x: contain;
+          scrollbar-width: thin;
+        }
+        nav.tabbar .tab {
+          flex: 0 0 auto;
+          min-width: 92px;
+        }
       }
 
       @media screen and (max-width: 640px) {
@@ -1037,6 +1108,7 @@
         .saved,
         .addrow,
         .skill-toggle,
+        .spell-toggle,
         .print-dialog,
         [data-imgbox-clear] {
           display: none !important;
@@ -1059,6 +1131,7 @@
         .card,
         .inset,
         .skill-entry,
+        .spell-entry,
         .note-card,
         label {
           break-inside: avoid;
@@ -1077,6 +1150,19 @@
           font-size: 9px;
           padding: 4px;
         }
+        .spell-summary {
+          grid-template-columns: repeat(2, minmax(0, 1fr));
+          gap: 6px 10px;
+        }
+        .spell-name,
+        .spell-type,
+        .spell-duration,
+        .spell-cooldown {
+          grid-column: span 2;
+        }
+        .spell-details {
+          grid-template-columns: repeat(2, minmax(0, 1fr));
+        }
         input,
         select,
         textarea {
@@ -1090,7 +1176,8 @@
         [data-print-hide="true"] {
           display: none !important;
         }
-        .skill-details[data-print-open="true"] {
+        .skill-details[data-print-open="true"],
+        .spell-details[data-print-open="true"] {
           display: grid !important;
         }
       }
@@ -1570,6 +1657,37 @@
           </div>
         </section>
 
+        <!-- ============ SPELLS ============ -->
+        <section data-pane="spells" hidden>
+          <div class="card">
+            <div
+              style="
+                display: flex;
+                align-items: baseline;
+                gap: 12px;
+                margin-bottom: 12px;
+                flex-wrap: wrap;
+              "
+            >
+              <span class="chip" data-i18n="chip.spells">Spells</span>
+              <span class="hint" data-i18n="hint.spells"
+                >Spells are Skills. To cast one during combat or another
+                stressful situation, also place it in your Hotlist. Record
+                Attack Spell combat details under Attacks.</span
+              >
+            </div>
+            <div id="spellRows"></div>
+            <button
+              class="btn addrow"
+              data-add="spells"
+              type="button"
+              data-i18n="btn.addRow"
+            >
+              + Add row
+            </button>
+          </div>
+        </section>
+
         <!-- ============ INVENTORY ============ -->
         <section data-pane="inventory" hidden>
           <div class="card">
@@ -1878,6 +1996,7 @@
           { key: "sheet", label: "Sheet" },
           { key: "combat", label: "Attacks" },
           { key: "skills", label: "Skills" },
+          { key: "spells", label: "Spells" },
           { key: "gear", label: "Gear" },
           { key: "inventory", label: "Inventory" },
           { key: "journal", label: "Journal" },
@@ -2013,6 +2132,8 @@
             "btn.addRow": "+ Add row",
             "btn.skillDetails": "Details",
             "btn.hideSkillDetails": "Hide",
+            "btn.spellDetails": "Details",
+            "btn.hideSpellDetails": "Hide",
             "btn.removeImg": "Remove image",
             "btn.theme.dark": "Dark",
             "btn.theme.light": "Light",
@@ -2109,6 +2230,9 @@
             "col.damageMod": "Damage Mod",
             "col.effects": "Effects",
             "chip.skills": "Skills",
+            "chip.spells": "Spells",
+            "hint.spells":
+              "Spells are Skills. To cast one during combat or another stressful situation, also place it in your Hotlist. Record Attack Spell combat details under Attacks.",
             "col.statMod": "Stat Mod",
             "col.check": "Check Type",
             "col.notesUpgrades": "Notes & Upgrades",
@@ -2155,6 +2279,7 @@
             "tab.sheet": "Sheet",
             "tab.combat": "Attacks",
             "tab.skills": "Skills",
+            "tab.spells": "Spells",
             "tab.gear": "Gear",
             "tab.inventory": "Inventory",
             "tab.journal": "Journal",
@@ -2169,6 +2294,16 @@
             "f.skillDescription": "Description",
             "f.skillUpgrades": "Rank upgrades",
             "f.skillExtendedNotes": "Extended notes",
+            "f.spellType": "Type / Traits",
+            "f.manaCost": "Mana Cost",
+            "f.range": "Range",
+            "f.duration": "Duration",
+            "f.cooldown": "Cooldown",
+            "f.spellDescription": "Description / Effect",
+            "f.spellBaseEffect": "Base Damage / Healing",
+            "f.spellLimitations": "Limitations / Targeting",
+            "f.spellUpgrades": "Rank Upgrades",
+            "f.spellNotes": "Additional Notes",
             "alert.badImage": "Couldn't read that image.",
             "alert.badImport": "This file isn't a valid sheet export.",
             "confirm.reset": "Reset the entire sheet? This cannot be undone.",
@@ -2211,6 +2346,8 @@
             "btn.addRow": "+ Ajouter une ligne",
             "btn.skillDetails": "Détails",
             "btn.hideSkillDetails": "Masquer",
+            "btn.spellDetails": "Détails",
+            "btn.hideSpellDetails": "Masquer",
             "btn.removeImg": "Retirer l'image",
             "btn.theme.dark": "Sombre",
             "btn.theme.light": "Clair",
@@ -2308,6 +2445,9 @@
             "col.damageMod": "Mod dégâts",
             "col.effects": "Effets",
             "chip.skills": "Compétences",
+            "chip.spells": "Sorts",
+            "hint.spells":
+              "Les Sorts sont des Compétences. Pour en lancer un en combat ou dans une autre situation stressante, placez-le aussi dans votre Hotlist. Notez les détails de combat des Sorts d'Attaque dans Attaques.",
             "col.statMod": "Mod de carac.",
             "col.check": "Type de test",
             "col.notesUpgrades": "Notes et améliorations",
@@ -2353,6 +2493,7 @@
             "tab.sheet": "Fiche",
             "tab.combat": "Attaques",
             "tab.skills": "Compétences",
+            "tab.spells": "Sorts",
             "tab.gear": "Équipement",
             "tab.inventory": "Inventaire",
             "tab.journal": "Journal",
@@ -2367,6 +2508,16 @@
             "f.skillDescription": "Description",
             "f.skillUpgrades": "Améliorations de rang",
             "f.skillExtendedNotes": "Notes détaillées",
+            "f.spellType": "Type / Traits",
+            "f.manaCost": "Coût en Mana",
+            "f.range": "Portée",
+            "f.duration": "Durée",
+            "f.cooldown": "Recharge",
+            "f.spellDescription": "Description / Effet",
+            "f.spellBaseEffect": "Dégâts / Soins de base",
+            "f.spellLimitations": "Limitations / Ciblage",
+            "f.spellUpgrades": "Améliorations de rang",
+            "f.spellNotes": "Notes supplémentaires",
             "alert.badImage": "Impossible de lire cette image.",
             "alert.badImport":
               "Ce fichier n'est pas un export de fiche valide.",
@@ -2411,6 +2562,8 @@
             "btn.addRow": "+ Añadir fila",
             "btn.skillDetails": "Detalles",
             "btn.hideSkillDetails": "Ocultar",
+            "btn.spellDetails": "Detalles",
+            "btn.hideSpellDetails": "Ocultar",
             "btn.removeImg": "Quitar la imagen",
             "btn.theme.dark": "Oscuro",
             "btn.theme.light": "Claro",
@@ -2508,6 +2661,9 @@
             "col.damageMod": "Mod de daño",
             "col.effects": "Efectos",
             "chip.skills": "Habilidades",
+            "chip.spells": "Conjuros",
+            "hint.spells":
+              "Los Conjuros son Habilidades. Para lanzar uno en combate u otra situación de tensión, colócalo también en tu Hotlist. Anota los detalles de combate de los Conjuros de Ataque en Ataques.",
             "col.statMod": "Mod de car.",
             "col.check": "Tipo de tirada",
             "col.notesUpgrades": "Notas y mejoras",
@@ -2553,6 +2709,7 @@
             "tab.sheet": "Hoja",
             "tab.combat": "Ataques",
             "tab.skills": "Habilidades",
+            "tab.spells": "Conjuros",
             "tab.gear": "Equipo",
             "tab.inventory": "Inventario",
             "tab.journal": "Diario",
@@ -2567,6 +2724,16 @@
             "f.skillDescription": "Descripción",
             "f.skillUpgrades": "Mejoras de rango",
             "f.skillExtendedNotes": "Notas ampliadas",
+            "f.spellType": "Tipo / Rasgos",
+            "f.manaCost": "Coste de Mana",
+            "f.range": "Alcance",
+            "f.duration": "Duración",
+            "f.cooldown": "Recarga",
+            "f.spellDescription": "Descripción / Efecto",
+            "f.spellBaseEffect": "Daño / Curación base",
+            "f.spellLimitations": "Limitaciones / Objetivos",
+            "f.spellUpgrades": "Mejoras de rango",
+            "f.spellNotes": "Notas adicionales",
             "alert.badImage": "No se puede leer esta imagen.",
             "alert.badImport":
               "Ese archivo no es una exportación de hoja válida.",
@@ -2611,6 +2778,8 @@
             "btn.addRow": "+ Zeile hinzufügen",
             "btn.skillDetails": "Details",
             "btn.hideSkillDetails": "Ausblenden",
+            "btn.spellDetails": "Details",
+            "btn.hideSpellDetails": "Ausblenden",
             "btn.removeImg": "Bild entfernen",
             "btn.theme.dark": "Dunkel",
             "btn.theme.light": "Hell",
@@ -2708,6 +2877,9 @@
             "col.damageMod": "Schadensmod.",
             "col.effects": "Effekte",
             "chip.skills": "Fertigkeiten",
+            "chip.spells": "Zauber",
+            "hint.spells":
+              "Zauber sind Fertigkeiten. Um einen Zauber im Kampf oder in einer anderen Stresssituation zu wirken, lege ihn auch in deine Hotlist. Trage Kampfangaben für Angriffszauber unter Angriffe ein.",
             "col.statMod": "Attributsmod.",
             "col.check": "Probenart",
             "col.notesUpgrades": "Notizen & Verbesserungen",
@@ -2754,6 +2926,7 @@
             "tab.sheet": "Bogen",
             "tab.combat": "Angriffe",
             "tab.skills": "Fertigkeiten",
+            "tab.spells": "Zauber",
             "tab.gear": "Ausrüstung",
             "tab.inventory": "Inventar",
             "tab.journal": "Tagebuch",
@@ -2768,6 +2941,16 @@
             "f.skillDescription": "Beschreibung",
             "f.skillUpgrades": "Rangverbesserungen",
             "f.skillExtendedNotes": "Ausführliche Notizen",
+            "f.spellType": "Typ / Merkmale",
+            "f.manaCost": "Manakosten",
+            "f.range": "Reichweite",
+            "f.duration": "Dauer",
+            "f.cooldown": "Abklingzeit",
+            "f.spellDescription": "Beschreibung / Effekt",
+            "f.spellBaseEffect": "Grundschaden / Heilung",
+            "f.spellLimitations": "Einschränkungen / Ziele",
+            "f.spellUpgrades": "Rangverbesserungen",
+            "f.spellNotes": "Zusätzliche Notizen",
             "alert.badImage": "Dieses Bild kann nicht gelesen werden.",
             "alert.badImport": "Diese Datei ist kein gültiger Bogen-Export.",
             "confirm.reset":
@@ -2811,6 +2994,8 @@
             "btn.addRow": "+ Adicionar linha",
             "btn.skillDetails": "Detalhes",
             "btn.hideSkillDetails": "Ocultar",
+            "btn.spellDetails": "Detalhes",
+            "btn.hideSpellDetails": "Ocultar",
             "btn.removeImg": "Remover a imagem",
             "btn.theme.dark": "Escuro",
             "btn.theme.light": "Claro",
@@ -2908,6 +3093,9 @@
             "col.damageMod": "Mod de dano",
             "col.effects": "Efeitos",
             "chip.skills": "Perícias",
+            "chip.spells": "Magias",
+            "hint.spells":
+              "Magias são Perícias. Para conjurar uma em combate ou noutra situação de tensão, coloque-a também na Hotlist. Registre os detalhes de combate das Magias de Ataque em Ataques.",
             "col.statMod": "Mod de atrib.",
             "col.check": "Tipo de teste",
             "col.notesUpgrades": "Notas e melhorias",
@@ -2953,6 +3141,7 @@
             "tab.sheet": "Ficha",
             "tab.combat": "Ataques",
             "tab.skills": "Perícias",
+            "tab.spells": "Magias",
             "tab.gear": "Equipamento",
             "tab.inventory": "Inventário",
             "tab.journal": "Diário",
@@ -2967,9 +3156,16 @@
             "f.skillDescription": "Descrição",
             "f.skillUpgrades": "Melhorias de nível",
             "f.skillExtendedNotes": "Notas detalhadas",
-            "f.skillDescription": "Descrição",
-            "f.skillUpgrades": "Melhorias de nível",
-            "f.skillExtendedNotes": "Notas detalhadas",
+            "f.spellType": "Tipo / Características",
+            "f.manaCost": "Custo de Mana",
+            "f.range": "Alcance",
+            "f.duration": "Duração",
+            "f.cooldown": "Recarga",
+            "f.spellDescription": "Descrição / Efeito",
+            "f.spellBaseEffect": "Dano / Cura base",
+            "f.spellLimitations": "Limitações / Alvos",
+            "f.spellUpgrades": "Melhorias de nível",
+            "f.spellNotes": "Notas adicionais",
             "alert.badImage": "Não é possível ler esta imagem.",
             "alert.badImport":
               "Esse arquivo não é uma exportação de ficha válida.",
@@ -3193,6 +3389,13 @@
                 : "btn.skillDetails",
             );
           });
+          $$("[data-spell-toggle]").forEach(function (el) {
+            el.textContent = t(
+              el.getAttribute("aria-expanded") === "true"
+                ? "btn.hideSpellDetails"
+                : "btn.spellDetails",
+            );
+          });
           var ls = $("#langSel");
           if (ls && ls.value !== lang) ls.value = lang;
           applyTheme(
@@ -3277,9 +3480,11 @@
 
         var DEFAULT_ATTACKS = 20,
           DEFAULT_SKILLS = 24,
+          DEFAULT_SPELLS = 8,
           DEFAULT_INV = 36;
         var attackCount = 0,
           skillCount = 0,
+          spellCount = 0,
           invCount = 0;
 
         /* ---------------- row templates ---------------- */
@@ -3373,6 +3578,59 @@
             "</div>"
           );
         }
+        function spellRowHTML(i) {
+          var b = "spells." + i + ".";
+          return (
+            '<div class="spell-entry" data-row="spells.' +
+            i +
+            '"><div class="spell-summary">' +
+            '<label class="lbl sm spell-name"><span data-i18n="f.name">Name</span><input data-k="' +
+            b +
+            'name"></label>' +
+            '<label class="lbl sm"><span data-i18n="col.rank">Rank</span><input data-k="' +
+            b +
+            'rank" class="center" inputmode="numeric"></label>' +
+            '<label class="lbl sm spell-type"><span data-i18n="f.spellType">Type / Traits</span><input data-k="' +
+            b +
+            'type"></label>' +
+            '<label class="lbl sm"><span data-i18n="f.manaCost">Mana Cost</span><input data-k="' +
+            b +
+            'manaCost" class="center"></label>' +
+            '<label class="lbl sm"><span data-i18n="f.range">Range</span><input data-k="' +
+            b +
+            'range"></label>' +
+            '<label class="lbl sm spell-duration"><span data-i18n="f.duration">Duration</span><input data-k="' +
+            b +
+            'duration"></label>' +
+            '<label class="lbl sm spell-cooldown"><span data-i18n="f.cooldown">Cooldown</span><input data-k="' +
+            b +
+            'cooldown"></label>' +
+            '<button class="spell-toggle" type="button" data-spell-toggle="' +
+            i +
+            '" aria-expanded="false" aria-controls="spell-details-' +
+            i +
+            '" data-i18n="btn.spellDetails">Details</button>' +
+            '</div><div class="spell-details" id="spell-details-' +
+            i +
+            '" hidden>' +
+            '<label class="lbl"><span data-i18n="f.spellDescription">Description / Effect</span><textarea data-k="' +
+            b +
+            'description"></textarea></label>' +
+            '<label class="lbl"><span data-i18n="f.spellBaseEffect">Base Damage / Healing</span><textarea data-k="' +
+            b +
+            'baseEffect"></textarea></label>' +
+            '<label class="lbl"><span data-i18n="f.spellLimitations">Limitations / Targeting</span><textarea data-k="' +
+            b +
+            'limitations"></textarea></label>' +
+            '<label class="lbl"><span data-i18n="f.spellUpgrades">Rank Upgrades</span><textarea data-k="' +
+            b +
+            'upgrades"></textarea></label>' +
+            '<label class="lbl"><span data-i18n="f.spellNotes">Additional Notes</span><textarea data-k="' +
+            b +
+            'notes"></textarea></label>' +
+            "</div></div>"
+          );
+        }
         function invRowHTML(i) {
           var b = "inv." + i + ".";
           return (
@@ -3401,6 +3659,12 @@
             skillRowHTML(skillCount++),
           );
         }
+        function addSpellRow() {
+          $("#spellRows").insertAdjacentHTML(
+            "beforeend",
+            spellRowHTML(spellCount++),
+          );
+        }
         function addInvRow() {
           $("#invRows").insertAdjacentHTML("beforeend", invRowHTML(invCount++));
         }
@@ -3409,6 +3673,9 @@
         }
         function ensureSkills(n) {
           while (skillCount < n) addSkillRow();
+        }
+        function ensureSpells(n) {
+          while (spellCount < n) addSpellRow();
         }
         function ensureInv(n) {
           while (invCount < n) addInvRow();
@@ -3432,6 +3699,13 @@
           while (skillCount > n) {
             $("#skillRows").lastElementChild.remove();
             skillCount--;
+          }
+        }
+        function resizeSpells(n) {
+          ensureSpells(n);
+          while (spellCount > n) {
+            $("#spellRows").lastElementChild.remove();
+            spellCount--;
           }
         }
 
@@ -3488,6 +3762,7 @@
 
           ensureAttacks(DEFAULT_ATTACKS);
           ensureSkills(DEFAULT_SKILLS);
+          ensureSpells(DEFAULT_SPELLS);
           ensureInv(DEFAULT_INV);
 
           $("#gearSlots").innerHTML = GEAR_SLOTS.map(function (g) {
@@ -3889,6 +4164,7 @@
             counts: {
               attacks: attackCount,
               skills: skillCount,
+              spells: spellCount,
               inv: invCount,
             },
             fields: collect(),
@@ -3910,6 +4186,7 @@
             counts: {
               attacks: DEFAULT_ATTACKS,
               skills: DEFAULT_SKILLS,
+              spells: DEFAULT_SPELLS,
               inv: DEFAULT_INV,
             },
             fields: flat,
@@ -4096,6 +4373,13 @@
               maxIndex(flat, "skills.") + 1,
             ),
           );
+          ensureSpells(
+            Math.max(
+              DEFAULT_SPELLS,
+              counts.spells || 0,
+              maxIndex(flat, "spells.") + 1,
+            ),
+          );
           resizeInv(
             Math.max(DEFAULT_INV, counts.inv || 0, maxIndex(flat, "inv.") + 1),
           );
@@ -4119,6 +4403,13 @@
               DEFAULT_SKILLS,
               counts.skills || 0,
               maxIndex(flat, "skills.") + 1,
+            ),
+          );
+          resizeSpells(
+            Math.max(
+              DEFAULT_SPELLS,
+              counts.spells || 0,
+              maxIndex(flat, "spells.") + 1,
             ),
           );
           resizeInv(
@@ -4432,7 +4723,12 @@
             format: "dungeon-crawler-sheet",
             version: 2,
             exportedAt: new Date().toISOString(),
-            counts: { attacks: attackCount, skills: skillCount, inv: invCount },
+            counts: {
+              attacks: attackCount,
+              skills: skillCount,
+              spells: spellCount,
+              inv: invCount,
+            },
             character: nest(flat),
             fields: flat,
           };
@@ -4530,6 +4826,7 @@
           );
           markPrintRows("attacks", 4);
           markPrintRows("skills", 8);
+          markPrintRows("spells", 4);
           markPrintRows("inv", 10);
 
           var blankNotes = 0;
@@ -4543,7 +4840,7 @@
             );
           });
 
-          $$(".skill-details").forEach(function (details) {
+          $$(".skill-details, .spell-details").forEach(function (details) {
             var toggle = $('[aria-controls="' + details.id + '"]');
             if (
               hasPrintValue(details) ||
@@ -4670,14 +4967,14 @@
               renderVault();
           });
           document.addEventListener("click", function (e) {
-            var t = e.target;
-            if (!t || !t.closest) return;
-            var tab = t.closest("[data-tab]");
+            var target = e.target;
+            if (!target || !target.closest) return;
+            var tab = target.closest("[data-tab]");
             if (tab) return showTab(tab.getAttribute("data-tab"));
-            var jt = t.closest("[data-jtab]");
+            var jt = target.closest("[data-jtab]");
             if (jt) return showJTab(jt.getAttribute("data-jtab"));
-            if (t.closest("#themeBtn")) return toggleTheme();
-            var imgClr = t.closest("[data-imgbox-clear]");
+            if (target.closest("#themeBtn")) return toggleTheme();
+            var imgClr = target.closest("[data-imgbox-clear]");
             if (imgClr) {
               var ck = imgClr.getAttribute("data-imgbox-clear");
               var cf = field(ck);
@@ -4686,24 +4983,25 @@
               save();
               return;
             }
-            var imgBox = t.closest("[data-imgbox]");
+            var imgBox = target.closest("[data-imgbox]");
             if (imgBox) {
               activeImgKey = imgBox.getAttribute("data-imgbox");
               $("#imgFile").click();
               return;
             }
-            var add = t.closest("[data-add]");
+            var add = target.closest("[data-add]");
             if (add) {
               var which = add.getAttribute("data-add");
               if (which === "attacks") addAttackRow();
               else if (which === "skills") addSkillRow();
+              else if (which === "spells") addSpellRow();
               else addInvRow();
               applyI18n();
               recompute();
               save();
               return;
             }
-            var skillToggle = t.closest("[data-skill-toggle]");
+            var skillToggle = target.closest("[data-skill-toggle]");
             if (skillToggle) {
               var details = $(
                 "#skill-details-" +
@@ -4719,15 +5017,34 @@
               }
               return;
             }
-            var printMode = t.closest("[data-print-mode]");
+            var spellToggle = target.closest("[data-spell-toggle]");
+            if (spellToggle) {
+              var spellDetails = $(
+                "#spell-details-" +
+                  spellToggle.getAttribute("data-spell-toggle"),
+              );
+              if (spellDetails) {
+                var openingSpell = spellDetails.hidden;
+                spellDetails.hidden = !openingSpell;
+                spellToggle.setAttribute(
+                  "aria-expanded",
+                  String(openingSpell),
+                );
+                spellToggle.textContent = openingSpell
+                  ? t("btn.hideSpellDetails")
+                  : t("btn.spellDetails");
+              }
+              return;
+            }
+            var printMode = target.closest("[data-print-mode]");
             if (printMode)
               return startPrint(printMode.getAttribute("data-print-mode"));
-            if (t.closest("[data-print-cancel]")) {
+            if (target.closest("[data-print-cancel]")) {
               var printDialog = $("#printDialog");
               if (printDialog && printDialog.open) printDialog.close();
               return;
             }
-            if (t.closest("[data-vault-create]")) {
+            if (target.closest("[data-vault-create]")) {
               var newName = $("#newCrawlerName");
               var newFolder = $("#newCrawlerFolder");
               createCrawler(
@@ -4739,29 +5056,29 @@
               if (newFolder) newFolder.value = "";
               return;
             }
-            var vaultOpen = t.closest("[data-vault-open]");
+            var vaultOpen = target.closest("[data-vault-open]");
             if (vaultOpen) {
               switchCrawler(vaultOpen.getAttribute("data-vault-open"));
               var openDialog = $("#vaultDialog");
               if (openDialog && openDialog.open) openDialog.close();
               return;
             }
-            var vaultDuplicate = t.closest("[data-vault-duplicate]");
+            var vaultDuplicate = target.closest("[data-vault-duplicate]");
             if (vaultDuplicate)
               return duplicateCrawler(
                 vaultDuplicate.getAttribute("data-vault-duplicate"),
               );
-            var vaultDelete = t.closest("[data-vault-delete]");
+            var vaultDelete = target.closest("[data-vault-delete]");
             if (vaultDelete)
               return deleteCrawler(
                 vaultDelete.getAttribute("data-vault-delete"),
               );
-            if (t.closest("[data-vault-close]")) {
+            if (target.closest("[data-vault-close]")) {
               var vaultDialog = $("#vaultDialog");
               if (vaultDialog && vaultDialog.open) vaultDialog.close();
               return;
             }
-            var act = t.closest("[data-act]");
+            var act = target.closest("[data-act]");
             if (!act) return;
             if (act.getAttribute("data-act") === "export") exportJSON();
             if (act.getAttribute("data-act") === "print") {
