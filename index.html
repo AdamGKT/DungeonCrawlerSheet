@@ -181,6 +181,11 @@
         border-color: var(--acc);
       }
 
+      /* collapse toggle: desktop hides it, mobile shows it (see max-width: 640px) */
+      .bar-toggle {
+        display: none;
+      }
+
       /* ---------- saved toast ---------- */
       .saved {
         position: fixed;
@@ -917,6 +922,37 @@
         main {
           padding: 14px;
         }
+        .bar-toggle {
+          display: inline-flex;
+          align-items: center;
+          justify-content: center;
+          flex: none;
+          width: 34px;
+          height: 34px;
+          padding: 0;
+          background: transparent;
+          border: 1px solid var(--line);
+          color: var(--ink);
+          border-radius: 3px;
+          cursor: pointer;
+        }
+        .bar-toggle:hover {
+          border-color: var(--acc);
+        }
+        .bar-toggle svg {
+          transition: transform 0.2s ease;
+        }
+        .bar:not(.is-collapsed) .bar-toggle svg {
+          transform: rotate(180deg);
+        }
+        .bar.is-collapsed {
+          padding-top: 10px;
+          padding-bottom: 10px;
+        }
+        .bar.is-collapsed .sub,
+        .bar.is-collapsed .tools {
+          display: none;
+        }
       }
 
       /* ---------- printing ---------- */
@@ -1185,11 +1221,33 @@
   </head>
   <body>
     <div class="page">
-      <header class="bar">
+      <header class="bar is-collapsed">
         <div class="title">
           <div class="kicker" data-i18n="hdr.kicker">Crawler Dossier</div>
           <div class="who" data-hdr="name">Unnamed Crawler</div>
         </div>
+        <button
+          class="bar-toggle"
+          type="button"
+          data-bar-toggle
+          aria-expanded="false"
+          aria-label="Toggle header tools"
+          title="Show / hide tools"
+        >
+          <svg
+            width="14"
+            height="14"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="3"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            aria-hidden="true"
+          >
+            <polyline points="6 9 12 15 18 9"></polyline>
+          </svg>
+        </button>
         <div class="sub" data-hdr="sub"></div>
         <div class="tools">
           <select
@@ -4992,6 +5050,16 @@
             var jt = target.closest("[data-jtab]");
             if (jt) return showJTab(jt.getAttribute("data-jtab"));
             if (target.closest("#themeBtn")) return toggleTheme();
+            var barToggle = target.closest("[data-bar-toggle]");
+            if (barToggle) {
+              var bar = document.querySelector("header.bar");
+              var collapsed = bar.classList.toggle("is-collapsed");
+              barToggle.setAttribute(
+                "aria-expanded",
+                collapsed ? "false" : "true"
+              );
+              return;
+            }
             var imgClr = target.closest("[data-imgbox-clear]");
             if (imgClr) {
               var ck = imgClr.getAttribute("data-imgbox-clear");
