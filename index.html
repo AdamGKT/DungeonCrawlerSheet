@@ -628,6 +628,25 @@
       .cols-skills {
         grid-template-columns: 34px 1.6fr 0.6fr 0.85fr 0.55fr 1fr 2.2fr;
       }
+      /* per-cell wrapper: label hidden on desktop (the .head row labels the
+         columns), shown when rows stack vertically on mobile */
+      .rcell {
+        display: grid;
+        gap: 4px;
+        align-content: center;
+        min-width: 0;
+      }
+      .rcell > span {
+        display: none;
+        font-family: var(--f-disp);
+        font-size: 9px;
+        letter-spacing: 0.14em;
+        text-transform: uppercase;
+        color: var(--muted);
+      }
+      .rcell-check {
+        justify-items: center;
+      }
       .skill-entry + .skill-entry {
         margin-top: 4px;
       }
@@ -675,6 +694,42 @@
           margin-left: 0;
         }
       }
+      /* stack attack / skill rows vertically like spells — no horizontal scroll.
+         screen-only so the print layout keeps its dense grid. */
+      @media screen and (max-width: 720px) {
+        .card.scrollx {
+          overflow-x: visible;
+        }
+        .tbl,
+        .tbl[style] {
+          min-width: 0 !important;
+        }
+        .tbl > .head.cols-attacks,
+        .tbl > .head.cols-skills {
+          display: none;
+        }
+        .row.cols-attacks,
+        .row.cols-skills {
+          grid-template-columns: minmax(0, 1fr);
+          gap: 12px;
+          padding: 14px;
+          border: 1px solid var(--line);
+        }
+        #attackRows > .row.cols-attacks + .row.cols-attacks {
+          margin-top: 12px;
+        }
+        .skill-entry + .skill-entry {
+          margin-top: 12px;
+        }
+        .rcell > span {
+          display: block;
+        }
+        .rcell-check {
+          justify-items: stretch;
+          grid-template-columns: minmax(0, 1fr) auto;
+          align-items: center;
+        }
+      }
       .spell-entry {
         padding: 12px;
         border: 1px solid var(--line);
@@ -693,6 +748,7 @@
         gap: 8px;
         align-items: end;
       }
+      /* header row above mirrors these exact tracks (see .cols-spells) */
       .spell-summary .lbl,
       .spell-details .lbl {
         min-width: 0;
@@ -708,6 +764,57 @@
       .spell-details textarea {
         min-height: 112px;
         resize: vertical;
+      }
+      /* spells: skills-style table (one header row) on wide screens;
+         keeps the stacked per-field labels on tablet / mobile (<= 900px) */
+      .cols-spells {
+        grid-template-columns:
+          minmax(150px, 1.6fr) minmax(52px, 0.45fr)
+          minmax(110px, 1fr) minmax(82px, 0.65fr)
+          minmax(88px, 0.75fr) minmax(105px, 0.9fr)
+          minmax(105px, 0.9fr) auto;
+      }
+      .spell-head {
+        display: none;
+        gap: 6px;
+        align-items: end;
+        padding: 8px 0;
+        font-family: var(--f-disp);
+        font-size: 9px;
+        letter-spacing: 0.14em;
+        text-transform: uppercase;
+        color: var(--muted);
+      }
+      @media screen and (min-width: 901px) {
+        .spell-head {
+          display: grid;
+        }
+        /* match the Skills table: bare rows, no per-card border or padding */
+        .spell-entry {
+          border: 0;
+          padding: 0;
+        }
+        .spell-entry + .spell-entry {
+          margin-top: 0;
+        }
+        .spell-summary {
+          align-items: center;
+          gap: 6px;
+          padding: 3px 0;
+        }
+        /* visually hide the per-field labels (header row shows them) but keep
+           each input's accessible name from its wrapping <label> */
+        .spell-summary > .lbl > span {
+          position: absolute;
+          width: 1px;
+          height: 1px;
+          margin: -1px;
+          padding: 0;
+          overflow: hidden;
+          clip-path: inset(50%);
+          white-space: nowrap;
+          border: 0;
+        }
       }
       @media (max-width: 900px) {
         .spell-summary {
@@ -1735,6 +1842,16 @@
                 stressful situation, also place it in your Hotlist. Record
                 Attack Spell combat details under Attacks.</span
               >
+            </div>
+            <div class="spell-head cols-spells" aria-hidden="true">
+              <span data-i18n="f.name">Name</span>
+              <span data-i18n="col.rank">Rank</span>
+              <span data-i18n="f.spellType">Type / Traits</span>
+              <span data-i18n="f.manaCost">Mana Cost</span>
+              <span data-i18n="f.range">Range</span>
+              <span data-i18n="f.duration">Duration</span>
+              <span data-i18n="f.cooldown">Cooldown</span>
+              <span></span>
             </div>
             <div id="spellRows"></div>
             <button
@@ -3564,42 +3681,42 @@
             '<div class="row cols-attacks" data-row="attacks.' +
             i +
             '">' +
-            '<input data-k="' +
+            '<div class="rcell"><span data-i18n="f.name">Name</span><input data-k="' +
             b +
-            'name">' +
-            '<input data-k="' +
+            'name"></div>' +
+            '<div class="rcell"><span data-i18n="col.rank">Rank</span><input data-k="' +
             b +
-            'rank" class="center">' +
-            '<input data-k="' +
+            'rank" class="center"></div>' +
+            '<div class="rcell"><span data-i18n="col.range">Range</span><input data-k="' +
             b +
-            'range" class="center">' +
-            '<select data-k="' +
+            'range" class="center"></div>' +
+            '<div class="rcell"><span data-i18n="col.hitStat">Hit Stat</span><select data-k="' +
             b +
             'hitStat">' +
             STAT_OPTS +
-            "</select>" +
-            '<input data-k="' +
+            "</select></div>" +
+            '<div class="rcell"><span data-i18n="col.toHit">To Hit</span><input data-k="' +
             b +
-            'toHit" data-c="row.toHit" class="center" readonly>' +
-            '<select data-k="' +
+            'toHit" data-c="row.toHit" class="center" readonly></div>' +
+            '<div class="rcell"><span data-i18n="col.damageDice">Damage Dice</span><select data-k="' +
             b +
             'dice">' +
             DICE_OPTS +
-            "</select>" +
-            '<select data-k="' +
+            "</select></div>" +
+            '<div class="rcell"><span data-i18n="col.damageStat">Damage Stat</span><select data-k="' +
             b +
             'damageStat">' +
             STAT_OPTS +
-            "</select>" +
-            '<input data-k="' +
+            "</select></div>" +
+            '<div class="rcell"><span data-i18n="col.damageMod">Damage Mod</span><input data-k="' +
             b +
-            'damageMod" data-c="row.mod" data-src="damageStat" class="center" readonly data-i18n-title="title.modFromStat" title="Mod from selected stat">' +
-            '<input data-k="' +
+            'damageMod" data-c="row.mod" data-src="damageStat" class="center" readonly data-i18n-title="title.modFromStat" title="Mod from selected stat"></div>' +
+            '<div class="rcell"><span data-i18n="col.damageType">Damage Type</span><input data-k="' +
             b +
-            'damageType">' +
-            '<input data-k="' +
+            'damageType"></div>' +
+            '<div class="rcell"><span data-i18n="col.effects">Effects</span><input data-k="' +
             b +
-            'effects">' +
+            'effects"></div>' +
             "</div>"
           );
         }
@@ -3609,35 +3726,35 @@
             '<div class="skill-entry" data-row="skills.' +
             i +
             '"><div class="row cols-skills">' +
-            '<span style="display:flex;justify-content:center;"><input type="checkbox" data-i18n-title="title.skillAdvancement" data-i18n-aria-label="title.skillAdvancement" title="Mark for Skill Advancement" aria-label="Mark for Skill Advancement" data-k="' +
+            '<div class="rcell rcell-check"><span data-i18n="title.skillAdvancement">Mark for Skill Advancement</span><input type="checkbox" data-i18n-title="title.skillAdvancement" data-i18n-aria-label="title.skillAdvancement" title="Mark for Skill Advancement" aria-label="Mark for Skill Advancement" data-k="' +
             b +
-            'done"></span>' +
-            '<input data-k="' +
+            'done"></div>' +
+            '<div class="rcell"><span data-i18n="f.name">Name</span><input data-k="' +
             b +
-            'name">' +
-            '<input data-k="' +
+            'name"></div>' +
+            '<div class="rcell"><span data-i18n="col.rank">Rank</span><input data-k="' +
             b +
-            'rank" class="center">' +
-            '<select data-k="' +
+            'rank" class="center"></div>' +
+            '<div class="rcell"><span data-i18n="col.stat">Stat</span><select data-k="' +
             b +
             'stat">' +
             STAT_OPTS +
-            "</select>" +
-            '<input data-k="' +
+            "</select></div>" +
+            '<div class="rcell"><span data-i18n="col.statMod">Stat Mod</span><input data-k="' +
             b +
-            'mod" data-c="row.skillStatMod" data-src="stat" class="center" readonly>' +
-            '<select data-k="' +
+            'mod" data-c="row.skillStatMod" data-src="stat" class="center" readonly></div>' +
+            '<div class="rcell"><span data-i18n="col.check">Check Type</span><select data-k="' +
             b +
             'checkType">' +
             CHECK_OPTS +
-            "</select>" +
-            '<div class="skill-notes-cell"><input data-k="' +
+            "</select></div>" +
+            '<div class="rcell"><span data-i18n="col.notesUpgrades">Notes &amp; Upgrades</span><div class="skill-notes-cell"><input data-k="' +
             b +
             'notes"><button class="skill-toggle" type="button" data-skill-toggle="' +
             i +
             '" aria-expanded="false" aria-controls="skill-details-' +
             i +
-            '" data-i18n="btn.skillDetails">Details</button></div>' +
+            '" data-i18n="btn.skillDetails">Details</button></div></div>' +
             '</div><div class="skill-details" id="skill-details-' +
             i +
             '" hidden>' +
@@ -4097,7 +4214,7 @@
         function renderMana() {
           var enhancedInt = val("stats.INT.enh");
           var maxValue =
-            String(enhancedInt).trim() === "" ? "" : String(enhancedInt);
+            String(enhancedInt).trim() === "" ? "0" : String(enhancedInt);
           var maxField = field("mana.max");
           if (maxField && maxField.value !== maxValue)
             maxField.value = maxValue;
@@ -4111,8 +4228,7 @@
             c.textContent =
               String(val("mana.current")).trim() === "" ? "0" : cur;
           var m = $('[data-mana="max"]');
-          if (m)
-            m.textContent = String(val("mana.max")).trim() === "" ? "" : max;
+          if (m) m.textContent = max;
         }
 
         /* ---------------- image boxes (portrait, diagram) — stored as data URLs ---------------- */
@@ -4635,7 +4751,7 @@
             "Mana " +
               (flat["mana.current"] || 0) +
               "/" +
-              (flat["mana.max"] || flat["stats.INT.enh"] || "—"),
+              (flat["mana.max"] || flat["stats.INT.enh"] || 0),
           ];
           if (debuffs) parts.push(debuffs + " " + t("vault.activeDebuffs"));
           return esc(parts.join(" · "));
