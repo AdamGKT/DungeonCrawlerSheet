@@ -625,7 +625,7 @@
         color: var(--acc);
       }
       .cols-attacks {
-        grid-template-columns: var(--drag-col) 1.8fr 0.55fr 0.8fr 0.8fr 0.7fr 0.75fr 0.8fr 0.6fr 0.9fr 1.6fr;
+        grid-template-columns: var(--drag-col) 34px 1.8fr 0.55fr 0.8fr 0.8fr 0.7fr 0.75fr 0.8fr 0.6fr 0.9fr 1.6fr;
       }
       .cols-skills {
         grid-template-columns: var(--drag-col) 34px 1.6fr 0.6fr 0.85fr 0.55fr 1fr 2.2fr;
@@ -687,14 +687,18 @@
       .skill-entry + .skill-entry {
         margin-top: 4px;
       }
-      .skill-notes-cell {
+      .skill-notes-cell,
+      .attack-effects-cell,
+      .inv-notes-cell {
         display: grid;
         grid-template-columns: minmax(0, 1fr) auto;
         gap: 6px;
         align-items: center;
       }
       .skill-toggle,
-      .spell-toggle {
+      .spell-toggle,
+      .attack-toggle,
+      .inv-toggle {
         min-height: 36px;
         padding: 6px 9px;
         border: 1px solid var(--line);
@@ -707,7 +711,9 @@
         cursor: pointer;
       }
       .skill-toggle[aria-expanded="true"],
-      .spell-toggle[aria-expanded="true"] {
+      .spell-toggle[aria-expanded="true"],
+      .attack-toggle[aria-expanded="true"],
+      .inv-toggle[aria-expanded="true"] {
         border-color: var(--acc);
         color: var(--acc);
       }
@@ -721,12 +727,39 @@
         border-left: 3px solid var(--acc);
         background: var(--paper-2);
       }
-      .skill-details textarea {
+      .attack-details {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 10px;
+        margin: 6px 0 12px 40px;
+        padding: 12px;
+        border: 1px solid var(--line);
+        border-left: 3px solid var(--acc);
+        background: var(--paper-2);
+      }
+      .inv-details {
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 10px;
+        margin: 6px 0 12px 40px;
+        padding: 12px;
+        border: 1px solid var(--line);
+        border-left: 3px solid var(--acc);
+        background: var(--paper-2);
+      }
+      .skill-details textarea,
+      .attack-details textarea,
+      .inv-details textarea {
         min-height: 112px;
         resize: vertical;
       }
+      .attack-entry + .attack-entry {
+        margin-top: 4px;
+      }
       @media (max-width: 720px) {
-        .skill-details {
+        .skill-details,
+        .attack-details,
+        .inv-details {
           grid-template-columns: 1fr;
           margin-left: 0;
         }
@@ -760,7 +793,7 @@
           padding: 14px;
           border: 1px solid var(--line);
         }
-        #attackRows > .row.cols-attacks + .row.cols-attacks {
+        #attackRows > .attack-entry + .attack-entry {
           margin-top: 12px;
         }
         .skill-entry + .skill-entry {
@@ -786,7 +819,7 @@
       .spell-summary {
         display: grid;
         grid-template-columns:
-          var(--drag-col-spell) minmax(150px, 1.6fr) minmax(52px, 0.45fr)
+          var(--drag-col-spell) 34px minmax(150px, 1.6fr) minmax(52px, 0.45fr)
           minmax(110px, 1fr) minmax(82px, 0.65fr)
           minmax(88px, 0.75fr) minmax(105px, 0.9fr)
           minmax(105px, 0.9fr) auto;
@@ -798,23 +831,39 @@
       .spell-details .lbl {
         min-width: 0;
       }
+      /* row-check column: mirrors the Skills "mark" checkbox */
+      .spell-check {
+        justify-items: center;
+      }
+      .spell-check input {
+        margin-top: 4px;
+      }
+      /* spell details: same boxed, accent-bordered panel as attack details */
       .spell-details {
         display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+        grid-template-columns: repeat(2, minmax(0, 1fr));
         gap: 10px;
-        margin-top: 12px;
-        padding-top: 12px;
-        border-top: 1px solid var(--line);
+        margin: 6px 0 12px 40px;
+        padding: 12px;
+        border: 1px solid var(--line);
+        border-left: 3px solid var(--acc);
+        background: var(--paper-2);
       }
       .spell-details textarea {
         min-height: 112px;
         resize: vertical;
       }
+      @media (max-width: 900px) {
+        .spell-details {
+          grid-template-columns: 1fr;
+          margin-left: 0;
+        }
+      }
       /* spells: skills-style table (one header row) on wide screens;
          keeps the stacked per-field labels on tablet / mobile (<= 900px) */
       .cols-spells {
         grid-template-columns:
-          var(--drag-col-spell) minmax(150px, 1.6fr) minmax(52px, 0.45fr)
+          var(--drag-col-spell) 34px minmax(150px, 1.6fr) minmax(52px, 0.45fr)
           minmax(110px, 1fr) minmax(82px, 0.65fr)
           minmax(88px, 0.75fr) minmax(105px, 0.9fr)
           minmax(105px, 0.9fr) auto;
@@ -876,6 +925,13 @@
         .spell-duration,
         .spell-cooldown {
           grid-column: span 2;
+        }
+        .spell-check {
+          grid-column: span 2;
+          justify-items: start;
+        }
+        .spell-check input {
+          margin-top: 0;
         }
       }
       @media (max-width: 480px) {
@@ -1307,6 +1363,8 @@
         .addrow,
         .skill-toggle,
         .spell-toggle,
+        .attack-toggle,
+        .inv-toggle,
         .drag-handle,
         .print-dialog,
         [data-imgbox-clear] {
@@ -1331,6 +1389,8 @@
         .inset,
         .skill-entry,
         .spell-entry,
+        .attack-entry,
+        .inv-entry,
         .note-card,
         label {
           break-inside: avoid;
@@ -1359,7 +1419,8 @@
         .spell-cooldown {
           grid-column: span 2;
         }
-        .spell-details {
+        .spell-details,
+        .attack-details {
           grid-template-columns: repeat(2, minmax(0, 1fr));
         }
         input,
@@ -1376,7 +1437,9 @@
           display: none !important;
         }
         .skill-details[data-print-open="true"],
-        .spell-details[data-print-open="true"] {
+        .spell-details[data-print-open="true"],
+        .attack-details[data-print-open="true"],
+        .inv-details[data-print-open="true"] {
           display: grid !important;
         }
       }
@@ -1812,6 +1875,12 @@
             <div class="tbl" style="min-width: 1100px">
               <div class="head cols-attacks">
                 <span class="rh-drag" aria-hidden="true"></span
+                ><span
+                  data-i18n-title="title.markRow"
+                  data-i18n-aria-label="title.markRow"
+                  title="Mark this row"
+                  aria-label="Mark this row"
+                  >✔</span
                 ><span data-i18n="f.name">Name</span
                 ><span data-i18n="col.rank">Rank</span
                 ><span data-i18n="col.range">Range</span
@@ -1903,6 +1972,13 @@
             </div>
             <div class="spell-head cols-spells" aria-hidden="true">
               <span class="rh-drag"></span>
+              <span
+                data-i18n-title="title.markRow"
+                data-i18n-aria-label="title.markRow"
+                title="Mark this row"
+                aria-label="Mark this row"
+                >✔</span
+              >
               <span data-i18n="f.name">Name</span>
               <span data-i18n="col.rank">Rank</span>
               <span data-i18n="f.spellType">Type / Traits</span>
@@ -2371,6 +2447,10 @@
             "btn.hideSkillDetails": "Hide",
             "btn.spellDetails": "Details",
             "btn.hideSpellDetails": "Hide",
+            "btn.attackDetails": "Details",
+            "btn.hideAttackDetails": "Hide",
+            "btn.invDetails": "Details",
+            "btn.hideInvDetails": "Hide",
             "title.dragRow": "Drag to reorder (or focus and use Arrow Up / Down)",
             "btn.removeImg": "Remove image",
             "btn.theme.dark": "Dark",
@@ -2381,6 +2461,7 @@
             "title.mirrorDR": "Same as Damage Resistance",
             "title.modFromStat": "Mod from selected stat",
             "title.skillAdvancement": "Mark for Skill Advancement",
+            "title.markRow": "Mark this row",
             "title.aiFavor":
               "Spend 1 to reroll a d20 (except Natural 1) or gain one extra non-Attack Action once per round.",
             "title.move": "Default 20 ft. A Move Action uses this distance.",
@@ -2544,6 +2625,11 @@
             "f.spellLimitations": "Limitations / Targeting",
             "f.spellUpgrades": "Rank Upgrades",
             "f.spellNotes": "Additional Notes",
+            "f.attackDescription": "Description",
+            "f.attackLimitations": "Limitations / Targeting",
+            "f.attackUpgrades": "Improvements",
+            "f.attackNotes": "Additional Notes",
+            "f.invExtra": "Additional info",
             "alert.badImage": "Couldn't read that image.",
             "alert.badImport": "This file isn't a valid sheet export.",
             "confirm.reset": "Reset the entire sheet? This cannot be undone.",
@@ -2588,6 +2674,10 @@
             "btn.hideSkillDetails": "Masquer",
             "btn.spellDetails": "Détails",
             "btn.hideSpellDetails": "Masquer",
+            "btn.attackDetails": "Détails",
+            "btn.hideAttackDetails": "Masquer",
+            "btn.invDetails": "Détails",
+            "btn.hideInvDetails": "Masquer",
             "title.dragRow": "Glisser pour réorganiser (ou focus puis flèches Haut / Bas)",
             "btn.removeImg": "Retirer l'image",
             "btn.theme.dark": "Sombre",
@@ -2598,6 +2688,7 @@
             "title.mirrorDR": "Identique à la résistance aux dégâts",
             "title.modFromStat": "Mod de la caractéristique choisie",
             "title.skillAdvancement": "Marquer pour l'avancement de compétence",
+            "title.markRow": "Marquer cette ligne",
             "title.aiFavor":
               "Dépensez 1 pour relancer un d20 (sauf un 1 naturel) ou gagner une action supplémentaire hors Attaque une fois par round.",
             "title.move":
@@ -2761,6 +2852,11 @@
             "f.spellLimitations": "Limitations / Ciblage",
             "f.spellUpgrades": "Améliorations de rang",
             "f.spellNotes": "Notes supplémentaires",
+            "f.attackDescription": "Description",
+            "f.attackLimitations": "Limitations / Ciblage",
+            "f.attackUpgrades": "Améliorations",
+            "f.attackNotes": "Notes supplémentaires",
+            "f.invExtra": "Info supplémentaire",
             "alert.badImage": "Impossible de lire cette image.",
             "alert.badImport":
               "Ce fichier n'est pas un export de fiche valide.",
@@ -2807,6 +2903,10 @@
             "btn.hideSkillDetails": "Ocultar",
             "btn.spellDetails": "Detalles",
             "btn.hideSpellDetails": "Ocultar",
+            "btn.attackDetails": "Detalles",
+            "btn.hideAttackDetails": "Ocultar",
+            "btn.invDetails": "Detalles",
+            "btn.hideInvDetails": "Ocultar",
             "title.dragRow": "Arrastra para reordenar (o enfoca y usa Flecha Arriba / Abajo)",
             "btn.removeImg": "Quitar la imagen",
             "btn.theme.dark": "Oscuro",
@@ -2817,6 +2917,7 @@
             "title.mirrorDR": "Igual que la resistencia al daño",
             "title.modFromStat": "Mod de la característica elegida",
             "title.skillAdvancement": "Marcar para avance de habilidad",
+            "title.markRow": "Marcar esta fila",
             "title.aiFavor":
               "Gasta 1 para repetir un d20 (salvo un 1 natural) u obtener una acción extra que no sea de Ataque una vez por ronda.",
             "title.move":
@@ -2980,6 +3081,11 @@
             "f.spellLimitations": "Limitaciones / Objetivos",
             "f.spellUpgrades": "Mejoras de rango",
             "f.spellNotes": "Notas adicionales",
+            "f.attackDescription": "Descripción",
+            "f.attackLimitations": "Limitaciones / Objetivos",
+            "f.attackUpgrades": "Mejoras",
+            "f.attackNotes": "Notas adicionales",
+            "f.invExtra": "Información adicional",
             "alert.badImage": "No se puede leer esta imagen.",
             "alert.badImport":
               "Ese archivo no es una exportación de hoja válida.",
@@ -3026,6 +3132,10 @@
             "btn.hideSkillDetails": "Ausblenden",
             "btn.spellDetails": "Details",
             "btn.hideSpellDetails": "Ausblenden",
+            "btn.attackDetails": "Details",
+            "btn.hideAttackDetails": "Ausblenden",
+            "btn.invDetails": "Details",
+            "btn.hideInvDetails": "Ausblenden",
             "title.dragRow": "Zum Umsortieren ziehen (oder fokussieren und Pfeil hoch / runter)",
             "btn.removeImg": "Bild entfernen",
             "btn.theme.dark": "Dunkel",
@@ -3036,6 +3146,7 @@
             "title.mirrorDR": "Wie Schadensresistenz",
             "title.modFromStat": "Mod des gewählten Attributs",
             "title.skillAdvancement": "Für Fertigkeitssteigerung markieren",
+            "title.markRow": "Diese Zeile markieren",
             "title.aiFavor":
               "Gib 1 aus, um einen W20 neu zu würfeln (außer Natürliche 1) oder einmal pro Runde eine zusätzliche Nicht-Angriffsaktion zu erhalten.",
             "title.move":
@@ -3200,6 +3311,11 @@
             "f.spellLimitations": "Einschränkungen / Ziele",
             "f.spellUpgrades": "Rangverbesserungen",
             "f.spellNotes": "Zusätzliche Notizen",
+            "f.attackDescription": "Beschreibung",
+            "f.attackLimitations": "Einschränkungen / Ziele",
+            "f.attackUpgrades": "Verbesserungen",
+            "f.attackNotes": "Zusätzliche Notizen",
+            "f.invExtra": "Zusätzliche Infos",
             "alert.badImage": "Dieses Bild kann nicht gelesen werden.",
             "alert.badImport": "Diese Datei ist kein gültiger Bogen-Export.",
             "confirm.reset":
@@ -3245,6 +3361,10 @@
             "btn.hideSkillDetails": "Ocultar",
             "btn.spellDetails": "Detalhes",
             "btn.hideSpellDetails": "Ocultar",
+            "btn.attackDetails": "Detalhes",
+            "btn.hideAttackDetails": "Ocultar",
+            "btn.invDetails": "Detalhes",
+            "btn.hideInvDetails": "Ocultar",
             "title.dragRow": "Arraste para reordenar (ou foque e use Seta para Cima / Baixo)",
             "btn.removeImg": "Remover a imagem",
             "btn.theme.dark": "Escuro",
@@ -3255,6 +3375,7 @@
             "title.mirrorDR": "Igual à resistência a dano",
             "title.modFromStat": "Mod do atributo escolhido",
             "title.skillAdvancement": "Marcar para avanço da perícia",
+            "title.markRow": "Marcar esta linha",
             "title.aiFavor":
               "Gaste 1 para repetir um d20 (exceto 1 natural) ou ganhar uma Ação extra que não seja de Ataque uma vez por rodada.",
             "title.move":
@@ -3418,6 +3539,11 @@
             "f.spellLimitations": "Limitações / Alvos",
             "f.spellUpgrades": "Melhorias de nível",
             "f.spellNotes": "Notas adicionais",
+            "f.attackDescription": "Descrição",
+            "f.attackLimitations": "Limitações / Alvos",
+            "f.attackUpgrades": "Melhorias",
+            "f.attackNotes": "Notas adicionais",
+            "f.invExtra": "Informação adicional",
             "alert.badImage": "Não é possível ler esta imagem.",
             "alert.badImport":
               "Esse arquivo não é uma exportação de ficha válida.",
@@ -3648,6 +3774,20 @@
                 : "btn.spellDetails",
             );
           });
+          $$("[data-attack-toggle]").forEach(function (el) {
+            el.textContent = t(
+              el.getAttribute("aria-expanded") === "true"
+                ? "btn.hideAttackDetails"
+                : "btn.attackDetails",
+            );
+          });
+          $$("[data-inv-toggle]").forEach(function (el) {
+            el.textContent = t(
+              el.getAttribute("aria-expanded") === "true"
+                ? "btn.hideInvDetails"
+                : "btn.invDetails",
+            );
+          });
           var ls = $("#langSel");
           if (ls && ls.value !== lang) ls.value = lang;
           applyTheme(
@@ -3747,10 +3887,13 @@
         function attackRowHTML(i) {
           var b = "attacks." + i + ".";
           return (
-            '<div class="row cols-attacks" data-row="attacks.' +
+            '<div class="attack-entry" data-row="attacks.' +
             i +
-            '">' +
+            '"><div class="row cols-attacks">' +
             DRAG_HANDLE +
+            '<div class="rcell rcell-check"><span data-i18n="title.markRow">Mark this row</span><input type="checkbox" data-i18n-title="title.markRow" data-i18n-aria-label="title.markRow" title="Mark this row" aria-label="Mark this row" data-k="' +
+            b +
+            'done"></div>' +
             '<div class="rcell"><span data-i18n="f.name">Name</span><input data-k="' +
             b +
             'name"></div>' +
@@ -3784,10 +3927,30 @@
             '<div class="rcell"><span data-i18n="col.damageType">Damage Type</span><input data-k="' +
             b +
             'damageType"></div>' +
-            '<div class="rcell"><span data-i18n="col.effects">Effects</span><input data-k="' +
+            '<div class="rcell"><span data-i18n="col.effects">Effects</span><div class="attack-effects-cell"><input data-k="' +
             b +
-            'effects"></div>' +
-            "</div>"
+            'effects"><button class="attack-toggle" type="button" data-attack-toggle="' +
+            i +
+            '" aria-expanded="false" aria-controls="attack-details-' +
+            i +
+            '" data-i18n="btn.attackDetails">Details</button></div></div>' +
+            "</div>" +
+            '<div class="attack-details" id="attack-details-' +
+            i +
+            '" hidden>' +
+            '<label class="lbl"><span data-i18n="f.attackDescription">Description</span><textarea data-k="' +
+            b +
+            'description"></textarea></label>' +
+            '<label class="lbl"><span data-i18n="f.attackLimitations">Limitations / Targeting</span><textarea data-k="' +
+            b +
+            'limitations"></textarea></label>' +
+            '<label class="lbl"><span data-i18n="f.attackUpgrades">Improvements</span><textarea data-k="' +
+            b +
+            'upgrades"></textarea></label>' +
+            '<label class="lbl"><span data-i18n="f.attackNotes">Additional Notes</span><textarea data-k="' +
+            b +
+            'notes"></textarea></label>' +
+            "</div></div>"
           );
         }
         function skillRowHTML(i) {
@@ -3849,6 +4012,9 @@
             i +
             '"><div class="spell-summary">' +
             DRAG_HANDLE +
+            '<label class="lbl sm spell-check"><span data-i18n="title.markRow">Mark this row</span><input type="checkbox" data-i18n-title="title.markRow" data-i18n-aria-label="title.markRow" title="Mark this row" aria-label="Mark this row" data-k="' +
+            b +
+            'done"></label>' +
             '<label class="lbl sm spell-name"><span data-i18n="f.name">Name</span><input data-k="' +
             b +
             'name"></label>' +
@@ -3899,9 +4065,9 @@
         function invRowHTML(i) {
           var b = "inv." + i + ".";
           return (
-            '<div class="row cols-inv" data-row="inv.' +
+            '<div class="inv-entry" data-row="inv.' +
             i +
-            '">' +
+            '"><div class="row cols-inv">' +
             DRAG_HANDLE +
             '<input data-k="' +
             b +
@@ -3909,10 +4075,21 @@
             '<input data-k="' +
             b +
             'qty" class="center">' +
-            '<input data-k="' +
+            '<div class="inv-notes-cell"><input data-k="' +
             b +
-            'notes">' +
-            "</div>"
+            'notes"><button class="inv-toggle" type="button" data-inv-toggle="' +
+            i +
+            '" aria-expanded="false" aria-controls="inv-details-' +
+            i +
+            '" data-i18n="btn.invDetails">Details</button></div>' +
+            "</div>" +
+            '<div class="inv-details" id="inv-details-' +
+            i +
+            '" hidden>' +
+            '<label class="lbl"><span data-i18n="f.invExtra">Additional info</span><textarea data-k="' +
+            b +
+            'extra"></textarea></label>' +
+            "</div></div>"
           );
         }
         function addAttackRow() {
@@ -5107,7 +5284,9 @@
             );
           });
 
-          $$(".skill-details, .spell-details").forEach(function (details) {
+          $$(
+            ".skill-details, .spell-details, .attack-details, .inv-details",
+          ).forEach(function (details) {
             var toggle = $('[aria-controls="' + details.id + '"]');
             if (
               hasPrintValue(details) ||
@@ -5204,7 +5383,9 @@
             st.fields[rowRelKey(el.getAttribute("data-k"))] =
               el.type === "checkbox" ? { c: el.checked } : { v: el.value };
           });
-          var det = row.querySelector(".skill-details, .spell-details");
+          var det = row.querySelector(
+            ".skill-details, .spell-details, .attack-details, .inv-details",
+          );
           if (det) st.open = !det.hidden;
           return st;
         }
@@ -5222,20 +5403,29 @@
               else el.removeAttribute("data-dirty");
             }
           });
-          var det = row.querySelector(".skill-details, .spell-details");
-          var tog = row.querySelector(".skill-toggle, .spell-toggle");
+          var det = row.querySelector(
+            ".skill-details, .spell-details, .attack-details, .inv-details",
+          );
+          var tog = row.querySelector(
+            ".skill-toggle, .spell-toggle, .attack-toggle, .inv-toggle",
+          );
           if (det && tog) {
             det.hidden = !st.open;
             tog.setAttribute("aria-expanded", String(st.open));
-            var spell = tog.classList.contains("spell-toggle");
+            var kind = tog.classList.contains("spell-toggle")
+              ? "Spell"
+              : tog.classList.contains("attack-toggle")
+                ? "Attack"
+                : tog.classList.contains("inv-toggle")
+                  ? "Inv"
+                  : "Skill";
             tog.textContent = t(
               st.open
-                ? spell
-                  ? "btn.hideSpellDetails"
-                  : "btn.hideSkillDetails"
-                : spell
-                  ? "btn.spellDetails"
-                  : "btn.skillDetails",
+                ? "btn.hide" + kind + "Details"
+                : "btn." +
+                    kind.charAt(0).toLowerCase() +
+                    kind.slice(1) +
+                    "Details",
             );
           }
         }
@@ -5464,6 +5654,40 @@
                 spellToggle.textContent = openingSpell
                   ? t("btn.hideSpellDetails")
                   : t("btn.spellDetails");
+              }
+              return;
+            }
+            var attackToggle = target.closest("[data-attack-toggle]");
+            if (attackToggle) {
+              var attackDetails = $(
+                "#attack-details-" +
+                  attackToggle.getAttribute("data-attack-toggle"),
+              );
+              if (attackDetails) {
+                var openingAttack = attackDetails.hidden;
+                attackDetails.hidden = !openingAttack;
+                attackToggle.setAttribute(
+                  "aria-expanded",
+                  String(openingAttack),
+                );
+                attackToggle.textContent = openingAttack
+                  ? t("btn.hideAttackDetails")
+                  : t("btn.attackDetails");
+              }
+              return;
+            }
+            var invToggle = target.closest("[data-inv-toggle]");
+            if (invToggle) {
+              var invDetails = $(
+                "#inv-details-" + invToggle.getAttribute("data-inv-toggle"),
+              );
+              if (invDetails) {
+                var openingInv = invDetails.hidden;
+                invDetails.hidden = !openingInv;
+                invToggle.setAttribute("aria-expanded", String(openingInv));
+                invToggle.textContent = openingInv
+                  ? t("btn.hideInvDetails")
+                  : t("btn.invDetails");
               }
               return;
             }
