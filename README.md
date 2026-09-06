@@ -15,14 +15,6 @@ automatically in that browser, and nothing ever leaves your machine.
 
 ## Features
 
-Development checks: with Node.js 22.13+ installed, run `npm ci` then `npm test`.
-These exercise the real page in a DOM environment, including save/import and
-Vault behavior. They do not simulate browser layout. For visual checks, serve
-the repository locally (`python3 -m http.server 8000`) and open
-`http://localhost:8000/tests/layout.html`, then click **Load sheet**. The harness
-offers phone/desktop viewport widths and a print-CSS preview without pagination.
-Check actual A4 pagination separately through the sheet's own Print dialog.
-
 - **Complete crawler sheet** — identity, health, stats, defense, mana, attacks,
   skills, spells, gear, inventory and a full roleplaying journal.
 - **Auto-calculated fields** — stat modifiers, DEX mod, Damage Resistance total,
@@ -223,8 +215,8 @@ GitHub Pages, Netlify, a USB stick, a local folder.
 
 ## Tech notes
 
-- One file: HTML + CSS + vanilla JavaScript, ES5-compatible, ~5,000 lines.
-- No dependencies or build tooling. The repeating parts of the sheet (stat cards,
+- One app file: HTML + CSS + vanilla JavaScript.
+- No production dependencies or build step. The repeating parts of the sheet (stat cards,
   table rows, journal pages, tab bar, translations) are generated at load time.
 - Fields are bound by a `data-k` attribute to a flat key (e.g. `stats.STR.enh`);
   export nests these into a `character` object and also keeps the flat map.
@@ -232,3 +224,16 @@ GitHub Pages, Netlify, a USB stick, a local folder.
   with their row count in `counts.spells`; older saves without those keys open
   with 8 blank Spell rows. Version 1 attacks with a single `statA` remain
   compatible and initialize both Hit Stat and Damage Stat from that value.
+
+## Development checks
+
+With Node.js 24 LTS (24.15+) installed, run `npm ci` then `npm test`.
+These checks exercise the real page in a DOM environment, including save/import
+and Vault behavior. They do not simulate browser layout. Development dependencies
+are only for tests; opening `index.html` still needs no installation.
+
+For visual checks, serve the repository locally (`python3 -m http.server 8000`)
+and open `http://localhost:8000/tests/layout.html`, then click **Load sheet**.
+The harness offers phone/desktop viewport widths and a print-CSS preview without
+pagination. Check actual A4 pagination separately through the sheet's own Print
+dialog. See [the Health and Mana checklist](tests/HEALTH-MANA-CHECKLIST.md).
