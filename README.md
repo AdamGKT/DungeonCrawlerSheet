@@ -30,8 +30,8 @@ automatically in that browser, and nothing ever leaves your machine.
 - **Expandable Skill details** — every Skill row has multiline Description,
   Rank Upgrades and Extended Notes fields without making the play view wider.
 - **Dedicated Spell register** — record each Spell's type, Mana Cost, range,
-  duration, cooldown and optional Hotlist slot, with expandable effect details,
-  limitations, upgrades and notes.
+  duration and cooldown, with expandable effect details, limitations, upgrades
+  and notes.
 - **A4 printing** — print the current section or a complete crawler dossier.
   Print mode includes populated Skill and Spell details and trims excessive
   blank rows.
@@ -121,12 +121,15 @@ extended or homebrew notes.
 
 ### Spells
 Starts with 8 rows, add more as needed: Name, Rank, Type / Traits, **Mana Cost**,
-Range, Duration, Cooldown and an optional Hotlist Slot reference. Mana Cost is a
-text field because a Spell may have a fixed, variable or no Mana cost. Use a
-row's **Details** button for Description / Effect, Base Damage / Healing,
-Limitations / Targeting, Rank Upgrades and Additional Notes. The register is a
-reference aid: Mana spending, Attack Skill Checks, casting, targeting, cooldowns
-and effects remain manual, and Scroll Spells can be recorded with no Mana cost.
+Range, Duration and Cooldown. Mana Cost is a text field because a Spell may have
+a fixed, variable or no Mana cost. Use a row's **Details** button for
+Description / Effect, Base Damage / Healing, Limitations / Targeting, Rank
+Upgrades and Additional Notes. Spells remain Skills mechanically; the separate
+tab is a reference area for Spell-specific information. A Spell must also be
+placed in the Hotlist for combat or other stressful situations, and Attack Spell
+combat details belong under Attacks. Mana spending, Attack Skill Checks, casting,
+targeting, cooldowns and effects remain manual, and Scroll Spells can be recorded
+with no Mana cost.
 
 ### Inventory
 Starts with 36 rows of UI space, not a game-rule capacity; add more as needed.
