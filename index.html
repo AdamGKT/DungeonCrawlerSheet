@@ -618,7 +618,7 @@
         color: var(--acc);
       }
       .cols-attacks {
-        grid-template-columns: 1.8fr 0.55fr 0.8fr 0.7fr 0.75fr 0.8fr 0.6fr 1.8fr;
+        grid-template-columns: 1.8fr 0.55fr 0.8fr 0.8fr 0.7fr 0.75fr 0.8fr 0.6fr 0.9fr 1.6fr;
       }
       .cols-skills {
         grid-template-columns: 34px 1.6fr 0.6fr 0.85fr 0.55fr 1fr 2.2fr;
@@ -1588,15 +1588,17 @@
             >
               Attacks
             </div>
-            <div class="tbl" style="min-width: 960px">
+            <div class="tbl" style="min-width: 1100px">
               <div class="head cols-attacks">
                 <span data-i18n="f.name">Name</span
                 ><span data-i18n="col.rank">Rank</span
+                ><span data-i18n="col.range">Range</span
                 ><span data-i18n="col.hitStat">Hit Stat</span
                 ><span class="acc" data-i18n="col.toHit">To Hit</span
                 ><span data-i18n="col.damageDice">Damage Dice</span
                 ><span data-i18n="col.damageStat">Damage Stat</span
                 ><span data-i18n="col.damageMod">Damage Mod</span
+                ><span data-i18n="col.damageType">Damage Type</span
                 ><span
                   data-i18n="col.effects"
                   data-i18n-title="title.attackEffects"
@@ -2223,11 +2225,13 @@
             "col.rank": "Rank",
             "col.stat": "Stat",
             "col.hitStat": "Hit Stat",
+            "col.range": "Range",
             "col.toHit": "To Hit",
             "col.damage": "Damage",
             "col.damageDice": "Damage Dice",
             "col.damageStat": "Damage Stat",
             "col.damageMod": "Damage Mod",
+            "col.damageType": "Damage Type",
             "col.effects": "Effects",
             "chip.skills": "Skills",
             "chip.spells": "Spells",
@@ -2438,11 +2442,13 @@
             "col.rank": "Rang",
             "col.stat": "Carac.",
             "col.hitStat": "Carac. d'attaque",
+            "col.range": "Portée",
             "col.toHit": "Toucher",
             "col.damage": "Dégâts",
             "col.damageDice": "Dés de dégâts",
             "col.damageStat": "Carac. de dégâts",
             "col.damageMod": "Mod dégâts",
+            "col.damageType": "Type de dégâts",
             "col.effects": "Effets",
             "chip.skills": "Compétences",
             "chip.spells": "Sorts",
@@ -2654,11 +2660,13 @@
             "col.rank": "Rango",
             "col.stat": "Car.",
             "col.hitStat": "Car. de impacto",
+            "col.range": "Alcance",
             "col.toHit": "Impacto",
             "col.damage": "Daño",
             "col.damageDice": "Dados de daño",
             "col.damageStat": "Car. de daño",
             "col.damageMod": "Mod de daño",
+            "col.damageType": "Tipo de daño",
             "col.effects": "Efectos",
             "chip.skills": "Habilidades",
             "chip.spells": "Conjuros",
@@ -2870,11 +2878,13 @@
             "col.rank": "Rang",
             "col.stat": "Attr.",
             "col.hitStat": "Trefferattribut",
+            "col.range": "Reichweite",
             "col.toHit": "Treffer",
             "col.damage": "Schaden",
             "col.damageDice": "Schadenswürfel",
             "col.damageStat": "Schadensattribut",
             "col.damageMod": "Schadensmod.",
+            "col.damageType": "Schadensart",
             "col.effects": "Effekte",
             "chip.skills": "Fertigkeiten",
             "chip.spells": "Zauber",
@@ -3086,11 +3096,13 @@
             "col.rank": "Grau",
             "col.stat": "Atrib.",
             "col.hitStat": "Atrib. de acerto",
+            "col.range": "Alcance",
             "col.toHit": "Acerto",
             "col.damage": "Dano",
             "col.damageDice": "Dados de dano",
             "col.damageStat": "Atrib. de dano",
             "col.damageMod": "Mod de dano",
+            "col.damageType": "Tipo de dano",
             "col.effects": "Efeitos",
             "chip.skills": "Perícias",
             "chip.spells": "Magias",
@@ -3500,6 +3512,9 @@
             '<input data-k="' +
             b +
             'rank" class="center">' +
+            '<input data-k="' +
+            b +
+            'range" class="center">' +
             '<select data-k="' +
             b +
             'hitStat">' +
@@ -3521,6 +3536,9 @@
             '<input data-k="' +
             b +
             'damageMod" data-c="row.mod" data-src="damageStat" class="center" readonly data-i18n-title="title.modFromStat" title="Mod from selected stat">' +
+            '<input data-k="' +
+            b +
+            'damageType">' +
             '<input data-k="' +
             b +
             'effects">' +
