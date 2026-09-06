@@ -15,6 +15,14 @@ automatically in that browser, and nothing ever leaves your machine.
 
 ## Features
 
+Development checks: with Node.js 22.13+ installed, run `npm ci` then `npm test`.
+These exercise the real page in a DOM environment, including save/import and
+Vault behavior. They do not simulate browser layout. For visual checks, serve
+the repository locally (`python3 -m http.server 8000`) and open
+`http://localhost:8000/tests/layout.html`, then click **Load sheet**. The harness
+offers phone/desktop viewport widths and a print-CSS preview without pagination.
+Check actual A4 pagination separately through the sheet's own Print dialog.
+
 - **Complete crawler sheet** — identity, health, stats, defense, mana, attacks,
   skills, spells, gear, inventory and a full roleplaying journal.
 - **Auto-calculated fields** — stat modifiers, DEX mod, Damage Resistance total,
@@ -55,7 +63,13 @@ automatically in that browser, and nothing ever leaves your machine.
 
 ### Sheet
 - **Health** — a 10-slot crawler Health Bar (10 % … 100 %). Each slot is worth the
-  crawler's current CON Mod; mark a slot when it is lost.
+  crawler's current CON Mod by default; mark lost slots starting at 100 %.
+  Open **Health & Mana adjustments** to select another Health stat, add bonuses
+  to every slot or individual slots, or give a slot a fixed value. A fixed value
+  replaces that slot's calculation, including bonuses. Stat bonuses from gear
+  must still be included manually in Enhanced Stats. For example, a +10 bonus
+  to the 100 % slot belongs in that slot's Bonus field; it does not increase
+  Constitution or the other nine slots. Bonuses continue following Stat changes.
 - **Identity** — name, race, gender / pronouns, level, Crawler Number, class,
   floor, AI Favor and size (Tiny → Gargantuan). AI Favor is a manually tracked
   spendable resource: Humans begin with 1 and animal crawlers with 0; spend 1 for
@@ -67,7 +81,18 @@ automatically in that browser, and nothing ever leaves your machine.
   they do not directly raise Skill Ranks. This sheet leaves advancement
   application manual.
 - **Mana** — Current Mana is tracked manually; Max Mana equals the crawler's
-  current Enhanced Intelligence Stat.
+  current Enhanced Intelligence Stat by default. Optional adjustments allow a
+  bonus or a fixed maximum (including zero); a fixed maximum replaces the normal
+  calculation and bonus. Changing the maximum never spends or restores Current
+  Mana. Use exceptions only when a rule or the GM calls for them.
+  Resource adjustments accept whole numbers. Fixed Health values must be at
+  least 1 and fixed Mana cannot be negative; invalid entries are ignored. Adjusted
+  Health totals have a minimum of 1 and Mana a minimum of 0. The compact summaries
+  and final values appear in print; editing controls do not. **Reset adjustments**
+  restores automatic values without changing damage marks, Stats or Current Mana.
+  Adjustments travel with each crawler through autosave, Vault operations and JSON
+  import/export. Older saves use normal calculations; saved derived values are
+  never treated as manual overrides.
 - **Portrait** — image upload as described above.
 - **Stats** — Strength, Intelligence, Constitution, Dexterity, Charisma. Enter the
   Unenhanced base Stat and current Enhanced Stat separately. Initial character
