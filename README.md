@@ -27,6 +27,10 @@ automatically in that browser, and nothing ever leaves your machine.
 - **Import / Export JSON** — back up a crawler or move it between devices and
   browsers with a single file. Importing creates a new Vault crawler instead of
   overwriting the one currently open.
+- **Reorderable rows** — drag the handle on the left of any Attacks, Skills,
+  Spells or Inventory row to reorder it (or focus the handle and press Arrow
+  Up / Down). The new order is saved. Desktop only; hidden on narrow screens
+  and in print.
 - **Expandable Skill details** — every Skill row has multiline Description,
   Rank Upgrades and Extended Notes fields without making the play view wider.
 - **Dedicated Spell register** — record each Spell's type, Mana Cost, range,

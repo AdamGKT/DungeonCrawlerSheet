@@ -48,6 +48,8 @@
         --f-body: "Barlow", system-ui, -apple-system, sans-serif;
         --f-mono:
           "JetBrains Mono", ui-monospace, "Cascadia Mono", Consolas, monospace;
+        --drag-col: 18px;
+        --drag-col-spell: 18px;
       }
       :root[data-theme="dark"] {
         --bg: #100f0d;
@@ -623,10 +625,45 @@
         color: var(--acc);
       }
       .cols-attacks {
-        grid-template-columns: 1.8fr 0.55fr 0.8fr 0.8fr 0.7fr 0.75fr 0.8fr 0.6fr 0.9fr 1.6fr;
+        grid-template-columns: var(--drag-col) 1.8fr 0.55fr 0.8fr 0.8fr 0.7fr 0.75fr 0.8fr 0.6fr 0.9fr 1.6fr;
       }
       .cols-skills {
-        grid-template-columns: 34px 1.6fr 0.6fr 0.85fr 0.55fr 1fr 2.2fr;
+        grid-template-columns: var(--drag-col) 34px 1.6fr 0.6fr 0.85fr 0.55fr 1fr 2.2fr;
+      }
+      /* drag-to-reorder handle (attacks / skills / spells / inventory rows) */
+      .drag-handle {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        align-self: stretch;
+        min-height: 30px;
+        color: var(--faint);
+        cursor: grab;
+        user-select: none;
+        font-size: 12px;
+        line-height: 1;
+        border: 1px solid transparent;
+        border-radius: 3px;
+      }
+      .drag-handle:hover {
+        color: var(--acc);
+      }
+      .drag-handle:focus-visible {
+        outline: 2px solid var(--acc);
+        outline-offset: 1px;
+        color: var(--acc);
+      }
+      .drag-handle:active {
+        cursor: grabbing;
+      }
+      .row-dragging {
+        opacity: 0.4;
+      }
+      .row-drop-before {
+        box-shadow: inset 0 4px 0 -1px var(--acc);
+      }
+      .row-drop-after {
+        box-shadow: inset 0 -4px 0 -1px var(--acc);
       }
       /* per-cell wrapper: label hidden on desktop (the .head row labels the
          columns), shown when rows stack vertically on mobile */
@@ -697,6 +734,14 @@
       /* stack attack / skill rows vertically like spells — no horizontal scroll.
          screen-only so the print layout keeps its dense grid. */
       @media screen and (max-width: 720px) {
+        :root {
+          --drag-col: 0px;
+        }
+        .row.cols-attacks .drag-handle,
+        .row.cols-skills .drag-handle,
+        .row.cols-inv .drag-handle {
+          display: none;
+        }
         .card.scrollx {
           overflow-x: visible;
         }
@@ -741,7 +786,7 @@
       .spell-summary {
         display: grid;
         grid-template-columns:
-          minmax(150px, 1.6fr) minmax(52px, 0.45fr)
+          var(--drag-col-spell) minmax(150px, 1.6fr) minmax(52px, 0.45fr)
           minmax(110px, 1fr) minmax(82px, 0.65fr)
           minmax(88px, 0.75fr) minmax(105px, 0.9fr)
           minmax(105px, 0.9fr) auto;
@@ -769,7 +814,7 @@
          keeps the stacked per-field labels on tablet / mobile (<= 900px) */
       .cols-spells {
         grid-template-columns:
-          minmax(150px, 1.6fr) minmax(52px, 0.45fr)
+          var(--drag-col-spell) minmax(150px, 1.6fr) minmax(52px, 0.45fr)
           minmax(110px, 1fr) minmax(82px, 0.65fr)
           minmax(88px, 0.75fr) minmax(105px, 0.9fr)
           minmax(105px, 0.9fr) auto;
@@ -817,6 +862,12 @@
         }
       }
       @media (max-width: 900px) {
+        :root {
+          --drag-col-spell: 0px;
+        }
+        .spell-summary .drag-handle {
+          display: none;
+        }
         .spell-summary {
           grid-template-columns: repeat(2, minmax(0, 1fr));
         }
@@ -839,7 +890,7 @@
         }
       }
       .cols-inv {
-        grid-template-columns: 2fr 0.6fr 3fr;
+        grid-template-columns: var(--drag-col) 2fr 0.6fr 3fr;
       }
       .dmg-cell {
         display: flex;
@@ -1242,6 +1293,10 @@
         body {
           padding: 0;
         }
+        :root {
+          --drag-col: 0px;
+          --drag-col-spell: 0px;
+        }
         .page {
           max-width: none;
           margin: 0;
@@ -1252,6 +1307,7 @@
         .addrow,
         .skill-toggle,
         .spell-toggle,
+        .drag-handle,
         .print-dialog,
         [data-imgbox-clear] {
           display: none !important;
@@ -1755,7 +1811,8 @@
             </div>
             <div class="tbl" style="min-width: 1100px">
               <div class="head cols-attacks">
-                <span data-i18n="f.name">Name</span
+                <span class="rh-drag" aria-hidden="true"></span
+                ><span data-i18n="f.name">Name</span
                 ><span data-i18n="col.rank">Rank</span
                 ><span data-i18n="col.range">Range</span
                 ><span data-i18n="col.hitStat">Hit Stat</span
@@ -1798,7 +1855,8 @@
             </div>
             <div class="tbl" style="min-width: 860px">
               <div class="head cols-skills">
-                <span
+                <span class="rh-drag" aria-hidden="true"></span
+                ><span
                   data-i18n-title="title.skillAdvancement"
                   data-i18n-aria-label="title.skillAdvancement"
                   title="Mark for Skill Advancement"
@@ -1844,6 +1902,7 @@
               >
             </div>
             <div class="spell-head cols-spells" aria-hidden="true">
+              <span class="rh-drag"></span>
               <span data-i18n="f.name">Name</span>
               <span data-i18n="col.rank">Rank</span>
               <span data-i18n="f.spellType">Type / Traits</span>
@@ -1877,7 +1936,8 @@
             </div>
             <div class="tbl">
               <div class="head cols-inv">
-                <span data-i18n="col.item">Item</span
+                <span class="rh-drag" aria-hidden="true"></span
+                ><span data-i18n="col.item">Item</span
                 ><span data-i18n="col.qty">Qty</span
                 ><span data-i18n="col.notes">Notes</span>
               </div>
@@ -2311,6 +2371,7 @@
             "btn.hideSkillDetails": "Hide",
             "btn.spellDetails": "Details",
             "btn.hideSpellDetails": "Hide",
+            "title.dragRow": "Drag to reorder (or focus and use Arrow Up / Down)",
             "btn.removeImg": "Remove image",
             "btn.theme.dark": "Dark",
             "btn.theme.light": "Light",
@@ -2527,6 +2588,7 @@
             "btn.hideSkillDetails": "Masquer",
             "btn.spellDetails": "Détails",
             "btn.hideSpellDetails": "Masquer",
+            "title.dragRow": "Glisser pour réorganiser (ou focus puis flèches Haut / Bas)",
             "btn.removeImg": "Retirer l'image",
             "btn.theme.dark": "Sombre",
             "btn.theme.light": "Clair",
@@ -2745,6 +2807,7 @@
             "btn.hideSkillDetails": "Ocultar",
             "btn.spellDetails": "Detalles",
             "btn.hideSpellDetails": "Ocultar",
+            "title.dragRow": "Arrastra para reordenar (o enfoca y usa Flecha Arriba / Abajo)",
             "btn.removeImg": "Quitar la imagen",
             "btn.theme.dark": "Oscuro",
             "btn.theme.light": "Claro",
@@ -2963,6 +3026,7 @@
             "btn.hideSkillDetails": "Ausblenden",
             "btn.spellDetails": "Details",
             "btn.hideSpellDetails": "Ausblenden",
+            "title.dragRow": "Zum Umsortieren ziehen (oder fokussieren und Pfeil hoch / runter)",
             "btn.removeImg": "Bild entfernen",
             "btn.theme.dark": "Dunkel",
             "btn.theme.light": "Hell",
@@ -3181,6 +3245,7 @@
             "btn.hideSkillDetails": "Ocultar",
             "btn.spellDetails": "Detalhes",
             "btn.hideSpellDetails": "Ocultar",
+            "title.dragRow": "Arraste para reordenar (ou foque e use Seta para Cima / Baixo)",
             "btn.removeImg": "Remover a imagem",
             "btn.theme.dark": "Escuro",
             "btn.theme.light": "Claro",
@@ -3675,12 +3740,17 @@
           invCount = 0;
 
         /* ---------------- row templates ---------------- */
+        var DRAG_HANDLE =
+          '<span class="drag-handle" draggable="true" role="button" tabindex="0" ' +
+          'data-i18n-title="title.dragRow" data-i18n-aria-label="title.dragRow" ' +
+          'title="Drag to reorder" aria-label="Drag to reorder">⠿</span>';
         function attackRowHTML(i) {
           var b = "attacks." + i + ".";
           return (
             '<div class="row cols-attacks" data-row="attacks.' +
             i +
             '">' +
+            DRAG_HANDLE +
             '<div class="rcell"><span data-i18n="f.name">Name</span><input data-k="' +
             b +
             'name"></div>' +
@@ -3726,6 +3796,7 @@
             '<div class="skill-entry" data-row="skills.' +
             i +
             '"><div class="row cols-skills">' +
+            DRAG_HANDLE +
             '<div class="rcell rcell-check"><span data-i18n="title.skillAdvancement">Mark for Skill Advancement</span><input type="checkbox" data-i18n-title="title.skillAdvancement" data-i18n-aria-label="title.skillAdvancement" title="Mark for Skill Advancement" aria-label="Mark for Skill Advancement" data-k="' +
             b +
             'done"></div>' +
@@ -3777,6 +3848,7 @@
             '<div class="spell-entry" data-row="spells.' +
             i +
             '"><div class="spell-summary">' +
+            DRAG_HANDLE +
             '<label class="lbl sm spell-name"><span data-i18n="f.name">Name</span><input data-k="' +
             b +
             'name"></label>' +
@@ -3827,7 +3899,10 @@
         function invRowHTML(i) {
           var b = "inv." + i + ".";
           return (
-            '<div class="row cols-inv">' +
+            '<div class="row cols-inv" data-row="inv.' +
+            i +
+            '">' +
+            DRAG_HANDLE +
             '<input data-k="' +
             b +
             'item">' +
@@ -5116,8 +5191,162 @@
           applyTheme(next);
         }
 
+        /* ---------------- drag-to-reorder rows ---------------- */
+        /* Rows are bound to state by a fixed index (data-k="skills.3.name"),
+           so reordering moves the field *values* between rows rather than
+           moving DOM nodes — the new order is what collect()/save() persist. */
+        function rowRelKey(k) {
+          return k.split(".").slice(2).join(".");
+        }
+        function snapshotRow(row) {
+          var st = { open: false, fields: {} };
+          $$("[data-k]", row).forEach(function (el) {
+            st.fields[rowRelKey(el.getAttribute("data-k"))] =
+              el.type === "checkbox" ? { c: el.checked } : { v: el.value };
+          });
+          var det = row.querySelector(".skill-details, .spell-details");
+          if (det) st.open = !det.hidden;
+          return st;
+        }
+        function restoreRow(row, st) {
+          $$("[data-k]", row).forEach(function (el) {
+            var f = st.fields[rowRelKey(el.getAttribute("data-k"))];
+            if (!f) return;
+            if (el.type === "checkbox") {
+              el.checked = !!f.c;
+              if (el.checked) el.setAttribute("data-dirty", "1");
+              else el.removeAttribute("data-dirty");
+            } else {
+              el.value = f.v != null ? f.v : "";
+              if (el.value !== "") el.setAttribute("data-dirty", "1");
+              else el.removeAttribute("data-dirty");
+            }
+          });
+          var det = row.querySelector(".skill-details, .spell-details");
+          var tog = row.querySelector(".skill-toggle, .spell-toggle");
+          if (det && tog) {
+            det.hidden = !st.open;
+            tog.setAttribute("aria-expanded", String(st.open));
+            var spell = tog.classList.contains("spell-toggle");
+            tog.textContent = t(
+              st.open
+                ? spell
+                  ? "btn.hideSpellDetails"
+                  : "btn.hideSkillDetails"
+                : spell
+                  ? "btn.spellDetails"
+                  : "btn.skillDetails",
+            );
+          }
+        }
+        function siblingRows(container) {
+          return $$("[data-row]", container).filter(function (r) {
+            return r.parentNode === container;
+          });
+        }
+        function reorderRows(src, target, after) {
+          var container = src.parentNode;
+          if (!target || target.parentNode !== container || src === target)
+            return;
+          var rows = siblingRows(container);
+          var from = rows.indexOf(src);
+          var to = rows.indexOf(target);
+          if (from < 0 || to < 0) return;
+          var states = rows.map(snapshotRow);
+          var order = rows.map(function (_, i) {
+            return i;
+          });
+          order.splice(from, 1);
+          order.splice(order.indexOf(to) + (after ? 1 : 0), 0, from);
+          rows.forEach(function (row, i) {
+            restoreRow(row, states[order[i]]);
+          });
+          recompute();
+          header();
+          save();
+          return rows[order.indexOf(from)];
+        }
+
+        var dragRow = null;
+        function clearDropMarks() {
+          $$(".row-drop-before, .row-drop-after").forEach(function (el) {
+            el.classList.remove("row-drop-before", "row-drop-after");
+          });
+        }
+        function dropAfter(over, clientY) {
+          var r = over.getBoundingClientRect();
+          return clientY - r.top > r.height / 2;
+        }
+        function wireRowReorder() {
+          document.addEventListener("dragstart", function (e) {
+            var h = e.target.closest && e.target.closest(".drag-handle");
+            if (!h) return;
+            dragRow = h.closest("[data-row]");
+            if (!dragRow) return;
+            if (e.dataTransfer) {
+              e.dataTransfer.effectAllowed = "move";
+              try {
+                e.dataTransfer.setData(
+                  "text/plain",
+                  dragRow.getAttribute("data-row"),
+                );
+              } catch (err) {}
+            }
+            dragRow.classList.add("row-dragging");
+          });
+          document.addEventListener("dragover", function (e) {
+            if (!dragRow) return;
+            var over = e.target.closest && e.target.closest("[data-row]");
+            clearDropMarks();
+            if (
+              !over ||
+              over === dragRow ||
+              over.parentNode !== dragRow.parentNode
+            )
+              return;
+            e.preventDefault();
+            if (e.dataTransfer) e.dataTransfer.dropEffect = "move";
+            over.classList.add(
+              dropAfter(over, e.clientY) ? "row-drop-after" : "row-drop-before",
+            );
+          });
+          document.addEventListener("drop", function (e) {
+            if (!dragRow) return;
+            var src = dragRow;
+            var over = e.target.closest && e.target.closest("[data-row]");
+            src.classList.remove("row-dragging");
+            dragRow = null;
+            clearDropMarks();
+            if (!over || over === src || over.parentNode !== src.parentNode)
+              return;
+            e.preventDefault();
+            reorderRows(src, over, dropAfter(over, e.clientY));
+          });
+          document.addEventListener("dragend", function () {
+            if (dragRow) dragRow.classList.remove("row-dragging");
+            dragRow = null;
+            clearDropMarks();
+          });
+          document.addEventListener("keydown", function (e) {
+            if (e.key !== "ArrowUp" && e.key !== "ArrowDown") return;
+            var h = e.target.closest && e.target.closest(".drag-handle");
+            if (!h) return;
+            var row = h.closest("[data-row]");
+            if (!row) return;
+            var rows = siblingRows(row.parentNode);
+            var idx = rows.indexOf(row);
+            var tgt = e.key === "ArrowUp" ? idx - 1 : idx + 1;
+            if (tgt < 0 || tgt >= rows.length) return;
+            e.preventDefault();
+            reorderRows(row, rows[tgt], e.key === "ArrowDown");
+            var fh = rows[tgt].querySelector(".drag-handle");
+            if (fh) fh.focus();
+          });
+        }
+
         /* ---------------- wiring ---------------- */
         function wire() {
+          wireRowReorder();
           document.addEventListener("input", function (e) {
             var t = e.target;
             var mir = t && t.closest ? t.closest("[data-mirror]") : null;
