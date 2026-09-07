@@ -446,6 +446,21 @@
       }
 
       /* ---------- health ---------- */
+      .resource-controls { margin-top: 12px; }
+      .resource-controls > button { white-space: normal; }
+      .resource-editor { margin-top: 12px; }
+      .resource-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(min(100%, 180px), 1fr));
+        gap: 12px;
+        margin: 12px 0;
+      }
+      .resource-grid > *, .resource-grid input, .resource-grid select { min-width: 0; }
+      .resource-slot { border: 1px solid var(--line); padding: 10px; margin: 0; }
+      [data-resource-number][aria-invalid="true"] { outline: 2px solid var(--ink); outline-offset: 2px; }
+      .resource-slot .lbl + .lbl { margin-top: 8px; }
+      .resource-summary { margin: 10px 0 0; overflow-wrap: anywhere; }
+      [data-adjusted="true"] { font-weight: 700; text-decoration: underline dotted; }
       .hp-grid {
         display: grid;
         grid-template-columns: repeat(auto-fit, minmax(72px, 1fr));
@@ -1367,6 +1382,7 @@
         .inv-toggle,
         .drag-handle,
         .print-dialog,
+        .resource-controls,
         [data-imgbox-clear] {
           display: none !important;
         }
@@ -1570,6 +1586,26 @@
               >
             </div>
             <div class="hp-grid" id="hpGrid"></div>
+            <p class="hint resource-summary" id="healthAdjustmentSummary" hidden></p>
+            <div class="resource-controls">
+              <button class="btn" type="button" data-resource-toggle aria-expanded="false" aria-controls="resourceEditor" data-i18n="res.heading">Health &amp; Mana adjustments</button>
+              <div id="resourceEditor" class="resource-editor" hidden>
+                <p class="hint" data-i18n="res.help">Use only when a rule or your GM changes the usual values. Leave fields blank for the normal calculation. A fixed value replaces the calculation, including bonuses.</p>
+                <div class="resource-grid">
+                  <label class="lbl"><span data-i18n="res.healthStat">Health stat</span><select data-k="resources.healthStat"><option value="" data-i18n="res.defaultCon">CON (normal)</option><option value="STR" data-i18n="stat.STR">Strength</option><option value="INT" data-i18n="stat.INT">Intelligence</option><option value="CON" data-i18n="stat.CON">Constitution</option><option value="DEX" data-i18n="stat.DEX">Dexterity</option><option value="CHA" data-i18n="stat.CHA">Charisma</option></select></label>
+                  <label class="lbl"><span data-i18n="res.allBonus">Bonus to every Health slot</span><input data-k="resources.healthBonus" data-resource-number type="number" step="1" placeholder="0"></label>
+                </div>
+                <p class="hint" data-i18n="res.slotHelp">The 100% slot is lost first. Put a bonus for that slot only in its own Bonus field. Apply equipment Stat bonuses in Enhanced Stats as usual.</p>
+                <div class="resource-grid" id="healthSlotAdjustments"></div>
+                <div class="resource-grid">
+                  <label class="lbl"><span data-i18n="res.manaBonus">Bonus to maximum Mana</span><input data-k="resources.manaBonus" data-resource-number type="number" step="1" placeholder="0"></label>
+                  <label class="lbl"><span data-i18n="res.manaFixed">Fixed maximum Mana</span><input data-k="resources.manaFixed" data-resource-number type="number" min="0" step="1" data-i18n-ph="res.auto" placeholder="Automatic"></label>
+                </div>
+                <p class="hint" data-i18n="res.manaHelp">Maximum Mana normally follows Enhanced Intelligence, not its Mod. These adjustments do not spend or restore current Mana.</p>
+                <p class="hint" data-i18n="res.validation">Use whole numbers. Health slot values must be at least 1; maximum Mana cannot be negative. Invalid entries are ignored and calculated totals have these minimums.</p>
+                <button class="btn" type="button" data-resource-reset data-i18n="res.reset">Reset adjustments</button>
+              </div>
+            </div>
           </div>
 
           <div class="two-start">
@@ -1673,6 +1709,7 @@
                       readonly
                   /></label>
                 </div>
+                <p class="hint resource-summary" id="manaAdjustmentSummary" hidden></p>
               </div>
             </div>
             <div class="card">
@@ -3552,6 +3589,102 @@
           },
         };
 
+        var RESOURCE_I18N = {
+          en: {
+            "hint.health": "Mark a slot when it is lost, starting at 100%. Values normally follow CON Mod; use adjustments for exceptions.",
+            "res.heading": "Health & Mana adjustments",
+            "res.help": "Use only when a rule or your GM changes the usual values. Leave fields blank for the normal calculation. A fixed value replaces the calculation, including bonuses.",
+            "res.healthStat": "Health stat",
+            "res.defaultCon": "CON (normal)",
+            "res.allBonus": "Bonus to every Health slot",
+            "res.slotHelp": "The 100% slot is lost first. Put a bonus for that slot only in its own Bonus field. Apply equipment Stat bonuses in Enhanced Stats as usual.",
+            "res.slotBonus": "Bonus",
+            "res.slotFixed": "Fixed slot value",
+            "res.auto": "Automatic",
+            "res.manaBonus": "Bonus to maximum Mana",
+            "res.manaFixed": "Fixed maximum Mana",
+            "res.manaHelp": "Maximum Mana normally follows Enhanced Intelligence, not its Mod. These adjustments do not spend or restore current Mana.",
+            "res.validation": "Use whole numbers. Health slot values must be at least 1; maximum Mana cannot be negative. Invalid entries are ignored and calculated totals have these minimums.",
+            "res.reset": "Reset adjustments",
+            "res.adjusted": "Adjusted"
+          },
+          fr: {
+            "hint.health": "Cochez les cases perdues en commençant par 100 %. Leur valeur suit normalement le Mod de CON ; utilisez les ajustements pour les exceptions.",
+            "res.heading": "Ajustements de Santé et de Mana",
+            "res.help": "À utiliser seulement si une règle ou le MJ modifie les valeurs habituelles. Laissez les champs vides pour le calcul normal. Une valeur fixe remplace le calcul, bonus compris.",
+            "res.healthStat": "Caractéristique de Santé",
+            "res.defaultCon": "CON (normal)",
+            "res.allBonus": "Bonus à chaque case de Santé",
+            "res.slotHelp": "La case 100 % est perdue en premier. Saisissez son bonus dans son propre champ Bonus. Appliquez les bonus de caractéristiques de l'équipement aux valeurs Améliorées comme d'habitude.",
+            "res.slotBonus": "Bonus",
+            "res.slotFixed": "Valeur fixe de la case",
+            "res.auto": "Automatique",
+            "res.manaBonus": "Bonus au Mana maximum",
+            "res.manaFixed": "Mana maximum fixe",
+            "res.manaHelp": "Le Mana maximum suit normalement l'Intelligence Améliorée, pas son Mod. Ces ajustements ne dépensent ni ne restaurent le Mana actuel.",
+            "res.validation": "Utilisez des nombres entiers. Chaque case de Santé vaut au moins 1 ; le Mana maximum ne peut pas être négatif. Les saisies invalides sont ignorées et ces minimums s'appliquent aux totaux calculés.",
+            "res.reset": "Réinitialiser les ajustements",
+            "res.adjusted": "Ajusté"
+          },
+          es: {
+            "hint.health": "Marca las casillas perdidas empezando por el 100 %. Sus valores normalmente usan el Mod de CON; utiliza los ajustes para las excepciones.",
+            "res.heading": "Ajustes de Salud y Mana",
+            "res.help": "Úsalos solo cuando una regla o el GM cambie los valores habituales. Deja los campos vacíos para el cálculo normal. Un valor fijo sustituye el cálculo, incluidos los bonos.",
+            "res.healthStat": "Estadística de Salud",
+            "res.defaultCon": "CON (normal)",
+            "res.allBonus": "Bono a cada casilla de Salud",
+            "res.slotHelp": "La casilla del 100 % se pierde primero. Añade su bono solo en su propio campo Bono. Aplica los bonos de estadísticas del equipo a los valores Mejorados como siempre.",
+            "res.slotBonus": "Bono",
+            "res.slotFixed": "Valor fijo de la casilla",
+            "res.auto": "Automático",
+            "res.manaBonus": "Bono al Mana máximo",
+            "res.manaFixed": "Mana máximo fijo",
+            "res.manaHelp": "El Mana máximo normalmente usa la Inteligencia Mejorada, no su Mod. Estos ajustes no gastan ni restauran el Mana actual.",
+            "res.validation": "Usa números enteros. Las casillas de Salud deben valer al menos 1; el Mana máximo no puede ser negativo. Se ignoran las entradas inválidas y estos mínimos se aplican a los totales calculados.",
+            "res.reset": "Restablecer ajustes",
+            "res.adjusted": "Ajustado"
+          },
+          de: {
+            "hint.health": "Markiere verlorene Felder, beginnend bei 100 %. Normalerweise gilt der CON-Mod; nutze Anpassungen für Ausnahmen.",
+            "res.heading": "Gesundheit und Mana anpassen",
+            "res.help": "Nur verwenden, wenn eine Regel oder die Spielleitung die üblichen Werte ändert. Leere Felder verwenden die normale Berechnung. Ein fester Wert ersetzt die Berechnung einschließlich Boni.",
+            "res.healthStat": "Gesundheitsattribut",
+            "res.defaultCon": "CON (normal)",
+            "res.allBonus": "Bonus auf jedes Gesundheitsfeld",
+            "res.slotHelp": "Das 100-%-Feld geht zuerst verloren. Trage seinen Bonus nur im zugehörigen Bonusfeld ein. Attributsboni durch Ausrüstung gehören wie gewohnt in die verbesserten Attribute.",
+            "res.slotBonus": "Bonus",
+            "res.slotFixed": "Fester Feldwert",
+            "res.auto": "Automatisch",
+            "res.manaBonus": "Bonus auf maximales Mana",
+            "res.manaFixed": "Festes maximales Mana",
+            "res.manaHelp": "Maximales Mana entspricht normalerweise der verbesserten Intelligenz, nicht ihrem Mod. Diese Anpassungen verbrauchen oder erneuern kein aktuelles Mana.",
+            "res.validation": "Ganze Zahlen verwenden. Gesundheitsfelder müssen mindestens 1 wert sein; maximales Mana darf nicht negativ sein. Ungültige Eingaben werden ignoriert; die berechneten Werte haben diese Untergrenzen.",
+            "res.reset": "Anpassungen zurücksetzen",
+            "res.adjusted": "Angepasst"
+          },
+          pt: {
+            "hint.health": "Marca as casas perdidas, começando nos 100 %. Os valores normalmente usam o Mod de CON; usa os ajustes para exceções.",
+            "res.heading": "Ajustes de Saúde e Mana",
+            "res.help": "Usa apenas quando uma regra ou o GM alterar os valores habituais. Deixa os campos vazios para o cálculo normal. Um valor fixo substitui o cálculo, incluindo bónus.",
+            "res.healthStat": "Atributo de Saúde",
+            "res.defaultCon": "CON (normal)",
+            "res.allBonus": "Bónus em cada casa de Saúde",
+            "res.slotHelp": "A casa de 100 % perde-se primeiro. Coloca o seu bónus apenas no respetivo campo Bónus. Aplica os bónus de atributos do equipamento aos valores Melhorados como habitualmente.",
+            "res.slotBonus": "Bónus",
+            "res.slotFixed": "Valor fixo da casa",
+            "res.auto": "Automático",
+            "res.manaBonus": "Bónus no Mana máximo",
+            "res.manaFixed": "Mana máximo fixo",
+            "res.manaHelp": "O Mana máximo normalmente segue a Inteligência Melhorada, não o seu Mod. Estes ajustes não gastam nem restauram o Mana atual.",
+            "res.validation": "Usa números inteiros. As casas de Saúde valem pelo menos 1; o Mana máximo não pode ser negativo. As entradas inválidas são ignoradas e estes mínimos aplicam-se aos totais calculados.",
+            "res.reset": "Repor ajustes",
+            "res.adjusted": "Ajustado"
+          }
+        };
+        LANGS.forEach(function (locale) {
+          Object.assign(I18N[locale], RESOURCE_I18N[locale]);
+        });
+
         var BIO_I18N = {
           en: BIO,
           fr: [
@@ -3797,6 +3930,8 @@
             renderCrawlerSwitcher();
             renderVault();
           }
+          renderHealth();
+          renderMana();
           header();
         }
 
@@ -4156,6 +4291,14 @@
 
         /* ---------------- build static repeating DOM ---------------- */
         function build() {
+          $("#healthSlotAdjustments").innerHTML = range(10, 1).map(function (n) {
+            var pct = n * 10;
+            return '<fieldset class="resource-slot"><legend>' + pct + '%</legend>' +
+              '<label class="lbl"><span data-i18n="res.slotBonus">Bonus</span>' +
+              '<input data-k="resources.slots.' + pct + '.bonus" data-resource-number type="number" step="1" placeholder="0"></label>' +
+              '<label class="lbl"><span data-i18n="res.slotFixed">Fixed slot value</span>' +
+              '<input data-k="resources.slots.' + pct + '.fixed" data-resource-number type="number" min="1" step="1" data-i18n-ph="res.auto" placeholder="Automatic"></label></fieldset>';
+          }).join("");
           $("#hpGrid").innerHTML = range(10, 1)
             .map(function (n) {
               var pct = n * 10;
@@ -4392,12 +4535,62 @@
           el.style.opacity = out === "" ? "0.4" : "1";
         }
 
+        // Adjustments are stored separately from derived hp.*.hp and mana.max.
+        // Old saves therefore keep automatic values, never accidental overrides.
+        function resourceNumber(key) {
+          var el = field(key);
+          var raw = el ? String(el.value).trim() : "";
+          var value = Number(raw);
+          var minimum = el && el.hasAttribute("min") ? Number(el.min) : -Infinity;
+          var invalid = !!(el && el.validity.badInput) || (raw !== "" &&
+            (!Number.isSafeInteger(value) || value < minimum));
+          if (el) {
+            el.setCustomValidity(invalid ? t("res.validation") : "");
+            el.setAttribute("aria-invalid", String(invalid));
+          }
+          return invalid || raw === "" ? null : value;
+        }
+
+        function resourceSummary(id, parts) {
+          var el = $(id);
+          el.textContent = parts.length ? t("res.adjusted") + ": " + parts.join("; ") : "";
+          el.hidden = !parts.length;
+        }
+
+        function signedResource(value) {
+          return (value >= 0 ? "+" : "") + value;
+        }
+
         function renderHealth() {
-          var conMod = val("stats.CON.mod");
-          var out = conMod === "" ? "" : String(num("stats.CON.mod"));
+          var selected = val("resources.healthStat");
+          var stat = STATS.indexOf(selected) >= 0 ? selected : "CON";
+          var base = val("stats." + stat + ".mod");
+          var bonus = resourceNumber("resources.healthBonus") || 0;
+          var parts = [];
+          if (stat !== "CON") parts.push(t("res.healthStat") + ": " + t("stat." + stat));
+          if (bonus) parts.push(t("res.allBonus") + ": " + signedResource(bonus));
           $$('[data-k^="hp."][data-k$=".hp"]').forEach(function (el) {
+            var pct = el.getAttribute("data-k").split(".")[1];
+            var slotBonus = resourceNumber("resources.slots." + pct + ".bonus") || 0;
+            var fixed = resourceNumber("resources.slots." + pct + ".fixed");
+            var out = fixed !== null ? String(fixed) : base === "" ? "" :
+              String(Math.max(1, Number(base) + bonus + slotBonus));
+            var adjusted = stat !== "CON" || bonus !== 0 || slotBonus !== 0 || fixed !== null;
             if (el.value !== out) el.value = out;
+            el.setAttribute("data-adjusted", String(adjusted));
+            if (fixed !== null) parts.push(pct + "% " + t("res.slotFixed") + ": " + fixed);
+            else if (slotBonus) parts.push(pct + "% " + t("res.slotBonus") + ": " + signedResource(slotBonus));
           });
+          resourceSummary("#healthAdjustmentSummary", parts);
+        }
+
+        function resetResourceAdjustments() {
+          $$('[data-k^="resources."]').forEach(function (el) {
+            el.value = "";
+            el.removeAttribute("data-dirty");
+          });
+          recompute();
+          save();
         }
 
         function recompute() {
@@ -4465,11 +4658,17 @@
 
         function renderMana() {
           var enhancedInt = val("stats.INT.enh");
-          var maxValue =
-            String(enhancedInt).trim() === "" ? "0" : String(enhancedInt);
+          var bonus = resourceNumber("resources.manaBonus") || 0;
+          var fixed = resourceNumber("resources.manaFixed");
+          var maxValue = fixed !== null ? String(fixed) :
+            String(Math.max(0, (Number(enhancedInt) || 0) + bonus));
           var maxField = field("mana.max");
           if (maxField && maxField.value !== maxValue)
             maxField.value = maxValue;
+          if (maxField) maxField.setAttribute("data-adjusted", String(bonus !== 0 || fixed !== null));
+          resourceSummary("#manaAdjustmentSummary", fixed !== null ?
+            [t("res.manaFixed") + ": " + fixed] : bonus ?
+            [t("res.manaBonus") + ": " + signedResource(bonus)] : []);
           var cur = num("mana.current"),
             max = num("mana.max");
           var pct = max > 0 ? Math.max(0, Math.min(100, (cur / max) * 100)) : 0;
@@ -5580,6 +5779,14 @@
           document.addEventListener("click", function (e) {
             var target = e.target;
             if (!target || !target.closest) return;
+            var resourceToggle = target.closest("[data-resource-toggle]");
+            if (resourceToggle) {
+              var editor = $("#resourceEditor");
+              editor.hidden = !editor.hidden;
+              resourceToggle.setAttribute("aria-expanded", String(!editor.hidden));
+              return;
+            }
+            if (target.closest("[data-resource-reset]")) return resetResourceAdjustments();
             var tab = target.closest("[data-tab]");
             if (tab) return showTab(tab.getAttribute("data-tab"));
             var jt = target.closest("[data-jtab]");
