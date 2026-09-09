@@ -16,7 +16,7 @@ automatically in that browser, and nothing ever leaves your machine.
 ## Features
 
 - **Complete crawler sheet** — identity, health, stats, defense, mana, attacks,
-  skills, spells, gear, inventory and a full roleplaying journal.
+  skills, spells, companions, gear, inventory and a full roleplaying journal.
 - **Auto-calculated fields** — stat modifiers, DEX mod, Damage Resistance total,
   Evade total, attack To Hit, skill mods and the mana gauge all update as you
   type. Computed fields are read-only.
@@ -28,9 +28,9 @@ automatically in that browser, and nothing ever leaves your machine.
   browsers with a single file. Importing creates a new Vault crawler instead of
   overwriting the one currently open.
 - **Reorderable rows** — drag the handle on the left of any Attacks, Skills,
-  Spells or Inventory row to reorder it (or focus the handle and press Arrow
-  Up / Down). The new order is saved. Desktop only; hidden on narrow screens
-  and in print.
+  Spells, Companions or Inventory row to reorder it (or focus the handle and
+  press Arrow Up / Down). The new order is saved. Desktop only; hidden on narrow
+  screens and in print.
 - **Expandable Skill details** — every Skill row has multiline Description,
   Rank Upgrades and Extended Notes fields without making the play view wider.
 - **Dedicated Spell register** — record each Spell's type, Mana Cost, range,
@@ -152,6 +152,17 @@ combat details belong under Attacks. Mana spending, Attack Skill Checks, casting
 targeting, cooldowns and effects remain manual, and Scroll Spells can be recorded
 with no Mana cost.
 
+### Companions
+Starts with one blank entry and allows any number of Pets, Mounts, Vehicles or
+homebrew companions. Pet records follow the official companion fields with ten
+Health Bar slots, HB Value, five Stats, Level, DR, Evade, Move, Size, two Attacks
+and Special. Mount and Vehicle records provide Size, Occupants, Move, DR,
+Accessories and rider benefits or restrictions. A Pet may be marked Rideable to
+show both profiles in one record. Bonded status, portrait, description, abilities,
+equipment, conditions, carrier/storage and notes are tracked manually. The sheet
+does not calculate companion values or enforce a limit on how many a crawler may
+record; the applicable Skill, Class, item and GM rules decide what is allowed.
+
 ### Inventory
 Starts with 36 rows of UI space, not a game-rule capacity; add more as needed.
 Stored Inventory is not limited by encumbrance. Item, Qty and Notes are tracked
@@ -221,8 +232,9 @@ GitHub Pages, Netlify, a USB stick, a local folder.
 - Fields are bound by a `data-k` attribute to a flat key (e.g. `stats.STR.enh`);
   export nests these into a `character` object and also keeps the flat map.
 - Saves and exports use schema version 2. Spell rows are stored under `spells.*`
-  with their row count in `counts.spells`; older saves without those keys open
-  with 8 blank Spell rows. Version 1 attacks with a single `statA` remain
+  and Companion rows under `companions.*`, with their row counts in `counts`;
+  older saves without those keys open with 8 blank Spell rows and one blank Pet
+  entry. Version 1 attacks with a single `statA` remain
   compatible and initialize both Hit Stat and Damage Stat from that value.
 
 ## Development checks
@@ -236,4 +248,5 @@ For visual checks, serve the repository locally (`python3 -m http.server 8000`)
 and open `http://localhost:8000/tests/layout.html`, then click **Load sheet**.
 The harness offers phone/desktop viewport widths and a print-CSS preview without
 pagination. Check actual A4 pagination separately through the sheet's own Print
-dialog. See [the Health and Mana checklist](tests/HEALTH-MANA-CHECKLIST.md).
+dialog. See [the Health and Mana checklist](tests/HEALTH-MANA-CHECKLIST.md) and
+[the Companion checklist](tests/COMPANION-CHECKLIST.md).

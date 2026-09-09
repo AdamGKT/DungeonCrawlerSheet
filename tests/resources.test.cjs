@@ -63,9 +63,18 @@ function sheet(t, storage = {}) {
     export: async () => { d.querySelector('[data-act="export"]').click(); return readBlob(exported); },
     import: async data => {
       const input = d.querySelector('[data-file]');
+      const before = d.querySelectorAll('#crawlerSelect option').length;
       Object.defineProperty(input, 'files', { configurable: true, value: [new w.File([JSON.stringify(data)], 'test.json', { type: 'application/json' })] });
       input.dispatchEvent(new w.Event('change', { bubbles: true }));
-      await new Promise(resolve => setTimeout(resolve, 30));
+      await new Promise((resolve, reject) => {
+        const started = Date.now();
+        const check = () => {
+          if (d.querySelectorAll('#crawlerSelect option').length > before) return resolve();
+          if (Date.now() - started > 5000) return reject(new Error('import did not finish'));
+          setTimeout(check, 10);
+        };
+        check();
+      });
     },
     print: mode => { d.querySelector(`[data-print-mode="${mode}"]`).click(); flush(); return printState; }
   };
@@ -270,4 +279,89 @@ test('resource edits do not change attacks, spells, defense or linked identity',
   s.set('resources.healthBonus', 3);
   s.set('resources.manaBonus', 10);
   for (const [el, value] of before) assert.equal(el.value, value, el.getAttribute('data-k') || el.getAttribute('data-c'));
+});
+
+test('Companions support pets, rideable profiles, mounts, persistence and printing', async t => {
+  const s = sheet(t);
+  const rows = () => s.d.querySelectorAll('.companion-entry');
+  assert.equal(rows().length, 1);
+  assert.equal(s.value('companions.0.type'), 'pet');
+  assert.equal(rows()[0].querySelector('[data-companion-section="pet"]').hidden, false);
+  assert.equal(rows()[0].querySelector('[data-companion-section="mount"]').hidden, true);
+
+  s.set('companions.0.name', 'Mordecai');
+  s.set('companions.0.bonded', true);
+  s.set('companions.0.rideable', true);
+  s.set('companions.0.hbValue', 6);
+  s.set('companions.0.stats.INT', 18);
+  s.set('companions.0.mount.riderEffects', 'Carries one crawler');
+  assert.equal(rows()[0].querySelector('[data-companion-section="mount"]').hidden, false);
+
+  s.click('[data-add="companions"]');
+  assert.equal(rows().length, 2);
+  s.set('companions.1.name', 'Crawler van');
+  s.set('companions.1.type', 'vehicle');
+  s.set('companions.1.mount.occupants', 4);
+  assert.equal(rows()[1].querySelector('[data-companion-section="pet"]').hidden, true);
+  assert.equal(rows()[1].querySelector('[data-companion-section="mount"]').hidden, false);
+  assert.equal(rows()[1].querySelector('[data-companion-bonded]').hidden, false);
+  assert.equal(rows()[1].querySelector('[data-companion-bonded]').dataset.companionInactive, 'true');
+  assert.equal(rows()[1].querySelector('[data-companion-rideable]').dataset.companionInactive, 'true');
+  const css = s.d.querySelector('style').textContent;
+  assert.match(css, /\.companion-flag\[data-companion-inactive="true"\][\s\S]*visibility: hidden/);
+  assert.match(css, /@media \(max-width: 760px\)[\s\S]*\.companion-flag\[data-companion-inactive="true"\][\s\S]*display: none/);
+
+  rows()[1].querySelector('.drag-handle').dispatchEvent(
+    new s.w.KeyboardEvent('keydown', { key: 'ArrowUp', bubbles: true }),
+  );
+  assert.equal(s.value('companions.0.name'), 'Crawler van');
+  assert.equal(s.value('companions.1.name'), 'Mordecai');
+  rows()[0].querySelector('.drag-handle').dispatchEvent(
+    new s.w.KeyboardEvent('keydown', { key: 'ArrowDown', bubbles: true }),
+  );
+  assert.equal(s.value('companions.0.name'), 'Mordecai');
+  assert.equal(s.value('companions.1.name'), 'Crawler van');
+
+  for (const locale of ['en', 'fr', 'es', 'de', 'pt']) {
+    s.change(s.d.querySelector('#langSel'), locale);
+    assert.ok(!s.d.querySelector('[data-tab="companions"]').textContent.startsWith('tab.'));
+    assert.ok(!s.d.querySelector('[data-companion-type] option').textContent.startsWith('companion.'));
+  }
+
+  s.flush();
+  const reloaded = sheet(t, s.storage());
+  assert.equal(reloaded.d.querySelectorAll('.companion-entry').length, 2);
+  assert.equal(reloaded.value('companions.0.name'), 'Mordecai');
+  assert.equal(reloaded.field('companions.0.bonded').checked, true);
+  assert.equal(reloaded.value('companions.1.type'), 'vehicle');
+  assert.equal(reloaded.value('companions.1.mount.occupants'), '4');
+
+  const payload = await reloaded.export();
+  assert.equal(payload.counts.companions, 2);
+  assert.equal(payload.character.companions[0].name, 'Mordecai');
+  assert.equal(payload.character.companions[1].mount.occupants, '4');
+  const printed = reloaded.print('all');
+  assert.ok(printed.body.includes('print-all'));
+  assert.equal(
+    reloaded.d.querySelectorAll('.companion-details[data-print-open="true"]').length,
+    2,
+  );
+});
+
+test('Companion removal compacts records and old saves receive one blank pet row', async t => {
+  const s = sheet(t);
+  s.set('companions.0.name', 'First');
+  s.click('[data-add="companions"]');
+  s.set('companions.1.name', 'Second');
+  s.click('[data-add="companions"]');
+  s.set('companions.2.name', 'Third');
+  s.click('[data-companion-remove="1"]');
+  assert.equal(s.d.querySelectorAll('.companion-entry').length, 2);
+  assert.equal(s.value('companions.0.name'), 'First');
+  assert.equal(s.value('companions.1.name'), 'Third');
+
+  await s.import({ fields: { 'identity.name': 'Legacy crawler' } });
+  assert.equal(s.d.querySelectorAll('.companion-entry').length, 1);
+  assert.equal(s.value('companions.0.type'), 'pet');
+  assert.equal(s.value('companions.0.name'), '');
 });

@@ -1,5 +1,5 @@
 /* DungeonCrawlerSheet service worker — bump CACHE to push an update */
-const CACHE = "dcc-sheet-v8";
+const CACHE = "dcc-sheet-v9";
 const ASSETS = [
   ".",
   "index.html",
