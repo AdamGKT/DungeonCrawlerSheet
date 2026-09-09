@@ -847,7 +847,8 @@
         line-height: 1.5;
         color: var(--ink);
       }
-      #grindDialog .print-dialog-actions .btn {
+      #grindDialog .print-dialog-actions .btn,
+      #levelUpDialog .print-dialog-actions .btn {
         grid-column: 1 / -1;
       }
       .skill-entry + .skill-entry {
@@ -2162,7 +2163,7 @@
                       data-grind-info
                       data-i18n-title="help.levelGrind"
                       data-i18n-aria-label="help.levelGrind"
-                      title="This counter rises each time you grind a skill, spell, or attack. When it reaches your Level, it resets to 0 and your Level goes up by 1."
+                      title="This counter rises each time you grind a skill, spell, or attack, and drops by 1 when you use a row's − button. When it reaches your Level, you're asked whether to level up — accept and your Level goes up by 1 and the counter resets to 0; decline and nothing changes."
                     >i</button
                     ></span
                   ><input
@@ -2876,6 +2877,39 @@
             data-i18n="grind.ok"
           >
             OK
+          </button>
+        </div>
+      </div>
+    </dialog>
+
+    <dialog class="print-dialog" id="levelUpDialog">
+      <div class="print-dialog-body">
+        <div class="chip" data-i18n="levelup.title">Level Up</div>
+        <p class="grind-msg" id="levelUpDialogMsg"></p>
+        <div class="print-dialog-actions">
+          <button
+            class="btn primary"
+            type="button"
+            data-levelup-result="yes"
+            data-i18n="levelup.yes"
+          >
+            Yes — level up
+          </button>
+          <button
+            class="btn"
+            type="button"
+            data-levelup-result="solo"
+            data-i18n="levelup.solo"
+          >
+            I'm my team's only lowest-level member — gain 1d2 Levels
+          </button>
+          <button
+            class="btn"
+            type="button"
+            data-levelup-result="no"
+            data-i18n="levelup.no"
+          >
+            Not yet
           </button>
         </div>
       </div>
@@ -4576,10 +4610,12 @@
             "grind.dec": "Decrease grinding",
             "f.levelGrind": "Level Grinding",
             "help.levelGrind":
-              "This counter rises each time you grind a skill, spell, or attack. When it reaches your Level, it resets to 0 and your Level goes up by 1.",
+              "This counter rises each time you grind a skill, spell, or attack, and drops by 1 when you use a row's − button. When it reaches your Level, you're asked whether to level up — accept and your Level goes up by 1 and the counter resets to 0; decline and nothing changes.",
             "grind.popupTitle": "Milestone",
             "grind.ok": "OK",
             "grind.levelUp": "Congratulations! Your Level has increased!",
+            "grind.levelUpN":
+              "Congratulations! Your Level has increased by {n}!",
             "grind.rankUp":
               "Congratulations! Your rank in “{name}” has increased!",
             "grind.rankUpGeneric": "Congratulations! Your rank has increased!",
@@ -4588,7 +4624,14 @@
             "adv.prompt":
               "You have ground “{name}” to its rank. Roll 1d20 for skill advancement: on a result higher than {rank} it improves. Roll now, then pick the outcome below.",
             "adv.success": "Success — rank up",
-            "adv.failure": "Failure"
+            "adv.failure": "Failure",
+            "levelup.title": "Level Up",
+            "levelup.prompt":
+              "You have ground enough to gain a Level. Do you want to level up now? Your Level Grinding counter will reset to 0.",
+            "levelup.yes": "Yes — level up",
+            "levelup.solo":
+              "I'm my team's only lowest-level member — gain 1d2 Levels",
+            "levelup.no": "Not yet"
           },
           fr: {
             "col.grind": "Grinding",
@@ -4597,10 +4640,12 @@
             "grind.dec": "Diminuer le grinding",
             "f.levelGrind": "Grinding de niveau",
             "help.levelGrind":
-              "Ce compteur augmente chaque fois que vous grindez une compétence, un sort ou une attaque. Quand il atteint votre niveau, il revient à 0 et votre niveau augmente de 1.",
+              "Ce compteur augmente chaque fois que vous grindez une compétence, un sort ou une attaque, et diminue de 1 quand vous utilisez le bouton − d'une ligne. Quand il atteint votre niveau, on vous demande si vous voulez monter de niveau — si vous acceptez, votre niveau augmente de 1 et le compteur revient à 0 ; si vous refusez, rien ne change.",
             "grind.popupTitle": "Palier",
             "grind.ok": "OK",
             "grind.levelUp": "Félicitations ! Votre niveau a augmenté !",
+            "grind.levelUpN":
+              "Félicitations ! Votre niveau a augmenté de {n} !",
             "grind.rankUp":
               "Félicitations ! Votre rang de « {name} » a augmenté !",
             "grind.rankUpGeneric": "Félicitations ! Votre rang a augmenté !",
@@ -4609,7 +4654,14 @@
             "adv.prompt":
               "Vous avez grindé « {name} » jusqu’à son rang. Faites un jet de skill advancement : lancez 1d20, un résultat supérieur à {rank} améliore le rang. Lancez le dé, puis choisissez le résultat ci-dessous.",
             "adv.success": "Réussi — rang +1",
-            "adv.failure": "Échec"
+            "adv.failure": "Échec",
+            "levelup.title": "Montée de niveau",
+            "levelup.prompt":
+              "Vous avez suffisamment grindé pour monter de niveau. Voulez-vous le faire maintenant ? Votre compteur de Grinding de niveau sera remis à 0.",
+            "levelup.yes": "Oui — monter de niveau",
+            "levelup.solo":
+              "Je suis le seul plus bas niveau de mon équipe — gagner 1d2 niveaux",
+            "levelup.no": "Pas encore"
           },
           es: {
             "col.grind": "Grindeo",
@@ -4618,10 +4670,12 @@
             "grind.dec": "Reducir el grindeo",
             "f.levelGrind": "Grindeo de nivel",
             "help.levelGrind":
-              "Este contador sube cada vez que grindeas una habilidad, un hechizo o un ataque. Cuando alcanza tu nivel, vuelve a 0 y tu nivel sube en 1.",
+              "Este contador sube cada vez que grindeas una habilidad, un hechizo o un ataque, y baja en 1 cuando usas el botón − de una fila. Cuando alcanza tu nivel, se te pregunta si quieres subir de nivel: si aceptas, tu nivel sube en 1 y el contador vuelve a 0; si rechazas, no cambia nada.",
             "grind.popupTitle": "Hito",
             "grind.ok": "OK",
             "grind.levelUp": "¡Felicidades! ¡Tu nivel ha aumentado!",
+            "grind.levelUpN":
+              "¡Felicidades! ¡Tu nivel ha aumentado en {n}!",
             "grind.rankUp":
               "¡Felicidades! ¡Tu grado de «{name}» ha aumentado!",
             "grind.rankUpGeneric": "¡Felicidades! ¡Tu grado ha aumentado!",
@@ -4630,7 +4684,14 @@
             "adv.prompt":
               "Has grindeado «{name}» hasta su grado. Haz una tirada de avance: lanza 1d20, un resultado superior a {rank} mejora el grado. Lanza el dado y luego elige el resultado abajo.",
             "adv.success": "Éxito — grado +1",
-            "adv.failure": "Fallo"
+            "adv.failure": "Fallo",
+            "levelup.title": "Subir de nivel",
+            "levelup.prompt":
+              "Has grindeado lo suficiente para subir de nivel. ¿Quieres hacerlo ahora? Tu contador de Grindeo de nivel se reiniciará a 0.",
+            "levelup.yes": "Sí — subir de nivel",
+            "levelup.solo":
+              "Soy el único de menor nivel de mi equipo — ganar 1d2 niveles",
+            "levelup.no": "Todavía no"
           },
           de: {
             "col.grind": "Grinding",
@@ -4639,10 +4700,12 @@
             "grind.dec": "Grinding verringern",
             "f.levelGrind": "Stufen-Grinding",
             "help.levelGrind":
-              "Dieser Zähler steigt jedes Mal, wenn du eine Fähigkeit, einen Zauber oder einen Angriff grindest. Erreicht er deine Stufe, wird er auf 0 zurückgesetzt und deine Stufe steigt um 1.",
+              "Dieser Zähler steigt jedes Mal, wenn du eine Fähigkeit, einen Zauber oder einen Angriff grindest, und sinkt um 1, wenn du die −-Schaltfläche einer Zeile benutzt. Erreicht er deine Stufe, wirst du gefragt, ob du aufsteigen willst — nimmst du an, steigt deine Stufe um 1 und der Zähler wird auf 0 zurückgesetzt; lehnst du ab, ändert sich nichts.",
             "grind.popupTitle": "Meilenstein",
             "grind.ok": "OK",
             "grind.levelUp": "Glückwunsch! Deine Stufe ist gestiegen!",
+            "grind.levelUpN":
+              "Glückwunsch! Deine Stufe ist um {n} gestiegen!",
             "grind.rankUp":
               "Glückwunsch! Dein Rang von „{name}“ ist gestiegen!",
             "grind.rankUpGeneric": "Glückwunsch! Dein Rang ist gestiegen!",
@@ -4651,7 +4714,14 @@
             "adv.prompt":
               "Du hast „{name}“ bis zu ihrem Rang gegrindet. Wirf 1W20 für den Fähigkeitsaufstieg: ein Ergebnis höher als {rank} verbessert den Rang. Wirf jetzt und wähle unten das Ergebnis.",
             "adv.success": "Erfolg — Rang +1",
-            "adv.failure": "Fehlschlag"
+            "adv.failure": "Fehlschlag",
+            "levelup.title": "Stufenaufstieg",
+            "levelup.prompt":
+              "Du hast genug gegrindet, um eine Stufe aufzusteigen. Möchtest du jetzt aufsteigen? Dein Stufen-Grinding-Zähler wird auf 0 zurückgesetzt.",
+            "levelup.yes": "Ja — aufsteigen",
+            "levelup.solo":
+              "Ich bin das einzige niedrigststufige Mitglied meines Teams — 1W2 Stufen",
+            "levelup.no": "Noch nicht"
           },
           pt: {
             "col.grind": "Grinding",
@@ -4660,10 +4730,12 @@
             "grind.dec": "Reduzir o grinding",
             "f.levelGrind": "Grinding de nível",
             "help.levelGrind":
-              "Este contador sobe sempre que fazes grinding de uma perícia, magia ou ataque. Quando atinge o teu nível, volta a 0 e o teu nível sobe 1.",
+              "Este contador sobe sempre que fazes grinding de uma perícia, magia ou ataque, e desce 1 quando usas o botão − de uma linha. Quando atinge o teu nível, és questionado se queres subir de nível — se aceitares, o teu nível sobe 1 e o contador volta a 0; se recusares, nada muda.",
             "grind.popupTitle": "Marco",
             "grind.ok": "OK",
             "grind.levelUp": "Parabéns! O teu nível aumentou!",
+            "grind.levelUpN":
+              "Parabéns! O teu nível aumentou {n}!",
             "grind.rankUp":
               "Parabéns! O teu grau de «{name}» aumentou!",
             "grind.rankUpGeneric": "Parabéns! O teu grau aumentou!",
@@ -4672,7 +4744,14 @@
             "adv.prompt":
               "Fizeste grinding de «{name}» até ao seu grau. Faz um teste de avanço: lança 1d20, um resultado superior a {rank} melhora o grau. Lança o dado e depois escolhe o resultado abaixo.",
             "adv.success": "Sucesso — grau +1",
-            "adv.failure": "Falha"
+            "adv.failure": "Falha",
+            "levelup.title": "Subir de nível",
+            "levelup.prompt":
+              "Fizeste grinding suficiente para subir de nível. Queres fazê-lo agora? O teu contador de Grinding de nível será reposto a 0.",
+            "levelup.yes": "Sim — subir de nível",
+            "levelup.solo":
+              "Sou o único membro de nível mais baixo da equipa — ganhar 1d2 níveis",
+            "levelup.no": "Ainda não"
           }
         };
         LANGS.forEach(function (locale) {
@@ -6184,7 +6263,8 @@
         var GRIND_RANK_MAX = 15,
           GRIND_LEVEL_MAX = 250,
           grindMsgQueue = [],
-          advPending = null;
+          advPending = null,
+          levelUpPending = false;
 
         function grindInt(v) {
           var n = parseInt(String(v == null ? "" : v).replace(/[^0-9\-]/g, ""), 10);
@@ -6217,8 +6297,8 @@
         }
 
         /* the Level grinding meter (readonly) climbs whenever any skill /
-           spell / attack is ground up; reaching the current Level rolls over
-           into a Level gain. */
+           spell / attack is ground up; once it reaches the current Level the
+           player is asked whether to spend it on a Level gain. */
         function bumpLevelGrind() {
           var gEl = field("identity.grind");
           if (!gEl) return;
@@ -6227,11 +6307,65 @@
           if (levelNum < 1) levelNum = 1;
           var g = grindInt(gEl.value) + 1;
           if (levelNum < GRIND_LEVEL_MAX && g >= levelNum) {
-            g = 0;
-            if (lvlEl) lvlEl.value = String(levelNum + 1);
-            grindPopup(t("grind.levelUp"));
+            /* enough grinding to level up — hold the meter full and ask */
+            g = levelNum;
+            gEl.value = String(g);
+            levelUpPrompt();
+            return;
           }
           gEl.value = String(g);
+        }
+
+        /* stepping a row grind down with the − button also walks the Level
+           grinding meter back by 1 (never below 0). */
+        function dropLevelGrind() {
+          var gEl = field("identity.grind");
+          if (!gEl) return;
+          var g = grindInt(gEl.value);
+          if (g > 0) gEl.value = String(g - 1);
+        }
+
+        /* enough grinding accumulated: confirm the Level gain. Accepting bumps
+           the Level and resets the meter; declining leaves everything as-is. */
+        function levelUpPrompt() {
+          if (levelUpPending) return;
+          levelUpPending = true;
+          var msg = t("levelup.prompt");
+          var dlg = $("#levelUpDialog"),
+            body = $("#levelUpDialogMsg");
+          if (!dlg || !dlg.showModal || !body) {
+            levelUpResolve(window.confirm(msg) ? "yes" : "no");
+            return;
+          }
+          body.textContent = msg;
+          if (!dlg.open) dlg.showModal();
+        }
+
+        function levelUpResolve(result) {
+          if (!levelUpPending) return;
+          levelUpPending = false;
+          var dlg = $("#levelUpDialog");
+          if (dlg && dlg.open) dlg.close();
+          if (result === "yes" || result === "solo") {
+            /* "solo" = sole lowest-level member of the party: 1d2 Levels */
+            var roll = result === "solo" ? 1 + Math.floor(Math.random() * 2) : 1;
+            var lvlEl = field("identity.level");
+            var levelNum = grindInt(lvlEl && lvlEl.value);
+            if (levelNum < 1) levelNum = 1;
+            var newLevel = Math.min(levelNum + roll, GRIND_LEVEL_MAX);
+            var gained = newLevel - levelNum;
+            if (lvlEl) lvlEl.value = String(newLevel);
+            var gEl = field("identity.grind");
+            if (gEl) gEl.value = "0";
+            grindPopup(
+              gained > 1
+                ? t("grind.levelUpN").replace("{n}", String(gained))
+                : t("grind.levelUp"),
+            );
+          }
+          recompute();
+          header();
+          save();
         }
 
         function bumpRowGrind(base, step) {
@@ -6239,7 +6373,10 @@
           if (!gEl) return;
           var g = grindInt(gEl.value);
           if (step < 0) {
-            gEl.value = String(Math.max(0, g - 1));
+            if (g > 0) {
+              gEl.value = String(g - 1);
+              dropLevelGrind();
+            }
             recompute();
             header();
             save();
@@ -7666,6 +7803,11 @@
               advResolve(advBtn.getAttribute("data-adv-result"));
               return;
             }
+            var levelUpBtn = target.closest("[data-levelup-result]");
+            if (levelUpBtn) {
+              levelUpResolve(levelUpBtn.getAttribute("data-levelup-result"));
+              return;
+            }
             if (target.closest("[data-grind-info]")) {
               grindPopup(t("help.levelGrind"));
               return;
@@ -7710,6 +7852,13 @@
             advDialogEl.addEventListener("close", function () {
               /* dismissed with Escape — leave the track full, no rank change */
               advPending = null;
+            });
+
+          var levelUpDialogEl = $("#levelUpDialog");
+          if (levelUpDialogEl)
+            levelUpDialogEl.addEventListener("close", function () {
+              /* dismissed with Escape — meter stays full, no Level change */
+              levelUpPending = false;
             });
 
           var imgFile = $("#imgFile");
