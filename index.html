@@ -989,6 +989,10 @@
         color: var(--muted);
         white-space: nowrap;
       }
+      .companion-flag[data-companion-inactive="true"] {
+        visibility: hidden;
+        pointer-events: none;
+      }
       .companion-toggle,
       .companion-remove {
         min-height: 36px;
@@ -1104,6 +1108,9 @@
           grid-template-columns: repeat(2, minmax(0, 1fr));
         }
         .companion-summary .drag-handle {
+          display: none;
+        }
+        .companion-flag[data-companion-inactive="true"] {
           display: none;
         }
         .companion-summary > .lbl:first-of-type,
@@ -4878,9 +4885,17 @@
           var rideable = rideableWrap && rideableWrap.querySelector("input");
           var kind = type && type.value ? type.value : "pet";
           if (type && !type.value) type.value = kind;
-          if (bonded) bonded.hidden = kind !== "pet";
-          if (rideableWrap)
-            rideableWrap.hidden = kind !== "pet" && kind !== "other";
+          function setInactive(flag, inactive) {
+            if (!flag) return;
+            flag.hidden = false;
+            flag.setAttribute("data-companion-inactive", String(inactive));
+            flag.setAttribute("aria-hidden", String(inactive));
+          }
+          setInactive(bonded, kind !== "pet");
+          setInactive(
+            rideableWrap,
+            kind !== "pet" && kind !== "other",
+          );
           var pet = row.querySelector('[data-companion-section="pet"]');
           var mount = row.querySelector('[data-companion-section="mount"]');
           if (pet) pet.hidden = kind !== "pet";

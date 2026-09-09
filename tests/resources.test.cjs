@@ -304,6 +304,12 @@ test('Companions support pets, rideable profiles, mounts, persistence and printi
   s.set('companions.1.mount.occupants', 4);
   assert.equal(rows()[1].querySelector('[data-companion-section="pet"]').hidden, true);
   assert.equal(rows()[1].querySelector('[data-companion-section="mount"]').hidden, false);
+  assert.equal(rows()[1].querySelector('[data-companion-bonded]').hidden, false);
+  assert.equal(rows()[1].querySelector('[data-companion-bonded]').dataset.companionInactive, 'true');
+  assert.equal(rows()[1].querySelector('[data-companion-rideable]').dataset.companionInactive, 'true');
+  const css = s.d.querySelector('style').textContent;
+  assert.match(css, /\.companion-flag\[data-companion-inactive="true"\][\s\S]*visibility: hidden/);
+  assert.match(css, /@media \(max-width: 760px\)[\s\S]*\.companion-flag\[data-companion-inactive="true"\][\s\S]*display: none/);
 
   rows()[1].querySelector('.drag-handle').dispatchEvent(
     new s.w.KeyboardEvent('keydown', { key: 'ArrowUp', bubbles: true }),
