@@ -960,6 +960,182 @@
           grid-column: auto;
         }
       }
+      .companion-entry {
+        padding: 14px;
+        border: 1px solid var(--line);
+        background: transparent;
+      }
+      .companion-entry + .companion-entry {
+        margin-top: 12px;
+      }
+      .companion-summary {
+        display: grid;
+        grid-template-columns:
+          var(--drag-col) minmax(170px, 1.5fr) minmax(130px, 0.8fr)
+          auto auto auto auto;
+        gap: 10px;
+        align-items: end;
+      }
+      .companion-flag {
+        display: flex;
+        align-items: center;
+        gap: 7px;
+        min-height: 34px;
+        padding-bottom: 5px;
+        font-family: var(--f-disp);
+        font-size: 10px;
+        letter-spacing: 0.1em;
+        text-transform: uppercase;
+        color: var(--muted);
+        white-space: nowrap;
+      }
+      .companion-toggle,
+      .companion-remove {
+        min-height: 36px;
+        padding: 6px 10px;
+        border: 1px solid var(--line);
+        background: var(--paper-2);
+        color: var(--ink);
+        font-family: var(--f-disp);
+        font-size: 9px;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        cursor: pointer;
+      }
+      .companion-toggle[aria-expanded="true"] {
+        border-color: var(--acc);
+        color: var(--acc);
+      }
+      .companion-remove:hover,
+      .companion-remove:focus-visible {
+        border-color: var(--hp-lost);
+        color: var(--hp-lost);
+      }
+      .companion-details {
+        display: grid;
+        gap: 14px;
+        margin: 14px 0 2px 28px;
+        padding: 14px;
+        border: 1px solid var(--line);
+        border-left: 3px solid var(--acc);
+        background: var(--paper-2);
+      }
+      .companion-section {
+        display: grid;
+        gap: 10px;
+        min-width: 0;
+      }
+      .companion-hp-grid {
+        display: grid;
+        grid-template-columns: repeat(10, minmax(44px, 1fr));
+        gap: 4px;
+      }
+      .companion-hp-cell {
+        display: grid;
+        border: 1px solid var(--ink);
+        min-width: 0;
+      }
+      .companion-hp-cell span {
+        padding: 3px 2px;
+        text-align: center;
+        font-family: var(--f-disp);
+        font-size: 10px;
+        font-weight: 700;
+        color: #fff;
+        text-shadow: 0 1px 2px rgba(0, 0, 0, 0.45);
+      }
+      .companion-hp-cell input {
+        appearance: none;
+        -webkit-appearance: none;
+        width: 100%;
+        height: 34px;
+        margin: 0;
+        border: 0;
+        border-radius: 0;
+        background: var(--panel-3);
+        cursor: pointer;
+      }
+      .companion-hp-cell input:checked {
+        background-color: var(--hp-lost);
+        background-image:
+          linear-gradient(
+            45deg,
+            transparent 43%,
+            #fff 43%,
+            #fff 57%,
+            transparent 57%
+          ),
+          linear-gradient(
+            -45deg,
+            transparent 43%,
+            #fff 43%,
+            #fff 57%,
+            transparent 57%
+          );
+        background-size: 58% 58%;
+        background-position: center;
+        background-repeat: no-repeat;
+      }
+      .companion-fields {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+        gap: 10px;
+      }
+      .companion-text-grid {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 10px;
+      }
+      .companion-text-grid textarea,
+      .companion-section textarea {
+        min-height: 96px;
+      }
+      .companion-profile {
+        display: grid;
+        grid-template-columns: minmax(160px, 220px) minmax(0, 1fr);
+        gap: 14px;
+        align-items: start;
+      }
+      .companion-profile .portrait {
+        width: 100%;
+      }
+      @media (max-width: 760px) {
+        .companion-summary {
+          grid-template-columns: repeat(2, minmax(0, 1fr));
+        }
+        .companion-summary .drag-handle {
+          display: none;
+        }
+        .companion-summary > .lbl:first-of-type,
+        .companion-summary > .companion-flag:last-of-type {
+          grid-column: span 2;
+        }
+        .companion-details {
+          margin-left: 0;
+        }
+        .companion-profile,
+        .companion-text-grid {
+          grid-template-columns: minmax(0, 1fr);
+        }
+        .companion-profile .portrait {
+          max-width: 240px;
+        }
+        .companion-hp-grid {
+          grid-template-columns: repeat(5, minmax(44px, 1fr));
+        }
+      }
+      @media (max-width: 420px) {
+        .companion-summary {
+          grid-template-columns: minmax(0, 1fr);
+        }
+        .companion-summary > .lbl:first-of-type,
+        .companion-summary > .companion-flag:last-of-type {
+          grid-column: auto;
+        }
+        .companion-hp-grid {
+          grid-template-columns: repeat(2, minmax(44px, 1fr));
+        }
+      }
       .cols-inv {
         grid-template-columns: var(--drag-col) 2fr 0.6fr 3fr;
       }
@@ -1378,6 +1554,8 @@
         .addrow,
         .skill-toggle,
         .spell-toggle,
+        .companion-toggle,
+        .companion-remove,
         .attack-toggle,
         .inv-toggle,
         .drag-handle,
@@ -1405,6 +1583,7 @@
         .inset,
         .skill-entry,
         .spell-entry,
+        .companion-entry,
         .attack-entry,
         .inv-entry,
         .note-card,
@@ -1436,8 +1615,32 @@
           grid-column: span 2;
         }
         .spell-details,
-        .attack-details {
+        .attack-details,
+        .companion-text-grid {
           grid-template-columns: repeat(2, minmax(0, 1fr));
+        }
+        .companion-summary {
+          grid-template-columns: minmax(0, 1fr) minmax(110px, 0.45fr) auto auto;
+        }
+        .companion-summary .drag-handle,
+        .companion-summary .companion-toggle,
+        .companion-summary .companion-remove {
+          display: none !important;
+        }
+        .companion-details {
+          margin-left: 0;
+          padding: 10px;
+        }
+        .companion-profile {
+          grid-template-columns: 140px minmax(0, 1fr);
+        }
+        .companion-hp-grid {
+          grid-template-columns: repeat(10, minmax(0, 1fr));
+        }
+        .companion-section,
+        .companion-profile,
+        .companion-hp-grid {
+          break-inside: avoid;
         }
         input,
         select,
@@ -1454,6 +1657,7 @@
         }
         .skill-details[data-print-open="true"],
         .spell-details[data-print-open="true"],
+        .companion-details[data-print-open="true"],
         .attack-details[data-print-open="true"],
         .inv-details[data-print-open="true"] {
           display: grid !important;
@@ -2037,6 +2241,36 @@
           </div>
         </section>
 
+        <!-- ============ COMPANIONS ============ -->
+        <section data-pane="companions" hidden>
+          <div class="card">
+            <div
+              style="
+                display: flex;
+                align-items: baseline;
+                gap: 12px;
+                margin-bottom: 12px;
+                flex-wrap: wrap;
+              "
+            >
+              <span class="chip" data-i18n="chip.companions">Companions</span>
+              <span class="hint" data-i18n="hint.companions"
+                >Track Pets, Mounts, Vehicles, and homebrew companions. Values
+                are recorded manually.</span
+              >
+            </div>
+            <div id="companionRows"></div>
+            <button
+              class="btn addrow"
+              data-add="companions"
+              type="button"
+              data-i18n="btn.addCompanion"
+            >
+              + Add companion
+            </button>
+          </div>
+        </section>
+
         <!-- ============ INVENTORY ============ -->
         <section data-pane="inventory" hidden>
           <div class="card">
@@ -2347,6 +2581,7 @@
           { key: "combat", label: "Attacks" },
           { key: "skills", label: "Skills" },
           { key: "spells", label: "Spells" },
+          { key: "companions", label: "Companions" },
           { key: "gear", label: "Gear" },
           { key: "inventory", label: "Inventory" },
           { key: "journal", label: "Journal" },
@@ -2662,6 +2897,39 @@
             "f.spellLimitations": "Limitations / Targeting",
             "f.spellUpgrades": "Rank Upgrades",
             "f.spellNotes": "Additional Notes",
+            "btn.addCompanion": "+ Add companion",
+            "btn.companionDetails": "Details",
+            "btn.hideCompanionDetails": "Hide",
+            "btn.removeCompanion": "Remove",
+            "chip.companions": "Companions",
+            "hint.companions":
+              "Track Pets, Mounts, Vehicles, and homebrew companions. Values are recorded manually.",
+            "tab.companions": "Companions",
+            "companion.type.pet": "Pet",
+            "companion.type.mount": "Mount",
+            "companion.type.vehicle": "Vehicle",
+            "companion.type.other": "Other",
+            "companion.health": "Health Bar",
+            "companion.petProfile": "Pet profile",
+            "companion.mountProfile": "Mount / Vehicle profile",
+            "f.companionType": "Type",
+            "f.bonded": "Bonded",
+            "f.rideable": "Rideable",
+            "f.hbValue": "HB Value",
+            "f.companionDescription": "Description",
+            "f.companionAbilities": "Abilities / Special rules",
+            "f.companionLoot": "Loot / Equipment",
+            "f.companionConditions": "Conditions",
+            "f.companionNotes": "Additional Notes",
+            "f.petCarrier": "Pet Carrier / Storage",
+            "f.attack1": "Attack 1",
+            "f.attack2": "Attack 2",
+            "f.special": "Special",
+            "f.occupants": "Occupants",
+            "f.accessories": "Accessories",
+            "f.riderEffects": "Rider benefits / restrictions",
+            "ph.companionPortrait": "companion — click or drop an image",
+            "alt.companionPortrait": "Companion portrait",
             "f.attackDescription": "Description",
             "f.attackLimitations": "Limitations / Targeting",
             "f.attackUpgrades": "Improvements",
@@ -2670,6 +2938,8 @@
             "alert.badImage": "Couldn't read that image.",
             "alert.badImport": "This file isn't a valid sheet export.",
             "confirm.reset": "Reset the entire sheet? This cannot be undone.",
+            "confirm.removeCompanion":
+              "Remove this companion? Its recorded details will be lost.",
           },
           fr: {
             "hdr.kicker": "Dossier Crawler",
@@ -2889,6 +3159,39 @@
             "f.spellLimitations": "Limitations / Ciblage",
             "f.spellUpgrades": "Améliorations de rang",
             "f.spellNotes": "Notes supplémentaires",
+            "btn.addCompanion": "+ Ajouter un compagnon",
+            "btn.companionDetails": "Détails",
+            "btn.hideCompanionDetails": "Masquer",
+            "btn.removeCompanion": "Supprimer",
+            "chip.companions": "Compagnons",
+            "hint.companions":
+              "Suivez les familiers, montures, véhicules et compagnons maison. Les valeurs sont saisies manuellement.",
+            "tab.companions": "Compagnons",
+            "companion.type.pet": "Familier",
+            "companion.type.mount": "Monture",
+            "companion.type.vehicle": "Véhicule",
+            "companion.type.other": "Autre",
+            "companion.health": "Barre de santé",
+            "companion.petProfile": "Profil du familier",
+            "companion.mountProfile": "Profil de monture / véhicule",
+            "f.companionType": "Type",
+            "f.bonded": "Lié",
+            "f.rideable": "Montable",
+            "f.hbValue": "Valeur de BV",
+            "f.companionDescription": "Description",
+            "f.companionAbilities": "Capacités / règles spéciales",
+            "f.companionLoot": "Butin / équipement",
+            "f.companionConditions": "États",
+            "f.companionNotes": "Notes supplémentaires",
+            "f.petCarrier": "Caisse de transport / stockage",
+            "f.attack1": "Attaque 1",
+            "f.attack2": "Attaque 2",
+            "f.special": "Spécial",
+            "f.occupants": "Occupants",
+            "f.accessories": "Accessoires",
+            "f.riderEffects": "Avantages / restrictions du cavalier",
+            "ph.companionPortrait": "compagnon — cliquez ou déposez une image",
+            "alt.companionPortrait": "Portrait du compagnon",
             "f.attackDescription": "Description",
             "f.attackLimitations": "Limitations / Ciblage",
             "f.attackUpgrades": "Améliorations",
@@ -2899,6 +3202,8 @@
               "Ce fichier n'est pas un export de fiche valide.",
             "confirm.reset":
               "Remettre toute la fiche à zéro ? Cette action est irréversible.",
+            "confirm.removeCompanion":
+              "Supprimer ce compagnon ? Les informations enregistrées seront perdues.",
           },
           es: {
             "hdr.kicker": "Expediente Crawler",
@@ -3118,6 +3423,39 @@
             "f.spellLimitations": "Limitaciones / Objetivos",
             "f.spellUpgrades": "Mejoras de rango",
             "f.spellNotes": "Notas adicionales",
+            "btn.addCompanion": "+ Añadir compañero",
+            "btn.companionDetails": "Detalles",
+            "btn.hideCompanionDetails": "Ocultar",
+            "btn.removeCompanion": "Eliminar",
+            "chip.companions": "Compañeros",
+            "hint.companions":
+              "Registra mascotas, monturas, vehículos y compañeros caseros. Los valores se anotan manualmente.",
+            "tab.companions": "Compañeros",
+            "companion.type.pet": "Mascota",
+            "companion.type.mount": "Montura",
+            "companion.type.vehicle": "Vehículo",
+            "companion.type.other": "Otro",
+            "companion.health": "Barra de salud",
+            "companion.petProfile": "Perfil de mascota",
+            "companion.mountProfile": "Perfil de montura / vehículo",
+            "f.companionType": "Tipo",
+            "f.bonded": "Vinculado",
+            "f.rideable": "Montable",
+            "f.hbValue": "Valor de BS",
+            "f.companionDescription": "Descripción",
+            "f.companionAbilities": "Habilidades / reglas especiales",
+            "f.companionLoot": "Botín / equipo",
+            "f.companionConditions": "Condiciones",
+            "f.companionNotes": "Notas adicionales",
+            "f.petCarrier": "Transportín / almacenamiento",
+            "f.attack1": "Ataque 1",
+            "f.attack2": "Ataque 2",
+            "f.special": "Especial",
+            "f.occupants": "Ocupantes",
+            "f.accessories": "Accesorios",
+            "f.riderEffects": "Beneficios / restricciones del jinete",
+            "ph.companionPortrait": "compañero — haz clic o suelta una imagen",
+            "alt.companionPortrait": "Retrato del compañero",
             "f.attackDescription": "Descripción",
             "f.attackLimitations": "Limitaciones / Objetivos",
             "f.attackUpgrades": "Mejoras",
@@ -3128,6 +3466,8 @@
               "Ese archivo no es una exportación de hoja válida.",
             "confirm.reset":
               "¿Reiniciar toda la hoja? Esta acción es irreversible.",
+            "confirm.removeCompanion":
+              "¿Eliminar este compañero? Se perderán sus datos guardados.",
           },
           de: {
             "hdr.kicker": "Crawler-Dossier",
@@ -3348,6 +3688,39 @@
             "f.spellLimitations": "Einschränkungen / Ziele",
             "f.spellUpgrades": "Rangverbesserungen",
             "f.spellNotes": "Zusätzliche Notizen",
+            "btn.addCompanion": "+ Begleiter hinzufügen",
+            "btn.companionDetails": "Details",
+            "btn.hideCompanionDetails": "Ausblenden",
+            "btn.removeCompanion": "Entfernen",
+            "chip.companions": "Begleiter",
+            "hint.companions":
+              "Verwalte Haustiere, Reittiere, Fahrzeuge und eigene Begleiter. Werte werden manuell eingetragen.",
+            "tab.companions": "Begleiter",
+            "companion.type.pet": "Haustier",
+            "companion.type.mount": "Reittier",
+            "companion.type.vehicle": "Fahrzeug",
+            "companion.type.other": "Andere",
+            "companion.health": "Gesundheitsleiste",
+            "companion.petProfile": "Haustierprofil",
+            "companion.mountProfile": "Reittier- / Fahrzeugprofil",
+            "f.companionType": "Typ",
+            "f.bonded": "Gebunden",
+            "f.rideable": "Reitbar",
+            "f.hbValue": "LB-Wert",
+            "f.companionDescription": "Beschreibung",
+            "f.companionAbilities": "Fähigkeiten / Sonderregeln",
+            "f.companionLoot": "Beute / Ausrüstung",
+            "f.companionConditions": "Zustände",
+            "f.companionNotes": "Zusätzliche Notizen",
+            "f.petCarrier": "Tierbehälter / Lagerung",
+            "f.attack1": "Angriff 1",
+            "f.attack2": "Angriff 2",
+            "f.special": "Spezial",
+            "f.occupants": "Insassen",
+            "f.accessories": "Zubehör",
+            "f.riderEffects": "Vorteile / Einschränkungen für Reiter",
+            "ph.companionPortrait": "Begleiter — Bild anklicken oder ablegen",
+            "alt.companionPortrait": "Begleiterporträt",
             "f.attackDescription": "Beschreibung",
             "f.attackLimitations": "Einschränkungen / Ziele",
             "f.attackUpgrades": "Verbesserungen",
@@ -3357,6 +3730,8 @@
             "alert.badImport": "Diese Datei ist kein gültiger Bogen-Export.",
             "confirm.reset":
               "Den gesamten Bogen zurücksetzen? Diese Aktion ist unwiderruflich.",
+            "confirm.removeCompanion":
+              "Diesen Begleiter entfernen? Seine gespeicherten Angaben gehen verloren.",
           },
           pt: {
             "hdr.kicker": "Dossiê Crawler",
@@ -3576,6 +3951,39 @@
             "f.spellLimitations": "Limitações / Alvos",
             "f.spellUpgrades": "Melhorias de nível",
             "f.spellNotes": "Notas adicionais",
+            "btn.addCompanion": "+ Adicionar companheiro",
+            "btn.companionDetails": "Detalhes",
+            "btn.hideCompanionDetails": "Ocultar",
+            "btn.removeCompanion": "Remover",
+            "chip.companions": "Companheiros",
+            "hint.companions":
+              "Registe mascotes, montarias, veículos e companheiros caseiros. Os valores são preenchidos manualmente.",
+            "tab.companions": "Companheiros",
+            "companion.type.pet": "Mascote",
+            "companion.type.mount": "Montaria",
+            "companion.type.vehicle": "Veículo",
+            "companion.type.other": "Outro",
+            "companion.health": "Barra de saúde",
+            "companion.petProfile": "Perfil da mascote",
+            "companion.mountProfile": "Perfil de montaria / veículo",
+            "f.companionType": "Tipo",
+            "f.bonded": "Vinculado",
+            "f.rideable": "Montável",
+            "f.hbValue": "Valor de BV",
+            "f.companionDescription": "Descrição",
+            "f.companionAbilities": "Habilidades / regras especiais",
+            "f.companionLoot": "Saque / equipamento",
+            "f.companionConditions": "Condições",
+            "f.companionNotes": "Notas adicionais",
+            "f.petCarrier": "Transportadora / armazenamento",
+            "f.attack1": "Ataque 1",
+            "f.attack2": "Ataque 2",
+            "f.special": "Especial",
+            "f.occupants": "Ocupantes",
+            "f.accessories": "Acessórios",
+            "f.riderEffects": "Benefícios / restrições do cavaleiro",
+            "ph.companionPortrait": "companheiro — clique ou solte uma imagem",
+            "alt.companionPortrait": "Retrato do companheiro",
             "f.attackDescription": "Descrição",
             "f.attackLimitations": "Limitações / Alvos",
             "f.attackUpgrades": "Melhorias",
@@ -3586,6 +3994,8 @@
               "Esse arquivo não é uma exportação de ficha válida.",
             "confirm.reset":
               "Redefinir toda a ficha? Esta ação é irreversível.",
+            "confirm.removeCompanion":
+              "Remover este companheiro? Os dados registrados serão perdidos.",
           },
         };
 
@@ -3907,6 +4317,13 @@
                 : "btn.spellDetails",
             );
           });
+          $$("[data-companion-toggle]").forEach(function (el) {
+            el.textContent = t(
+              el.getAttribute("aria-expanded") === "true"
+                ? "btn.hideCompanionDetails"
+                : "btn.companionDetails",
+            );
+          });
           $$("[data-attack-toggle]").forEach(function (el) {
             el.textContent = t(
               el.getAttribute("aria-expanded") === "true"
@@ -4004,14 +4421,29 @@
             );
           })
           .join("");
+        var COMPANION_TYPE_OPTS = ["pet", "mount", "vehicle", "other"]
+          .map(function (kind) {
+            return (
+              '<option value="' +
+              kind +
+              '" data-i18n="companion.type.' +
+              kind +
+              '">' +
+              kind +
+              "</option>"
+            );
+          })
+          .join("");
 
         var DEFAULT_ATTACKS = 20,
           DEFAULT_SKILLS = 24,
           DEFAULT_SPELLS = 8,
+          DEFAULT_COMPANIONS = 1,
           DEFAULT_INV = 36;
         var attackCount = 0,
           skillCount = 0,
           spellCount = 0,
+          companionCount = 0,
           invCount = 0;
 
         /* ---------------- row templates ---------------- */
@@ -4197,6 +4629,134 @@
             "</div></div>"
           );
         }
+        function companionRowHTML(i) {
+          var b = "companions." + i + ".";
+          var hp = range(10, 1)
+            .map(function (n) {
+              var pct = n * 10;
+              return (
+                '<label class="companion-hp-cell"><span style="background:' +
+                HP_COLORS[n - 1] +
+                ';">' +
+                pct +
+                '%</span><input type="checkbox" data-k="' +
+                b +
+                "hp." +
+                pct +
+                '.on" aria-label="' +
+                pct +
+                '% Health Bar slot lost"></label>'
+              );
+            })
+            .join("");
+          var statFields = STAT_LIST.map(function (s) {
+            return (
+              '<label class="lbl sm"><span data-i18n="stat.' +
+              s.key +
+              '">' +
+              s.label +
+              '</span><input data-k="' +
+              b +
+              "stats." +
+              s.key +
+              '" inputmode="numeric"></label>'
+            );
+          }).join("");
+          return (
+            '<article class="companion-entry" data-row="companions.' +
+            i +
+            '">' +
+            '<div class="companion-summary">' +
+            DRAG_HANDLE +
+            '<label class="lbl"><span data-i18n="f.name">Name</span><input data-k="' +
+            b +
+            'name"></label>' +
+            '<label class="lbl"><span data-i18n="f.companionType">Type</span><select data-k="' +
+            b +
+            'type" data-companion-type>' +
+            COMPANION_TYPE_OPTS +
+            "</select></label>" +
+            '<label class="companion-flag" data-companion-bonded><input type="checkbox" data-k="' +
+            b +
+            'bonded"><span data-i18n="f.bonded">Bonded</span></label>' +
+            '<label class="companion-flag" data-companion-rideable><input type="checkbox" data-k="' +
+            b +
+            'rideable"><span data-i18n="f.rideable">Rideable</span></label>' +
+            '<button class="companion-toggle" type="button" data-companion-toggle="' +
+            i +
+            '" aria-expanded="false" aria-controls="companion-details-' +
+            i +
+            '" data-i18n="btn.companionDetails">Details</button>' +
+            '<button class="companion-remove" type="button" data-companion-remove="' +
+            i +
+            '" data-i18n="btn.removeCompanion">Remove</button>' +
+            "</div>" +
+            '<div class="companion-details" id="companion-details-' +
+            i +
+            '" hidden>' +
+            '<section class="companion-section"><div class="sub-rule" data-i18n="companion.health">Health Bar</div>' +
+            '<div class="companion-hp-grid">' +
+            hp +
+            '</div><div class="companion-fields"><label class="lbl"><span data-i18n="f.hbValue">HB Value</span><input data-k="' +
+            b +
+            'hbValue" inputmode="numeric"></label></div></section>' +
+            '<div class="companion-profile"><div><input data-k="' +
+            b +
+            'portrait" hidden><div class="portrait" data-imgbox="' +
+            b +
+            'portrait" tabindex="0" role="button" data-i18n-title="title.imgbox" data-i18n-aria-label="title.imgbox" title="Click or drop an image" aria-label="Click or drop an image"><img data-imgbox-img data-i18n-alt="alt.companionPortrait" alt="Companion portrait" hidden><span data-imgbox-ph data-i18n="ph.companionPortrait">companion — click or drop an image</span></div><button class="img-remove" type="button" data-imgbox-clear="' +
+            b +
+            'portrait" data-i18n="btn.removeImg" hidden>Remove image</button></div>' +
+            '<div class="companion-text-grid"><label class="lbl"><span data-i18n="f.companionDescription">Description</span><textarea data-k="' +
+            b +
+            'description"></textarea></label><label class="lbl"><span data-i18n="f.companionConditions">Conditions</span><textarea data-k="' +
+            b +
+            'conditions"></textarea></label></div></div>' +
+            '<section class="companion-section" data-companion-section="pet"><div class="sub-rule" data-i18n="companion.petProfile">Pet profile</div>' +
+            '<div class="companion-fields">' +
+            statFields +
+            '<label class="lbl sm"><span data-i18n="f.level">Level</span><input data-k="' +
+            b +
+            'level" inputmode="numeric"></label><label class="lbl sm"><span data-i18n="f.drTotal">DR</span><input data-k="' +
+            b +
+            'dr"></label><label class="lbl sm"><span data-i18n="f.evadeTotal">Evade</span><input data-k="' +
+            b +
+            'evade"></label><label class="lbl sm"><span data-i18n="f.move">Move</span><input data-k="' +
+            b +
+            'move"></label><label class="lbl sm"><span data-i18n="f.size">Size</span><input data-k="' +
+            b +
+            'size"></label><label class="lbl sm"><span data-i18n="f.petCarrier">Pet Carrier / Storage</span><input data-k="' +
+            b +
+            'carrier"></label></div><div class="companion-text-grid"><label class="lbl"><span data-i18n="f.attack1">Attack 1</span><textarea data-k="' +
+            b +
+            'attack1"></textarea></label><label class="lbl"><span data-i18n="f.attack2">Attack 2</span><textarea data-k="' +
+            b +
+            'attack2"></textarea></label><label class="lbl"><span data-i18n="f.special">Special</span><textarea data-k="' +
+            b +
+            'special"></textarea></label></div></section>' +
+            '<section class="companion-section" data-companion-section="mount" hidden><div class="sub-rule" data-i18n="companion.mountProfile">Mount / Vehicle profile</div><div class="companion-fields"><label class="lbl"><span data-i18n="f.size">Size</span><input data-k="' +
+            b +
+            'mount.size"></label><label class="lbl"><span data-i18n="f.occupants">Occupants</span><input data-k="' +
+            b +
+            'mount.occupants"></label><label class="lbl"><span data-i18n="f.move">Move</span><input data-k="' +
+            b +
+            'mount.move"></label><label class="lbl"><span data-i18n="f.drTotal">DR</span><input data-k="' +
+            b +
+            'mount.dr"></label></div><div class="companion-text-grid"><label class="lbl"><span data-i18n="f.accessories">Accessories</span><textarea data-k="' +
+            b +
+            'mount.accessories"></textarea></label><label class="lbl"><span data-i18n="f.riderEffects">Rider benefits / restrictions</span><textarea data-k="' +
+            b +
+            'mount.riderEffects"></textarea></label></div></section>' +
+            '<section class="companion-section"><div class="companion-text-grid"><label class="lbl"><span data-i18n="f.companionAbilities">Abilities / Special rules</span><textarea data-k="' +
+            b +
+            'abilities"></textarea></label><label class="lbl"><span data-i18n="f.companionLoot">Loot / Equipment</span><textarea data-k="' +
+            b +
+            'loot"></textarea></label><label class="lbl"><span data-i18n="f.companionNotes">Additional Notes</span><textarea data-k="' +
+            b +
+            'notes"></textarea></label></div></section>' +
+            "</div></article>"
+          );
+        }
         function invRowHTML(i) {
           var b = "inv." + i + ".";
           return (
@@ -4245,6 +4805,17 @@
             spellRowHTML(spellCount++),
           );
         }
+        function addCompanionRow() {
+          var container = $("#companionRows");
+          container.insertAdjacentHTML(
+            "beforeend",
+            companionRowHTML(companionCount++),
+          );
+          var row = container.lastElementChild;
+          wireImageBoxes(row);
+          updateCompanionPanels(row);
+          return row;
+        }
         function addInvRow() {
           $("#invRows").insertAdjacentHTML("beforeend", invRowHTML(invCount++));
         }
@@ -4256,6 +4827,9 @@
         }
         function ensureSpells(n) {
           while (spellCount < n) addSpellRow();
+        }
+        function ensureCompanions(n) {
+          while (companionCount < n) addCompanionRow();
         }
         function ensureInv(n) {
           while (invCount < n) addInvRow();
@@ -4287,6 +4861,38 @@
             $("#spellRows").lastElementChild.remove();
             spellCount--;
           }
+        }
+        function resizeCompanions(n) {
+          ensureCompanions(n);
+          while (companionCount > n) {
+            $("#companionRows").lastElementChild.remove();
+            companionCount--;
+          }
+        }
+
+        function updateCompanionPanels(row) {
+          if (!row) return;
+          var type = row.querySelector("[data-companion-type]");
+          var bonded = row.querySelector("[data-companion-bonded]");
+          var rideableWrap = row.querySelector("[data-companion-rideable]");
+          var rideable = rideableWrap && rideableWrap.querySelector("input");
+          var kind = type && type.value ? type.value : "pet";
+          if (type && !type.value) type.value = kind;
+          if (bonded) bonded.hidden = kind !== "pet";
+          if (rideableWrap)
+            rideableWrap.hidden = kind !== "pet" && kind !== "other";
+          var pet = row.querySelector('[data-companion-section="pet"]');
+          var mount = row.querySelector('[data-companion-section="mount"]');
+          if (pet) pet.hidden = kind !== "pet";
+          if (mount)
+            mount.hidden = !(
+              kind === "mount" ||
+              kind === "vehicle" ||
+              ((kind === "pet" || kind === "other") && rideable && rideable.checked)
+            );
+        }
+        function updateCompanionPanelsAll() {
+          $$('.companion-entry').forEach(updateCompanionPanels);
         }
 
         /* ---------------- build static repeating DOM ---------------- */
@@ -4351,6 +4957,7 @@
           ensureAttacks(DEFAULT_ATTACKS);
           ensureSkills(DEFAULT_SKILLS);
           ensureSpells(DEFAULT_SPELLS);
+          ensureCompanions(DEFAULT_COMPANIONS);
           ensureInv(DEFAULT_INV);
 
           $("#gearSlots").innerHTML = GEAR_SLOTS.map(function (g) {
@@ -4624,6 +5231,7 @@
 
           renderMana();
           renderImages();
+          updateCompanionPanelsAll();
 
           $$("[data-row]").forEach(function (row) {
             var q = function (sel) {
@@ -4718,6 +5326,40 @@
           });
         }
 
+        function wireImgBox(box) {
+          if (!box || box.getAttribute("data-imgbox-wired") === "true") return;
+          box.setAttribute("data-imgbox-wired", "true");
+          ["dragenter", "dragover"].forEach(function (ev) {
+            box.addEventListener(ev, function (e) {
+              e.preventDefault();
+              box.classList.add("drop");
+            });
+          });
+          ["dragleave", "dragend", "drop"].forEach(function (ev) {
+            box.addEventListener(ev, function () {
+              box.classList.remove("drop");
+            });
+          });
+          box.addEventListener("drop", function (e) {
+            e.preventDefault();
+            if (e.dataTransfer && e.dataTransfer.files && e.dataTransfer.files[0])
+              loadImageFile(
+                box.getAttribute("data-imgbox"),
+                e.dataTransfer.files[0],
+              );
+          });
+          box.addEventListener("keydown", function (e) {
+            if (e.key === "Enter" || e.key === " ") {
+              e.preventDefault();
+              activeImgKey = box.getAttribute("data-imgbox");
+              $("#imgFile").click();
+            }
+          });
+        }
+        function wireImageBoxes(root) {
+          $$("[data-imgbox]", root || document).forEach(wireImgBox);
+        }
+
         function loadImageFile(key, file) {
           if (!key || !file || !/^image\//.test(file.type || "")) return;
           var r = new FileReader();
@@ -4808,6 +5450,7 @@
               attacks: attackCount,
               skills: skillCount,
               spells: spellCount,
+              companions: companionCount,
               inv: invCount,
             },
             fields: collect(),
@@ -4830,6 +5473,7 @@
               attacks: DEFAULT_ATTACKS,
               skills: DEFAULT_SKILLS,
               spells: DEFAULT_SPELLS,
+              companions: DEFAULT_COMPANIONS,
               inv: DEFAULT_INV,
             },
             fields: flat,
@@ -5023,6 +5667,13 @@
               maxIndex(flat, "spells.") + 1,
             ),
           );
+          ensureCompanions(
+            Math.max(
+              DEFAULT_COMPANIONS,
+              counts.companions || 0,
+              maxIndex(flat, "companions.") + 1,
+            ),
+          );
           resizeInv(
             Math.max(DEFAULT_INV, counts.inv || 0, maxIndex(flat, "inv.") + 1),
           );
@@ -5055,6 +5706,13 @@
               maxIndex(flat, "spells.") + 1,
             ),
           );
+          resizeCompanions(
+            Math.max(
+              DEFAULT_COMPANIONS,
+              counts.companions || 0,
+              maxIndex(flat, "companions.") + 1,
+            ),
+          );
           resizeInv(
             Math.max(DEFAULT_INV, counts.inv || 0, maxIndex(flat, "inv.") + 1),
           );
@@ -5066,6 +5724,7 @@
           setDefaultMovement();
           setDefaultLevelAndFloor();
           apply(flat, true);
+          updateCompanionPanelsAll();
           renderImages();
         }
 
@@ -5370,6 +6029,7 @@
               attacks: attackCount,
               skills: skillCount,
               spells: spellCount,
+              companions: companionCount,
               inv: invCount,
             },
             character: nest(flat),
@@ -5433,8 +6093,10 @@
             el.removeAttribute("data-dirty");
           });
           resizeInv(DEFAULT_INV);
+          resizeCompanions(DEFAULT_COMPANIONS);
           setDefaultMovement();
           setDefaultLevelAndFloor();
+          updateCompanionPanelsAll();
           recompute();
           header();
           save();
@@ -5462,6 +6124,29 @@
           });
         }
 
+        function hasCompanionPrintValue(row) {
+          return $$("[data-k]", row).some(function (el) {
+            var key = el.getAttribute("data-k") || "";
+            if (key.slice(-5) === ".type" && el.value === "pet") return false;
+            return el.type === "checkbox"
+              ? el.checked
+              : String(el.value || "").trim() !== "";
+          });
+        }
+
+        function markCompanionPrintRows() {
+          var blankRows = 0;
+          $$('.companion-entry').forEach(function (row) {
+            var populated = hasCompanionPrintValue(row);
+            var keepBlank = !populated && blankRows < 1;
+            if (!populated) blankRows += 1;
+            var hidden = !populated && !keepBlank;
+            row.setAttribute("data-print-hide", String(hidden));
+            var details = row.querySelector(".companion-details");
+            if (details && !hidden) details.setAttribute("data-print-open", "true");
+          });
+        }
+
         function preparePrint(mode) {
           document.body.classList.remove("print-all", "print-current");
           document.body.classList.add(
@@ -5470,6 +6155,7 @@
           markPrintRows("attacks", 4);
           markPrintRows("skills", 8);
           markPrintRows("spells", 4);
+          markCompanionPrintRows();
           markPrintRows("inv", 10);
 
           var blankNotes = 0;
@@ -5484,7 +6170,7 @@
           });
 
           $$(
-            ".skill-details, .spell-details, .attack-details, .inv-details",
+            ".skill-details, .spell-details, .companion-details, .attack-details, .inv-details",
           ).forEach(function (details) {
             var toggle = $('[aria-controls="' + details.id + '"]');
             if (
@@ -5583,7 +6269,7 @@
               el.type === "checkbox" ? { c: el.checked } : { v: el.value };
           });
           var det = row.querySelector(
-            ".skill-details, .spell-details, .attack-details, .inv-details",
+            ".skill-details, .spell-details, .companion-details, .attack-details, .inv-details",
           );
           if (det) st.open = !det.hidden;
           return st;
@@ -5603,16 +6289,18 @@
             }
           });
           var det = row.querySelector(
-            ".skill-details, .spell-details, .attack-details, .inv-details",
+            ".skill-details, .spell-details, .companion-details, .attack-details, .inv-details",
           );
           var tog = row.querySelector(
-            ".skill-toggle, .spell-toggle, .attack-toggle, .inv-toggle",
+            ".skill-toggle, .spell-toggle, .companion-toggle, .attack-toggle, .inv-toggle",
           );
           if (det && tog) {
             det.hidden = !st.open;
             tog.setAttribute("aria-expanded", String(st.open));
             var kind = tog.classList.contains("spell-toggle")
               ? "Spell"
+              : tog.classList.contains("companion-toggle")
+                ? "Companion"
               : tog.classList.contains("attack-toggle")
                 ? "Attack"
                 : tog.classList.contains("inv-toggle")
@@ -5627,6 +6315,8 @@
                     "Details",
             );
           }
+          updateCompanionPanels(row);
+          renderImages();
         }
         function siblingRows(container) {
           return $$("[data-row]", container).filter(function (r) {
@@ -5654,6 +6344,42 @@
           header();
           save();
           return rows[order.indexOf(from)];
+        }
+
+        function removeCompanionRow(row) {
+          var container = $("#companionRows");
+          var rows = siblingRows(container);
+          var index = rows.indexOf(row);
+          if (index < 0) return;
+          if (hasCompanionPrintValue(row) && !window.confirm(t("confirm.removeCompanion")))
+            return;
+          if (rows.length === 1) {
+            $$('[data-k]', row).forEach(function (el) {
+              if (el.type === "checkbox") el.checked = false;
+              else el.value = "";
+              el.removeAttribute("data-dirty");
+            });
+            var details = row.querySelector('.companion-details');
+            var toggle = row.querySelector('.companion-toggle');
+            if (details) details.hidden = true;
+            if (toggle) {
+              toggle.setAttribute('aria-expanded', 'false');
+              toggle.textContent = t('btn.companionDetails');
+            }
+            updateCompanionPanels(row);
+            renderImages();
+            save();
+            return;
+          }
+          var states = rows.map(snapshotRow);
+          states.splice(index, 1);
+          resizeCompanions(states.length);
+          siblingRows(container).forEach(function (current, i) {
+            restoreRow(current, states[i]);
+          });
+          applyI18n();
+          recompute();
+          save();
         }
 
         var dragRow = null;
@@ -5823,10 +6549,35 @@
               if (which === "attacks") addAttackRow();
               else if (which === "skills") addSkillRow();
               else if (which === "spells") addSpellRow();
+              else if (which === "companions") addCompanionRow();
               else addInvRow();
               applyI18n();
               recompute();
               save();
+              return;
+            }
+            var companionToggle = target.closest("[data-companion-toggle]");
+            if (companionToggle) {
+              var companionDetails = $(
+                "#companion-details-" +
+                  companionToggle.getAttribute("data-companion-toggle"),
+              );
+              if (companionDetails) {
+                var openingCompanion = companionDetails.hidden;
+                companionDetails.hidden = !openingCompanion;
+                companionToggle.setAttribute(
+                  "aria-expanded",
+                  String(openingCompanion),
+                );
+                companionToggle.textContent = openingCompanion
+                  ? t("btn.hideCompanionDetails")
+                  : t("btn.companionDetails");
+              }
+              return;
+            }
+            var companionRemove = target.closest("[data-companion-remove]");
+            if (companionRemove) {
+              removeCompanionRow(companionRemove.closest(".companion-entry"));
               return;
             }
             var skillToggle = target.closest("[data-skill-toggle]");
@@ -5985,38 +6736,7 @@
               switchCrawler(crawlerSelect.value);
             });
 
-          $$("[data-imgbox]").forEach(function (box) {
-            ["dragenter", "dragover"].forEach(function (ev) {
-              box.addEventListener(ev, function (e) {
-                e.preventDefault();
-                box.classList.add("drop");
-              });
-            });
-            ["dragleave", "dragend", "drop"].forEach(function (ev) {
-              box.addEventListener(ev, function () {
-                box.classList.remove("drop");
-              });
-            });
-            box.addEventListener("drop", function (e) {
-              e.preventDefault();
-              if (
-                e.dataTransfer &&
-                e.dataTransfer.files &&
-                e.dataTransfer.files[0]
-              )
-                loadImageFile(
-                  box.getAttribute("data-imgbox"),
-                  e.dataTransfer.files[0],
-                );
-            });
-            box.addEventListener("keydown", function (e) {
-              if (e.key === "Enter" || e.key === " ") {
-                e.preventDefault();
-                activeImgKey = box.getAttribute("data-imgbox");
-                $("#imgFile").click();
-              }
-            });
-          });
+          wireImageBoxes();
           window.addEventListener("afterprint", cleanupPrint);
         }
 
