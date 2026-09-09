@@ -776,6 +776,9 @@
         gap: 3px;
         margin-top: 2px;
       }
+      .grind[hidden] {
+        display: none !important;
+      }
       .grind-btn {
         flex: 0 0 auto;
         width: 20px;
@@ -1777,11 +1780,19 @@
         .companion-remove,
         .attack-toggle,
         .inv-toggle,
-        .drag-handle,
+        .grind-btn,
         .print-dialog,
         .resource-controls,
         [data-imgbox-clear] {
           display: none !important;
+        }
+        /* keep the drag handle as a zero-size grid item (the header keeps its
+           .rh-drag placeholder) so row cells stay aligned with the header. */
+        .drag-handle {
+          visibility: hidden;
+          min-height: 0;
+          width: 0;
+          overflow: hidden;
         }
         main {
           padding: 0;
@@ -1822,6 +1833,59 @@
         .tbl textarea {
           font-size: 9px;
           padding: 4px;
+        }
+        /* Rank / Grinding: print the rank exactly as it was before the grinding
+           feature, with the counter shown as a small "(n)" right beside it —
+           no +/- buttons, no boxed input, no column resize. */
+        .rcell:has(> .grind),
+        .spell-rank:has(> .grind) {
+          display: flex;
+          align-items: baseline;
+          justify-content: center;
+          gap: 2px;
+        }
+        .rcell > input[data-k$=".rank"],
+        .spell-rank > input[data-k$=".rank"] {
+          flex: 0 1 auto;
+          width: 2.4ch;
+          min-width: 0;
+          min-height: 0;
+          padding: 0 !important;
+          border: 0 !important;
+          text-align: right;
+        }
+        .rcell > .grind,
+        .spell-rank > .grind {
+          flex: 0 0 auto;
+          display: inline-flex;
+          align-items: baseline;
+          margin: 0;
+          gap: 0;
+          font-size: 8px;
+          color: #555;
+        }
+        .rcell > .grind::before,
+        .spell-rank > .grind::before {
+          content: "(";
+        }
+        .rcell > .grind::after,
+        .spell-rank > .grind::after {
+          content: ")";
+        }
+        .rcell > .grind > .grind-val,
+        .spell-rank > .grind > .grind-val {
+          width: 2ch;
+          min-width: 0;
+          min-height: 0;
+          height: auto;
+          padding: 0 !important;
+          border: 0 !important;
+          background: transparent !important;
+          font: inherit;
+          text-align: center;
+          color: #555 !important;
+          -webkit-appearance: none;
+          appearance: none;
         }
         .spell-summary {
           grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -2812,6 +2876,31 @@
             data-i18n="grind.ok"
           >
             OK
+          </button>
+        </div>
+      </div>
+    </dialog>
+
+    <dialog class="print-dialog" id="advDialog">
+      <div class="print-dialog-body">
+        <div class="chip" data-i18n="adv.title">Skill Advancement</div>
+        <p class="grind-msg" id="advDialogMsg"></p>
+        <div class="print-dialog-actions">
+          <button
+            class="btn primary"
+            type="button"
+            data-adv-result="success"
+            data-i18n="adv.success"
+          >
+            Success — rank up
+          </button>
+          <button
+            class="btn"
+            type="button"
+            data-adv-result="failure"
+            data-i18n="adv.failure"
+          >
+            Failure
           </button>
         </div>
       </div>
@@ -4493,7 +4582,13 @@
             "grind.levelUp": "Congratulations! Your Level has increased!",
             "grind.rankUp":
               "Congratulations! Your rank in “{name}” has increased!",
-            "grind.rankUpGeneric": "Congratulations! Your rank has increased!"
+            "grind.rankUpGeneric": "Congratulations! Your rank has increased!",
+            "adv.title": "Skill Advancement",
+            "adv.thisSkill": "this skill",
+            "adv.prompt":
+              "You have ground “{name}” to its rank. Roll 1d20 for skill advancement: on a result higher than {rank} it improves. Roll now, then pick the outcome below.",
+            "adv.success": "Success — rank up",
+            "adv.failure": "Failure"
           },
           fr: {
             "col.grind": "Grinding",
@@ -4508,7 +4603,13 @@
             "grind.levelUp": "Félicitations ! Votre niveau a augmenté !",
             "grind.rankUp":
               "Félicitations ! Votre rang de « {name} » a augmenté !",
-            "grind.rankUpGeneric": "Félicitations ! Votre rang a augmenté !"
+            "grind.rankUpGeneric": "Félicitations ! Votre rang a augmenté !",
+            "adv.title": "Amélioration de compétence",
+            "adv.thisSkill": "cette compétence",
+            "adv.prompt":
+              "Vous avez grindé « {name} » jusqu’à son rang. Faites un jet de skill advancement : lancez 1d20, un résultat supérieur à {rank} améliore le rang. Lancez le dé, puis choisissez le résultat ci-dessous.",
+            "adv.success": "Réussi — rang +1",
+            "adv.failure": "Échec"
           },
           es: {
             "col.grind": "Grindeo",
@@ -4523,7 +4624,13 @@
             "grind.levelUp": "¡Felicidades! ¡Tu nivel ha aumentado!",
             "grind.rankUp":
               "¡Felicidades! ¡Tu grado de «{name}» ha aumentado!",
-            "grind.rankUpGeneric": "¡Felicidades! ¡Tu grado ha aumentado!"
+            "grind.rankUpGeneric": "¡Felicidades! ¡Tu grado ha aumentado!",
+            "adv.title": "Avance de habilidad",
+            "adv.thisSkill": "esta habilidad",
+            "adv.prompt":
+              "Has grindeado «{name}» hasta su grado. Haz una tirada de avance: lanza 1d20, un resultado superior a {rank} mejora el grado. Lanza el dado y luego elige el resultado abajo.",
+            "adv.success": "Éxito — grado +1",
+            "adv.failure": "Fallo"
           },
           de: {
             "col.grind": "Grinding",
@@ -4538,7 +4645,13 @@
             "grind.levelUp": "Glückwunsch! Deine Stufe ist gestiegen!",
             "grind.rankUp":
               "Glückwunsch! Dein Rang von „{name}“ ist gestiegen!",
-            "grind.rankUpGeneric": "Glückwunsch! Dein Rang ist gestiegen!"
+            "grind.rankUpGeneric": "Glückwunsch! Dein Rang ist gestiegen!",
+            "adv.title": "Fähigkeitsaufstieg",
+            "adv.thisSkill": "diese Fähigkeit",
+            "adv.prompt":
+              "Du hast „{name}“ bis zu ihrem Rang gegrindet. Wirf 1W20 für den Fähigkeitsaufstieg: ein Ergebnis höher als {rank} verbessert den Rang. Wirf jetzt und wähle unten das Ergebnis.",
+            "adv.success": "Erfolg — Rang +1",
+            "adv.failure": "Fehlschlag"
           },
           pt: {
             "col.grind": "Grinding",
@@ -4553,7 +4666,13 @@
             "grind.levelUp": "Parabéns! O teu nível aumentou!",
             "grind.rankUp":
               "Parabéns! O teu grau de «{name}» aumentou!",
-            "grind.rankUpGeneric": "Parabéns! O teu grau aumentou!"
+            "grind.rankUpGeneric": "Parabéns! O teu grau aumentou!",
+            "adv.title": "Avanço de perícia",
+            "adv.thisSkill": "esta perícia",
+            "adv.prompt":
+              "Fizeste grinding de «{name}» até ao seu grau. Faz um teste de avanço: lança 1d20, um resultado superior a {rank} melhora o grau. Lança o dado e depois escolhe o resultado abaixo.",
+            "adv.success": "Sucesso — grau +1",
+            "adv.failure": "Falha"
           }
         };
         LANGS.forEach(function (locale) {
@@ -5876,6 +5995,17 @@
               var statMod = src ? val("stats." + src.value + ".mod") : "";
               setC(el, String(statMod).trim() === "" ? "" : mod(src.value));
             });
+            var checkTypeEl = q('select[data-k$=".checkType"]');
+            var grindWrap = q(".grind[data-grind]");
+            if (grindWrap) {
+              var noGrind = checkTypeEl && checkTypeEl.value === "Passive";
+              grindWrap.hidden = !!noGrind;
+              if (noGrind) {
+                var gv = q('[data-k$=".grind"]');
+                if (gv && grindInt(gv.value) !== 0) gv.value = "0";
+              }
+            }
+
             var rank = q('[data-k$=".rank"]');
             var hitStat = q('select[data-k$=".hitStat"]');
             var hit = q('[data-c="row.toHit"]');
@@ -6051,9 +6181,10 @@
         }
 
         /* ---------------- grinding counters ---------------- */
-        var GRIND_RANK_MAX = 20,
+        var GRIND_RANK_MAX = 15,
           GRIND_LEVEL_MAX = 250,
-          grindMsgQueue = [];
+          grindMsgQueue = [],
+          advPending = null;
 
         function grindInt(v) {
           var n = parseInt(String(v == null ? "" : v).replace(/[^0-9\-]/g, ""), 10);
@@ -6119,9 +6250,68 @@
           var threshold = baseRank < 1 ? 1 : baseRank;
           g += 1;
           if (baseRank >= GRIND_RANK_MAX) {
-            g = Math.min(g, GRIND_RANK_MAX);
-          } else if (g >= threshold) {
-            g = 0;
+            /* already at the cap — hold the counter, nothing to advance */
+            g = Math.min(g, threshold);
+            gEl.value = String(g);
+            bumpLevelGrind();
+            recompute();
+            header();
+            save();
+            return;
+          }
+          if (g >= threshold) {
+            /* track is full: hold it there and prompt for the advancement roll.
+               Only a successful roll increases the rank. */
+            g = threshold;
+            gEl.value = String(g);
+            bumpLevelGrind();
+            recompute();
+            header();
+            save();
+            advPrompt(base);
+            return;
+          }
+          gEl.value = String(g);
+          bumpLevelGrind();
+          recompute();
+          header();
+          save();
+        }
+
+        /* skill advancement roll: the player rolls 1d20 physically and reports
+           the outcome. Success raises the rank and resets the track; failure
+           just resets the track. */
+        function advPrompt(base) {
+          advPending = base;
+          var rankEl = field(base + "rank");
+          var rankNum = Math.max(0, grindInt(rankEl && rankEl.value));
+          var nameEl = field(base + "name");
+          var nm = String((nameEl && nameEl.value) || "").trim() ||
+            t("adv.thisSkill");
+          var msg = t("adv.prompt")
+            .replace("{name}", nm)
+            .replace("{rank}", String(rankNum));
+          var dlg = $("#advDialog"),
+            body = $("#advDialogMsg");
+          if (!dlg || !dlg.showModal || !body) {
+            advResolve(window.confirm(msg) ? "success" : "failure");
+            return;
+          }
+          body.textContent = msg;
+          if (!dlg.open) dlg.showModal();
+        }
+
+        function advResolve(result) {
+          var base = advPending;
+          advPending = null;
+          var dlg = $("#advDialog");
+          if (dlg && dlg.open) dlg.close();
+          if (!base) return;
+          var gEl = field(base + "grind");
+          if (gEl) gEl.value = "0";
+          if (result === "success") {
+            var rankEl = field(base + "rank");
+            var baseRank = Math.max(0, grindInt(rankEl && rankEl.value));
             if (rankEl)
               rankEl.value = String(Math.min(baseRank + 1, GRIND_RANK_MAX));
             var nameEl = field(base + "name");
@@ -6132,8 +6322,6 @@
                 : t("grind.rankUpGeneric"),
             );
           }
-          gEl.value = String(g);
-          bumpLevelGrind();
           recompute();
           header();
           save();
@@ -6826,6 +7014,9 @@
         /* ---------------- printing ---------------- */
         function hasPrintValue(root) {
           return $$("[data-k]", root).some(function (el) {
+            var key = el.getAttribute("data-k") || "";
+            /* grinding counters default to "0" — never treat them as content */
+            if (key.slice(-5) === "grind") return false;
             return el.type === "checkbox"
               ? el.checked
               : String(el.value || "").trim() !== "";
@@ -6900,6 +7091,25 @@
             )
               details.setAttribute("data-print-open", "true");
           });
+
+          /* shorten the "Rank / Grinding" label for print (the counter prints
+             inline beside the rank as "11 (5)"). */
+          $$('[data-i18n="col.rankGrind"]').forEach(function (span) {
+            span.setAttribute("data-print-label", span.textContent);
+            span.textContent = t("col.rank");
+          });
+
+          /* on kept blank rows there is no rank — don't print a stray "(0)". */
+          $$(".grind[data-grind]").forEach(function (g) {
+            var rank =
+              g.parentElement &&
+              g.parentElement.querySelector('input[data-k$=".rank"]');
+            var gv = g.querySelector(".grind-val");
+            var blank =
+              (!rank || String(rank.value).trim() === "") &&
+              (!gv || grindInt(gv.value) === 0);
+            if (blank) g.setAttribute("data-print-hide", "true");
+          });
         }
 
         function expandPrintTextareas() {
@@ -6921,6 +7131,10 @@
           $$("textarea[data-print-height]").forEach(function (el) {
             el.style.height = el.getAttribute("data-print-height");
             el.removeAttribute("data-print-height");
+          });
+          $$("[data-print-label]").forEach(function (span) {
+            span.textContent = span.getAttribute("data-print-label");
+            span.removeAttribute("data-print-label");
           });
         }
 
@@ -7443,6 +7657,11 @@
               grindDismiss();
               return;
             }
+            var advBtn = target.closest("[data-adv-result]");
+            if (advBtn) {
+              advResolve(advBtn.getAttribute("data-adv-result"));
+              return;
+            }
             if (target.closest("[data-grind-info]")) {
               grindPopup(t("help.levelGrind"));
               return;
@@ -7480,6 +7699,13 @@
             grindDialogEl.addEventListener("close", function () {
               grindMsgQueue.shift();
               if (grindMsgQueue.length) setTimeout(grindShowNext, 160);
+            });
+
+          var advDialogEl = $("#advDialog");
+          if (advDialogEl)
+            advDialogEl.addEventListener("close", function () {
+              /* dismissed with Escape — leave the track full, no rank change */
+              advPending = null;
             });
 
           var imgFile = $("#imgFile");
