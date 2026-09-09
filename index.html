@@ -710,10 +710,10 @@
         color: var(--acc);
       }
       .cols-attacks {
-        grid-template-columns: var(--drag-col) 34px 1.8fr 0.55fr 0.8fr 0.8fr 0.7fr 0.75fr 0.8fr 0.6fr 0.9fr 1.6fr;
+        grid-template-columns: var(--drag-col) 34px 1.7fr 0.82fr 0.8fr 0.8fr 0.7fr 0.75fr 0.8fr 0.6fr 0.9fr 1.6fr;
       }
       .cols-skills {
-        grid-template-columns: var(--drag-col) 34px 1.6fr 0.6fr 0.85fr 0.55fr 1fr 2.2fr;
+        grid-template-columns: var(--drag-col) 34px 1.55fr 0.88fr 0.85fr 0.55fr 1fr 2.1fr;
       }
       /* drag-to-reorder handle (attacks / skills / spells / inventory rows) */
       .drag-handle {
@@ -768,6 +768,88 @@
       }
       .rcell-check {
         justify-items: center;
+      }
+      /* ---------- grinding counters ---------- */
+      .grind {
+        display: flex;
+        align-items: center;
+        gap: 3px;
+        margin-top: 2px;
+      }
+      .grind[hidden] {
+        display: none !important;
+      }
+      .grind-btn {
+        flex: 0 0 auto;
+        width: 20px;
+        height: 20px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        padding: 0;
+        border: 1px solid var(--line);
+        background: var(--paper-2);
+        color: var(--ink);
+        font-family: var(--f-mono);
+        font-size: 14px;
+        line-height: 1;
+        cursor: pointer;
+        border-radius: 3px;
+      }
+      .grind-btn:hover {
+        border-color: var(--acc);
+        color: var(--acc);
+      }
+      .grind-btn:focus-visible {
+        outline: 2px solid var(--acc);
+        outline-offset: 1px;
+      }
+      input.grind-val {
+        flex: 1 1 auto;
+        width: 100%;
+        min-width: 0;
+        min-height: 22px;
+        padding: 2px 4px;
+        text-align: center;
+        border: 1px solid var(--line);
+        border-radius: 3px;
+        background: var(--paper);
+        color: var(--muted);
+        font-size: 12px;
+      }
+      .info-dot {
+        flex: 0 0 auto;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 14px;
+        height: 14px;
+        padding: 0;
+        margin-left: 5px;
+        border: 1px solid currentColor;
+        border-radius: 50%;
+        background: transparent;
+        color: var(--muted);
+        font-family: var(--f-disp);
+        font-size: 9px;
+        line-height: 1;
+        cursor: help;
+        vertical-align: middle;
+      }
+      .info-dot:hover,
+      .info-dot:focus-visible {
+        color: var(--acc);
+      }
+      .grind-msg {
+        margin: 6px 0 4px;
+        font-family: var(--f-mono);
+        font-size: 14px;
+        line-height: 1.5;
+        color: var(--ink);
+      }
+      #grindDialog .print-dialog-actions .btn,
+      #levelUpDialog .print-dialog-actions .btn {
+        grid-column: 1 / -1;
       }
       .skill-entry + .skill-entry {
         margin-top: 4px;
@@ -904,7 +986,7 @@
       .spell-summary {
         display: grid;
         grid-template-columns:
-          var(--drag-col-spell) 34px minmax(150px, 1.6fr) minmax(52px, 0.45fr)
+          var(--drag-col-spell) 34px minmax(150px, 1.6fr) minmax(74px, 0.6fr)
           minmax(110px, 1fr) minmax(82px, 0.65fr)
           minmax(88px, 0.75fr) minmax(105px, 0.9fr)
           minmax(105px, 0.9fr) auto;
@@ -948,7 +1030,7 @@
          keeps the stacked per-field labels on tablet / mobile (<= 900px) */
       .cols-spells {
         grid-template-columns:
-          var(--drag-col-spell) 34px minmax(150px, 1.6fr) minmax(52px, 0.45fr)
+          var(--drag-col-spell) 34px minmax(150px, 1.6fr) minmax(74px, 0.6fr)
           minmax(110px, 1fr) minmax(82px, 0.65fr)
           minmax(88px, 0.75fr) minmax(105px, 0.9fr)
           minmax(105px, 0.9fr) auto;
@@ -1699,11 +1781,19 @@
         .companion-remove,
         .attack-toggle,
         .inv-toggle,
-        .drag-handle,
+        .grind-btn,
         .print-dialog,
         .resource-controls,
         [data-imgbox-clear] {
           display: none !important;
+        }
+        /* keep the drag handle as a zero-size grid item (the header keeps its
+           .rh-drag placeholder) so row cells stay aligned with the header. */
+        .drag-handle {
+          visibility: hidden;
+          min-height: 0;
+          width: 0;
+          overflow: hidden;
         }
         main {
           padding: 0;
@@ -1744,6 +1834,59 @@
         .tbl textarea {
           font-size: 9px;
           padding: 4px;
+        }
+        /* Rank / Grinding: print the rank exactly as it was before the grinding
+           feature, with the counter shown as a small "(n)" right beside it —
+           no +/- buttons, no boxed input, no column resize. */
+        .rcell:has(> .grind),
+        .spell-rank:has(> .grind) {
+          display: flex;
+          align-items: baseline;
+          justify-content: center;
+          gap: 2px;
+        }
+        .rcell > input[data-k$=".rank"],
+        .spell-rank > input[data-k$=".rank"] {
+          flex: 0 1 auto;
+          width: 2.4ch;
+          min-width: 0;
+          min-height: 0;
+          padding: 0 !important;
+          border: 0 !important;
+          text-align: right;
+        }
+        .rcell > .grind,
+        .spell-rank > .grind {
+          flex: 0 0 auto;
+          display: inline-flex;
+          align-items: baseline;
+          margin: 0;
+          gap: 0;
+          font-size: 8px;
+          color: #555;
+        }
+        .rcell > .grind::before,
+        .spell-rank > .grind::before {
+          content: "(";
+        }
+        .rcell > .grind::after,
+        .spell-rank > .grind::after {
+          content: ")";
+        }
+        .rcell > .grind > .grind-val,
+        .spell-rank > .grind > .grind-val {
+          width: 2ch;
+          min-width: 0;
+          min-height: 0;
+          height: auto;
+          padding: 0 !important;
+          border: 0 !important;
+          background: transparent !important;
+          font: inherit;
+          text-align: center;
+          color: #555 !important;
+          -webkit-appearance: none;
+          appearance: none;
         }
         .spell-summary {
           grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -2010,6 +2153,27 @@
                     data-i18n-aria-label="title.level"
                     title="Tutorial crawlers start at Level 1. Current Level limit: 250. Level gains may award Stat points; apply advancement manually."
                     aria-label="Tutorial crawlers start at Level 1. Current Level limit: 250. Level gains may award Stat points; apply advancement manually."
+                /></label>
+                <label class="lbl"
+                  ><span
+                    ><span data-i18n="f.levelGrind">Level Grinding</span
+                    ><button
+                      type="button"
+                      class="info-dot"
+                      data-grind-info
+                      data-i18n-title="help.levelGrind"
+                      data-i18n-aria-label="help.levelGrind"
+                    title="This counter tracks productive grinding hours. At your current Level, resolve the Level gain before recording more hours. The sole lowest-level party member gains 1d2 Levels; otherwise gain 1."
+                    >i</button
+                    ></span
+                  ><input
+                    data-k="identity.grind"
+                    class="grind-val"
+                    value="0"
+                    readonly
+                    tabindex="-1"
+                    data-i18n-aria-label="f.levelGrind"
+                    aria-label="Level Grinding"
                 /></label>
                 <label class="lbl"
                   ><span data-i18n="f.crawlerNumber">Crawler Number</span
@@ -2296,7 +2460,7 @@
                   aria-label="Mark this row"
                   >✔</span
                 ><span data-i18n="f.name">Name</span
-                ><span data-i18n="col.rank">Rank</span
+                ><span data-i18n="col.rankGrind">Rank / Grinding</span
                 ><span data-i18n="col.range">Range</span
                 ><span data-i18n="col.hitStat">Hit Stat</span
                 ><span class="acc" data-i18n="col.toHit">To Hit</span
@@ -2346,7 +2510,7 @@
                   aria-label="Mark for Skill Advancement"
                   >✔</span
                 ><span data-i18n="f.name">Name</span
-                ><span data-i18n="col.rank">Rank</span
+                ><span data-i18n="col.rankGrind">Rank / Grinding</span
                 ><span data-i18n="col.stat">Stat</span
                 ><span data-i18n="col.statMod">Stat Mod</span
                 ><span data-i18n="col.check">Check Type</span
@@ -2394,7 +2558,7 @@
                 >✔</span
               >
               <span data-i18n="f.name">Name</span>
-              <span data-i18n="col.rank">Rank</span>
+              <span data-i18n="col.rankGrind">Rank / Grinding</span>
               <span data-i18n="f.spellType">Type / Traits</span>
               <span data-i18n="f.manaCost">Mana Cost</span>
               <span data-i18n="f.range">Range</span>
@@ -2696,6 +2860,81 @@
             data-i18n="print.cancel"
           >
             Cancel
+          </button>
+        </div>
+      </div>
+    </dialog>
+
+    <dialog class="print-dialog" id="grindDialog">
+      <div class="print-dialog-body">
+        <div class="chip" data-i18n="grind.popupTitle">Milestone</div>
+        <p class="grind-msg" id="grindDialogMsg"></p>
+        <div class="print-dialog-actions">
+          <button
+            class="btn primary"
+            type="button"
+            data-grind-close
+            data-i18n="grind.ok"
+          >
+            OK
+          </button>
+        </div>
+      </div>
+    </dialog>
+
+    <dialog class="print-dialog" id="levelUpDialog">
+      <div class="print-dialog-body">
+        <div class="chip" data-i18n="levelup.title">Level Up</div>
+        <p class="grind-msg" id="levelUpDialogMsg"></p>
+        <div class="print-dialog-actions">
+          <button
+            class="btn primary"
+            type="button"
+            data-levelup-result="yes"
+            data-i18n="levelup.yes"
+          >
+            Yes — level up
+          </button>
+          <button
+            class="btn"
+            type="button"
+            data-levelup-result="solo"
+            data-i18n="levelup.solo"
+          >
+            I'm my team's only lowest-level member — gain 1d2 Levels
+          </button>
+          <button
+            class="btn"
+            type="button"
+            data-levelup-result="no"
+            data-i18n="levelup.no"
+          >
+            Not yet
+          </button>
+        </div>
+      </div>
+    </dialog>
+
+    <dialog class="print-dialog" id="advDialog">
+      <div class="print-dialog-body">
+        <div class="chip" data-i18n="adv.title">Skill Advancement</div>
+        <p class="grind-msg" id="advDialogMsg"></p>
+        <div class="print-dialog-actions">
+          <button
+            class="btn primary"
+            type="button"
+            data-adv-result="success"
+            data-i18n="adv.success"
+          >
+            Success — rank up
+          </button>
+          <button
+            class="btn"
+            type="button"
+            data-adv-result="failure"
+            data-i18n="adv.failure"
+          >
+            Failure
           </button>
         </div>
       </div>
@@ -4363,6 +4602,162 @@
           Object.assign(I18N[locale], RESOURCE_I18N[locale]);
         });
 
+        var GRIND_I18N = {
+          en: {
+            "col.grind": "Grinding",
+            "col.rankGrind": "Rank / Grinding",
+            "grind.inc": "Increase grinding",
+            "grind.dec": "Decrease grinding",
+            "f.levelGrind": "Level Grinding",
+            "help.levelGrind":
+              "This counter tracks productive grinding hours. At your current Level, resolve the Level gain before recording more hours. The sole lowest-level party member gains 1d2 Levels; otherwise gain 1.",
+            "grind.popupTitle": "Milestone",
+            "grind.ok": "OK",
+            "grind.levelUp": "Congratulations! Your Level has increased!",
+            "grind.levelUpN":
+              "Congratulations! Your Level has increased by {n}!",
+            "grind.rankUp":
+              "Congratulations! Your rank in “{name}” has increased!",
+            "grind.rankUpGeneric": "Congratulations! Your rank has increased!",
+            "adv.title": "Skill Advancement",
+            "adv.thisSkill": "this skill",
+            "adv.prompt":
+              "You have ground “{name}” to its rank. Roll 1d20 for Skill Advancement: on a result equal to or higher than {rank}, it improves. Roll now, then pick the outcome below.",
+            "adv.success": "Success — rank up",
+            "adv.failure": "Failure",
+            "levelup.title": "Level Up",
+            "levelup.prompt":
+              "You have ground enough to gain a Level. Do you want to level up now? Your Level Grinding counter will reset to 0.",
+            "levelup.yes": "Yes — level up",
+            "levelup.solo":
+              "I'm my team's only lowest-level member — gain 1d2 Levels",
+            "levelup.no": "Not yet"
+          },
+          fr: {
+            "col.grind": "Grinding",
+            "col.rankGrind": "Rang / Grinding",
+            "grind.inc": "Augmenter le grinding",
+            "grind.dec": "Diminuer le grinding",
+            "f.levelGrind": "Grinding de niveau",
+            "help.levelGrind":
+              "Ce compteur suit les heures de grinding productives. Quand il atteint votre niveau actuel, résolvez la montée de niveau avant d'ajouter d'autres heures. Le seul membre de plus bas niveau du groupe gagne 1d2 niveaux ; sinon, gagnez-en 1.",
+            "grind.popupTitle": "Palier",
+            "grind.ok": "OK",
+            "grind.levelUp": "Félicitations ! Votre niveau a augmenté !",
+            "grind.levelUpN":
+              "Félicitations ! Votre niveau a augmenté de {n} !",
+            "grind.rankUp":
+              "Félicitations ! Votre rang de « {name} » a augmenté !",
+            "grind.rankUpGeneric": "Félicitations ! Votre rang a augmenté !",
+            "adv.title": "Amélioration de compétence",
+            "adv.thisSkill": "cette compétence",
+            "adv.prompt":
+              "Vous avez grindé « {name} » jusqu’à son rang. Faites un jet de Skill Advancement : un résultat égal ou supérieur à {rank} améliore le rang. Lancez le dé, puis choisissez le résultat ci-dessous.",
+            "adv.success": "Réussi — rang +1",
+            "adv.failure": "Échec",
+            "levelup.title": "Montée de niveau",
+            "levelup.prompt":
+              "Vous avez suffisamment grindé pour monter de niveau. Voulez-vous le faire maintenant ? Votre compteur de Grinding de niveau sera remis à 0.",
+            "levelup.yes": "Oui — monter de niveau",
+            "levelup.solo":
+              "Je suis le seul plus bas niveau de mon équipe — gagner 1d2 niveaux",
+            "levelup.no": "Pas encore"
+          },
+          es: {
+            "col.grind": "Grindeo",
+            "col.rankGrind": "Grado / Grindeo",
+            "grind.inc": "Aumentar el grindeo",
+            "grind.dec": "Reducir el grindeo",
+            "f.levelGrind": "Grindeo de nivel",
+            "help.levelGrind":
+              "Este contador registra las horas productivas de grindeo. Al alcanzar tu nivel actual, resuelve la subida de nivel antes de registrar más horas. El único miembro de menor nivel del grupo gana 1d2 niveles; los demás ganan 1.",
+            "grind.popupTitle": "Hito",
+            "grind.ok": "OK",
+            "grind.levelUp": "¡Felicidades! ¡Tu nivel ha aumentado!",
+            "grind.levelUpN":
+              "¡Felicidades! ¡Tu nivel ha aumentado en {n}!",
+            "grind.rankUp":
+              "¡Felicidades! ¡Tu grado de «{name}» ha aumentado!",
+            "grind.rankUpGeneric": "¡Felicidades! ¡Tu grado ha aumentado!",
+            "adv.title": "Avance de habilidad",
+            "adv.thisSkill": "esta habilidad",
+            "adv.prompt":
+              "Has grindeado «{name}» hasta su grado. Haz una tirada de avance: un resultado igual o superior a {rank} mejora el grado. Lanza el dado y luego elige el resultado abajo.",
+            "adv.success": "Éxito — grado +1",
+            "adv.failure": "Fallo",
+            "levelup.title": "Subir de nivel",
+            "levelup.prompt":
+              "Has grindeado lo suficiente para subir de nivel. ¿Quieres hacerlo ahora? Tu contador de Grindeo de nivel se reiniciará a 0.",
+            "levelup.yes": "Sí — subir de nivel",
+            "levelup.solo":
+              "Soy el único de menor nivel de mi equipo — ganar 1d2 niveles",
+            "levelup.no": "Todavía no"
+          },
+          de: {
+            "col.grind": "Grinding",
+            "col.rankGrind": "Rang / Grinding",
+            "grind.inc": "Grinding erhöhen",
+            "grind.dec": "Grinding verringern",
+            "f.levelGrind": "Stufen-Grinding",
+            "help.levelGrind":
+              "Dieser Zähler erfasst produktive Grinding-Stunden. Sobald er deine aktuelle Stufe erreicht, musst du den Stufenaufstieg abwickeln, bevor du weitere Stunden einträgst. Das einzige Gruppenmitglied mit der niedrigsten Stufe erhält 1W2 Stufen; alle anderen erhalten 1.",
+            "grind.popupTitle": "Meilenstein",
+            "grind.ok": "OK",
+            "grind.levelUp": "Glückwunsch! Deine Stufe ist gestiegen!",
+            "grind.levelUpN":
+              "Glückwunsch! Deine Stufe ist um {n} gestiegen!",
+            "grind.rankUp":
+              "Glückwunsch! Dein Rang von „{name}“ ist gestiegen!",
+            "grind.rankUpGeneric": "Glückwunsch! Dein Rang ist gestiegen!",
+            "adv.title": "Fähigkeitsaufstieg",
+            "adv.thisSkill": "diese Fähigkeit",
+            "adv.prompt":
+              "Du hast „{name}“ bis zu ihrem Rang gegrindet. Wirf 1W20 für den Fähigkeitsaufstieg: ein Ergebnis gleich oder höher als {rank} verbessert den Rang. Wirf jetzt und wähle unten das Ergebnis.",
+            "adv.success": "Erfolg — Rang +1",
+            "adv.failure": "Fehlschlag",
+            "levelup.title": "Stufenaufstieg",
+            "levelup.prompt":
+              "Du hast genug gegrindet, um eine Stufe aufzusteigen. Möchtest du jetzt aufsteigen? Dein Stufen-Grinding-Zähler wird auf 0 zurückgesetzt.",
+            "levelup.yes": "Ja — aufsteigen",
+            "levelup.solo":
+              "Ich bin das einzige niedrigststufige Mitglied meines Teams — 1W2 Stufen",
+            "levelup.no": "Noch nicht"
+          },
+          pt: {
+            "col.grind": "Grinding",
+            "col.rankGrind": "Grau / Grinding",
+            "grind.inc": "Aumentar o grinding",
+            "grind.dec": "Reduzir o grinding",
+            "f.levelGrind": "Grinding de nível",
+            "help.levelGrind":
+              "Este contador regista horas produtivas de grinding. Ao atingir o teu nível atual, resolve a subida de nível antes de registar mais horas. O único membro de nível mais baixo do grupo ganha 1d2 níveis; os restantes ganham 1.",
+            "grind.popupTitle": "Marco",
+            "grind.ok": "OK",
+            "grind.levelUp": "Parabéns! O teu nível aumentou!",
+            "grind.levelUpN":
+              "Parabéns! O teu nível aumentou {n}!",
+            "grind.rankUp":
+              "Parabéns! O teu grau de «{name}» aumentou!",
+            "grind.rankUpGeneric": "Parabéns! O teu grau aumentou!",
+            "adv.title": "Avanço de perícia",
+            "adv.thisSkill": "esta perícia",
+            "adv.prompt":
+              "Fizeste grinding de «{name}» até ao seu grau. Faz um teste de avanço: um resultado igual ou superior a {rank} melhora o grau. Lança o dado e depois escolhe o resultado abaixo.",
+            "adv.success": "Sucesso — grau +1",
+            "adv.failure": "Falha",
+            "levelup.title": "Subir de nível",
+            "levelup.prompt":
+              "Fizeste grinding suficiente para subir de nível. Queres fazê-lo agora? O teu contador de Grinding de nível será reposto a 0.",
+            "levelup.yes": "Sim — subir de nível",
+            "levelup.solo":
+              "Sou o único membro de nível mais baixo da equipa — ganhar 1d2 níveis",
+            "levelup.no": "Ainda não"
+          }
+        };
+        LANGS.forEach(function (locale) {
+          Object.assign(I18N[locale], GRIND_I18N[locale]);
+        });
+
         var BIO_I18N = {
           en: BIO,
           fr: [
@@ -4716,6 +5111,24 @@
           invCount = 0;
 
         /* ---------------- row templates ---------------- */
+        /* per-row grinding counter: readonly value bumped only by - / + */
+        function grindCellHTML(b) {
+          return (
+            '<div class="grind" data-grind="' +
+            b +
+            '" role="group" data-i18n-aria-label="col.grind" aria-label="Grinding">' +
+            '<button type="button" class="grind-btn" data-grind-step="-1" ' +
+            'data-i18n-title="grind.dec" data-i18n-aria-label="grind.dec" ' +
+            'title="Decrease grinding" aria-label="Decrease grinding">−</button>' +
+            '<input class="grind-val" data-k="' +
+            b +
+            'grind" value="0" readonly tabindex="-1" ' +
+            'data-i18n-aria-label="col.grind" aria-label="Grinding">' +
+            '<button type="button" class="grind-btn" data-grind-step="1" ' +
+            'data-i18n-title="grind.inc" data-i18n-aria-label="grind.inc" ' +
+            'title="Increase grinding" aria-label="Increase grinding">+</button></div>'
+          );
+        }
         var DRAG_HANDLE =
           '<span class="drag-handle" draggable="true" role="button" tabindex="0" ' +
           'data-i18n-title="title.dragRow" data-i18n-aria-label="title.dragRow" ' +
@@ -4733,9 +5146,11 @@
             '<div class="rcell"><span data-i18n="f.name">Name</span><input data-k="' +
             b +
             'name"></div>' +
-            '<div class="rcell"><span data-i18n="col.rank">Rank</span><input data-k="' +
+            '<div class="rcell"><span data-i18n="col.rankGrind">Rank / Grinding</span><input data-k="' +
             b +
-            'rank" class="center"></div>' +
+            'rank" class="center">' +
+            grindCellHTML(b) +
+            "</div>" +
             '<div class="rcell"><span data-i18n="col.range">Range</span><input data-k="' +
             b +
             'range" class="center"></div>' +
@@ -4802,9 +5217,11 @@
             '<div class="rcell"><span data-i18n="f.name">Name</span><input data-k="' +
             b +
             'name"></div>' +
-            '<div class="rcell"><span data-i18n="col.rank">Rank</span><input data-k="' +
+            '<div class="rcell"><span data-i18n="col.rankGrind">Rank / Grinding</span><input data-k="' +
             b +
-            'rank" class="center"></div>' +
+            'rank" class="center">' +
+            grindCellHTML(b) +
+            "</div>" +
             '<div class="rcell"><span data-i18n="col.stat">Stat</span><select data-k="' +
             b +
             'stat">' +
@@ -4854,9 +5271,11 @@
             '<label class="lbl sm spell-name"><span data-i18n="f.name">Name</span><input data-k="' +
             b +
             'name"></label>' +
-            '<label class="lbl sm"><span data-i18n="col.rank">Rank</span><input data-k="' +
+            '<label class="lbl sm spell-rank"><span data-i18n="col.rankGrind">Rank / Grinding</span><input data-k="' +
             b +
-            'rank" class="center" inputmode="numeric"></label>' +
+            'rank" class="center" inputmode="numeric">' +
+            grindCellHTML(b) +
+            "</label>" +
             '<label class="lbl sm spell-type"><span data-i18n="f.spellType">Type / Traits</span><input data-k="' +
             b +
             'type"></label>' +
@@ -5655,6 +6074,17 @@
               var statMod = src ? val("stats." + src.value + ".mod") : "";
               setC(el, String(statMod).trim() === "" ? "" : mod(src.value));
             });
+            var checkTypeEl = q('select[data-k$=".checkType"]');
+            var grindWrap = q(".grind[data-grind]");
+            if (grindWrap) {
+              var noGrind = checkTypeEl && checkTypeEl.value === "Passive";
+              grindWrap.hidden = !!noGrind;
+              if (noGrind) {
+                var gv = q('[data-k$=".grind"]');
+                if (gv && grindInt(gv.value) !== 0) gv.value = "0";
+              }
+            }
+
             var rank = q('[data-k$=".rank"]');
             var hitStat = q('select[data-k$=".hitStat"]');
             var hit = q('[data-c="row.toHit"]');
@@ -5666,6 +6096,10 @@
                 (rank && rank.value) || (hitStat && hitStat.value) ? r + m : "",
               );
             }
+          });
+
+          $$('[data-k$=".grind"]').forEach(function (g) {
+            if (String(g.value).trim() === "") g.value = "0";
           });
 
           renderTokenPreviews();
@@ -5823,6 +6257,287 @@
             if (String(cl).trim() !== "") parts.push(cl);
             s.textContent = parts.join("  /  ");
           }
+        }
+
+        /* ---------------- grinding counters ---------------- */
+        var GRIND_RANK_MAX = 15,
+          GRIND_LEVEL_MAX = 250,
+          grindMsgQueue = [],
+          advPending = null,
+          levelUpPending = false,
+          grindPromptsSuspended = false;
+
+        function grindInt(v) {
+          var n = parseInt(String(v == null ? "" : v).replace(/[^0-9\-]/g, ""), 10);
+          return isFinite(n) ? n : 0;
+        }
+
+        function grindPopup(msg) {
+          grindMsgQueue.push(msg);
+          if (grindMsgQueue.length === 1) grindShowNext();
+        }
+        function grindShowNext() {
+          if (!grindMsgQueue.length) return;
+          var dlg = $("#grindDialog"),
+            body = $("#grindDialogMsg");
+          if (!dlg || !dlg.showModal || !body) {
+            window.alert(grindMsgQueue.shift());
+            grindShowNext();
+            return;
+          }
+          body.textContent = grindMsgQueue[0];
+          if (!dlg.open) dlg.showModal();
+        }
+        function grindDismiss() {
+          var dlg = $("#grindDialog");
+          if (dlg && dlg.open) dlg.close();
+          else {
+            grindMsgQueue.shift();
+            grindShowNext();
+          }
+        }
+
+        function levelGrindingReady() {
+          var gEl = field("identity.grind");
+          var lvlEl = field("identity.level");
+          var levelNum = grindInt(lvlEl && lvlEl.value);
+          return (
+            !!gEl &&
+            levelNum > 0 &&
+            levelNum < GRIND_LEVEL_MAX &&
+            grindInt(gEl.value) >= levelNum
+          );
+        }
+
+        function readyAdvancementBase() {
+          var ready = null;
+          $$(".grind[data-grind]").some(function (wrap) {
+            if (wrap.hidden) return false;
+            var base = wrap.getAttribute("data-grind");
+            var rankEl = field(base + "rank");
+            var grindEl = field(base + "grind");
+            var rank = Math.max(0, grindInt(rankEl && rankEl.value));
+            var threshold = rank < 1 ? 1 : rank;
+            if (
+              rank < GRIND_RANK_MAX &&
+              grindInt(grindEl && grindEl.value) >= threshold
+            ) {
+              ready = base;
+              return true;
+            }
+            return false;
+          });
+          return ready;
+        }
+
+        function promptPendingMilestone(preferredBase) {
+          if (grindPromptsSuspended) return;
+          var notice = $("#grindDialog");
+          if (
+            advPending ||
+            levelUpPending ||
+            (notice && notice.open)
+          )
+            return;
+          var readyBase = preferredBase || readyAdvancementBase();
+          if (readyBase) {
+            advPrompt(readyBase);
+            return;
+          }
+          if (levelGrindingReady()) levelUpPrompt();
+        }
+
+        function clearGrindingPrompts() {
+          grindPromptsSuspended = true;
+          advPending = null;
+          levelUpPending = false;
+          grindMsgQueue = [];
+          ["#advDialog", "#levelUpDialog", "#grindDialog"].forEach(
+            function (selector) {
+              var dialog = $(selector);
+              if (dialog && dialog.open) dialog.close();
+            },
+          );
+          grindPromptsSuspended = false;
+        }
+
+        /* The Level grinding meter climbs once for each newly recorded row
+           hour. At the threshold it stays full until the player resolves the
+           mandatory Level gain; no later hours are silently discarded. */
+        function bumpLevelGrind() {
+          var gEl = field("identity.grind");
+          if (!gEl) return false;
+          var lvlEl = field("identity.level");
+          var levelNum = grindInt(lvlEl && lvlEl.value);
+          if (levelNum < 1) levelNum = 1;
+          if (levelNum >= GRIND_LEVEL_MAX) return false;
+          var g = grindInt(gEl.value) + 1;
+          if (g >= levelNum) g = levelNum;
+          gEl.value = String(g);
+          return g >= levelNum;
+        }
+
+        /* stepping a row grind down with the − button also walks the Level
+           grinding meter back by 1 (never below 0). */
+        function dropLevelGrind() {
+          var gEl = field("identity.grind");
+          if (!gEl) return;
+          var g = grindInt(gEl.value);
+          if (g > 0) gEl.value = String(g - 1);
+        }
+
+        /* enough grinding accumulated: confirm the Level gain. Accepting bumps
+           the Level and resets the meter; declining leaves everything as-is. */
+        function levelUpPrompt() {
+          if (levelUpPending) return;
+          levelUpPending = true;
+          var msg = t("levelup.prompt");
+          var dlg = $("#levelUpDialog"),
+            body = $("#levelUpDialogMsg");
+          if (!dlg || !dlg.showModal || !body) {
+            levelUpResolve(window.confirm(msg) ? "yes" : "no");
+            return;
+          }
+          body.textContent = msg;
+          if (!dlg.open) dlg.showModal();
+        }
+
+        function levelUpResolve(result) {
+          if (!levelUpPending) return;
+          levelUpPending = false;
+          var dlg = $("#levelUpDialog");
+          if (dlg && dlg.open) dlg.close();
+          if (result === "yes" || result === "solo") {
+            /* "solo" = sole lowest-level member of the party: 1d2 Levels */
+            var roll = result === "solo" ? 1 + Math.floor(Math.random() * 2) : 1;
+            var lvlEl = field("identity.level");
+            var levelNum = grindInt(lvlEl && lvlEl.value);
+            if (levelNum < 1) levelNum = 1;
+            var newLevel = Math.min(levelNum + roll, GRIND_LEVEL_MAX);
+            var gained = newLevel - levelNum;
+            if (lvlEl) lvlEl.value = String(newLevel);
+            var gEl = field("identity.grind");
+            if (gEl) gEl.value = "0";
+            grindPopup(
+              gained > 1
+                ? t("grind.levelUpN").replace("{n}", String(gained))
+                : t("grind.levelUp"),
+            );
+          }
+          recompute();
+          header();
+          save();
+        }
+
+        function bumpRowGrind(base, step) {
+          var gEl = field(base + "grind");
+          if (!gEl) return;
+          var g = grindInt(gEl.value);
+          if (step < 0) {
+            if (g > 0) {
+              gEl.value = String(g - 1);
+              dropLevelGrind();
+              if (advPending === base) {
+                advPending = null;
+                var pendingDialog = $("#advDialog");
+                if (pendingDialog && pendingDialog.open) pendingDialog.close();
+              }
+            }
+            recompute();
+            header();
+            save();
+            return;
+          }
+          /* A full Skill or Level track must be resolved before another hour
+             can be recorded. Reopen the pending prompt without double-counting. */
+          if (advPending) {
+            advPrompt(advPending);
+            return;
+          }
+          var readyBase = readyAdvancementBase();
+          if (readyBase) {
+            advPrompt(readyBase);
+            return;
+          }
+          if (levelUpPending || levelGrindingReady()) {
+            levelUpPrompt();
+            return;
+          }
+          var rankEl = field(base + "rank");
+          var baseRank = Math.max(0, grindInt(rankEl && rankEl.value));
+          var threshold = baseRank < 1 ? 1 : baseRank;
+          if (baseRank >= GRIND_RANK_MAX) {
+            /* Rank 15 is the current Tutorial Floor cap. */
+            return;
+          }
+          g += 1;
+          var levelReady = bumpLevelGrind();
+          if (g >= threshold) {
+            /* track is full: hold it there and prompt for the advancement roll.
+               Only a successful roll increases the rank. */
+            g = threshold;
+            gEl.value = String(g);
+            recompute();
+            header();
+            save();
+            advPrompt(base);
+            return;
+          }
+          gEl.value = String(g);
+          recompute();
+          header();
+          save();
+          if (levelReady) levelUpPrompt();
+        }
+
+        /* skill advancement roll: the player rolls 1d20 physically and reports
+           the outcome. Success raises the rank and resets the track; failure
+           just resets the track. */
+        function advPrompt(base) {
+          advPending = base;
+          var rankEl = field(base + "rank");
+          var rankNum = Math.max(0, grindInt(rankEl && rankEl.value));
+          var nameEl = field(base + "name");
+          var nm = String((nameEl && nameEl.value) || "").trim() ||
+            t("adv.thisSkill");
+          var msg = t("adv.prompt")
+            .replace("{name}", nm)
+            .replace("{rank}", String(rankNum));
+          var dlg = $("#advDialog"),
+            body = $("#advDialogMsg");
+          if (!dlg || !dlg.showModal || !body) {
+            advResolve(window.confirm(msg) ? "success" : "failure");
+            return;
+          }
+          body.textContent = msg;
+          if (!dlg.open) dlg.showModal();
+        }
+
+        function advResolve(result) {
+          var base = advPending;
+          advPending = null;
+          var dlg = $("#advDialog");
+          if (dlg && dlg.open) dlg.close();
+          if (!base) return;
+          var gEl = field(base + "grind");
+          if (gEl) gEl.value = "0";
+          if (result === "success") {
+            var rankEl = field(base + "rank");
+            var baseRank = Math.max(0, grindInt(rankEl && rankEl.value));
+            if (rankEl)
+              rankEl.value = String(Math.min(baseRank + 1, GRIND_RANK_MAX));
+            var nameEl = field(base + "name");
+            var nm = String((nameEl && nameEl.value) || "").trim();
+            grindPopup(
+              nm
+                ? t("grind.rankUp").replace("{name}", nm)
+                : t("grind.rankUpGeneric"),
+            );
+          }
+          recompute();
+          header();
+          save();
+          promptPendingMilestone();
         }
 
         /* ---------------- persistence ---------------- */
@@ -6087,6 +6802,7 @@
         }
 
         function loadSheetData(d) {
+          clearGrindingPrompts();
           d = d || blankSheetData("");
           var flat = migrateLinkedIdentity(
             migrateLegacyAttacks(d.fields || {}),
@@ -6494,6 +7210,7 @@
 
         function resetAll() {
           if (!window.confirm(t("confirm.reset"))) return;
+          clearGrindingPrompts();
           fields().forEach(function (el) {
             if (el.type === "checkbox") el.checked = false;
             else el.value = "";
@@ -6512,6 +7229,9 @@
         /* ---------------- printing ---------------- */
         function hasPrintValue(root) {
           return $$("[data-k]", root).some(function (el) {
+            var key = el.getAttribute("data-k") || "";
+            /* grinding counters default to "0" — never treat them as content */
+            if (key.slice(-5) === "grind") return false;
             return el.type === "checkbox"
               ? el.checked
               : String(el.value || "").trim() !== "";
@@ -6580,11 +7300,34 @@
             ".skill-details, .spell-details, .companion-details, .attack-details, .inv-details",
           ).forEach(function (details) {
             var toggle = $('[aria-controls="' + details.id + '"]');
+            /* attacks / inventory: open the details whenever the row itself has
+               any data, not only when the detail fields are filled. */
+            var entry = details.closest(".attack-entry, .inv-entry");
             if (
               hasPrintValue(details) ||
-              (toggle && toggle.getAttribute("aria-expanded") === "true")
+              (toggle && toggle.getAttribute("aria-expanded") === "true") ||
+              (entry && hasPrintValue(entry))
             )
               details.setAttribute("data-print-open", "true");
+          });
+
+          /* shorten the "Rank / Grinding" label for print (the counter prints
+             inline beside the rank as "11 (5)"). */
+          $$('[data-i18n="col.rankGrind"]').forEach(function (span) {
+            span.setAttribute("data-print-label", span.textContent);
+            span.textContent = t("col.rank");
+          });
+
+          /* on kept blank rows there is no rank — don't print a stray "(0)". */
+          $$(".grind[data-grind]").forEach(function (g) {
+            var rank =
+              g.parentElement &&
+              g.parentElement.querySelector('input[data-k$=".rank"]');
+            var gv = g.querySelector(".grind-val");
+            var blank =
+              (!rank || String(rank.value).trim() === "") &&
+              (!gv || grindInt(gv.value) === 0);
+            if (blank) g.setAttribute("data-print-hide", "true");
           });
         }
 
@@ -6598,6 +7341,7 @@
 
         function cleanupPrint() {
           document.body.classList.remove("print-all", "print-current");
+          restorePrintTokens();
           $$("[data-print-hide]").forEach(function (el) {
             el.removeAttribute("data-print-hide");
           });
@@ -6608,6 +7352,36 @@
             el.style.height = el.getAttribute("data-print-height");
             el.removeAttribute("data-print-height");
           });
+          $$("[data-print-label]").forEach(function (span) {
+            span.textContent = span.getAttribute("data-print-label");
+            span.removeAttribute("data-print-label");
+          });
+        }
+
+        /* Print with %TOKENS resolved to their live values. The raw text (kept in
+           the field, localStorage and JSON export) is stashed and restored after. */
+        function applyPrintTokens() {
+          $$("textarea[data-k]").forEach(function (ta) {
+            if (ta.hasAttribute("data-print-raw")) return;
+            var raw = ta.value;
+            if (raw.indexOf("%") < 0 || !/%[A-Z][A-Z0-9_]*/.test(raw)) return;
+            var resolved = raw.replace(TOKEN_RE, function (whole, name) {
+              if (!Object.prototype.hasOwnProperty.call(TOKEN_MAP, name))
+                return whole;
+              var v = String(TOKEN_MAP[name]());
+              return v === "" ? whole : v;
+            });
+            if (resolved === raw) return;
+            ta.setAttribute("data-print-raw", raw);
+            ta.value = resolved;
+          });
+        }
+
+        function restorePrintTokens() {
+          $$("textarea[data-print-raw]").forEach(function (ta) {
+            ta.value = ta.getAttribute("data-print-raw");
+            ta.removeAttribute("data-print-raw");
+          });
         }
 
         function startPrint(mode) {
@@ -6615,6 +7389,7 @@
           if (dialog && dialog.open) dialog.close();
           preparePrint(mode);
           setTimeout(function () {
+            applyPrintTokens();
             expandPrintTextareas();
             window.print();
           }, 50);
@@ -7115,6 +7890,34 @@
               if (vaultDialog && vaultDialog.open) vaultDialog.close();
               return;
             }
+            var grindStep = target.closest("[data-grind-step]");
+            if (grindStep) {
+              var grindWrap = grindStep.closest("[data-grind]");
+              if (grindWrap)
+                bumpRowGrind(
+                  grindWrap.getAttribute("data-grind"),
+                  parseInt(grindStep.getAttribute("data-grind-step"), 10),
+                );
+              return;
+            }
+            if (target.closest("[data-grind-close]")) {
+              grindDismiss();
+              return;
+            }
+            var advBtn = target.closest("[data-adv-result]");
+            if (advBtn) {
+              advResolve(advBtn.getAttribute("data-adv-result"));
+              return;
+            }
+            var levelUpBtn = target.closest("[data-levelup-result]");
+            if (levelUpBtn) {
+              levelUpResolve(levelUpBtn.getAttribute("data-levelup-result"));
+              return;
+            }
+            if (target.closest("[data-grind-info]")) {
+              grindPopup(t("help.levelGrind"));
+              return;
+            }
             var act = target.closest("[data-act]");
             if (!act) return;
             if (act.getAttribute("data-act") === "help") {
@@ -7143,6 +7946,28 @@
             e.target.value = "";
           });
 
+          var grindDialogEl = $("#grindDialog");
+          if (grindDialogEl)
+            grindDialogEl.addEventListener("close", function () {
+              grindMsgQueue.shift();
+              if (grindMsgQueue.length) setTimeout(grindShowNext, 160);
+              else promptPendingMilestone();
+            });
+
+          var advDialogEl = $("#advDialog");
+          if (advDialogEl)
+            advDialogEl.addEventListener("close", function () {
+              /* Escape postpones resolution. Keep the pending Skill so its
+                 full track cannot be counted a second time. */
+            });
+
+          var levelUpDialogEl = $("#levelUpDialog");
+          if (levelUpDialogEl)
+            levelUpDialogEl.addEventListener("close", function () {
+              /* dismissed with Escape — meter stays full, no Level change */
+              levelUpPending = false;
+            });
+
           var imgFile = $("#imgFile");
           if (imgFile)
             imgFile.addEventListener("change", function (e) {
@@ -7168,6 +7993,21 @@
 
           wireImageBoxes();
           window.addEventListener("afterprint", cleanupPrint);
+
+          /* Printing is always done in the light theme, whatever the screen
+             theme is — covers both the print dialog and a plain Ctrl+P. */
+          var printThemeSaved = null;
+          window.addEventListener("beforeprint", function () {
+            var root = document.documentElement;
+            printThemeSaved = root.getAttribute("data-theme");
+            root.setAttribute("data-theme", "light");
+            applyPrintTokens();
+          });
+          window.addEventListener("afterprint", function () {
+            if (printThemeSaved == null) return;
+            document.documentElement.setAttribute("data-theme", printThemeSaved);
+            printThemeSaved = null;
+          });
         }
 
         /* ---------------- init ---------------- */

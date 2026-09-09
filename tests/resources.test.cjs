@@ -25,12 +25,20 @@ function sheet(t, storage = {}) {
       w.URL.revokeObjectURL = () => {};
       w.HTMLAnchorElement.prototype.click = function () {};
       w.print = () => {
+        w.dispatchEvent(new w.Event('beforeprint'));
         printState = {
           body: w.document.body.className,
           health: w.document.querySelector('[data-k="hp.100.hp"]').value,
           mana: w.document.querySelector('[data-k="mana.max"]').value,
           summary: w.document.querySelector('#healthAdjustmentSummary').textContent,
-          expanded: w.document.querySelectorAll('[data-print-open]').length
+          expanded: w.document.querySelectorAll('[data-print-open]').length,
+          theme: w.document.documentElement.getAttribute('data-theme'),
+          skillDescription: w.document.querySelector('[data-k="skills.0.description"]').value,
+          visibleRows: Object.fromEntries(['attacks', 'skills', 'spells'].map(prefix => [
+            prefix,
+            [...w.document.querySelectorAll(`[data-row^="${prefix}."]`)]
+              .filter(row => row.getAttribute('data-print-hide') !== 'true').length,
+          ])),
         };
       };
     }
@@ -364,4 +372,96 @@ test('Companion removal compacts records and old saves receive one blank pet row
   assert.equal(s.d.querySelectorAll('.companion-entry').length, 1);
   assert.equal(s.value('companions.0.type'), 'pet');
   assert.equal(s.value('companions.0.name'), '');
+});
+
+test('Grinding waits for an equal-or-higher Skill Advancement result without double-counting', t => {
+  const s = sheet(t);
+  s.set('identity.level', 10);
+  s.set('skills.0.name', 'Test Skill');
+  s.set('skills.0.rank', 2);
+
+  s.click('[data-grind="skills.0."] [data-grind-step="1"]');
+  assert.equal(s.value('skills.0.grind'), '1');
+  assert.equal(s.value('identity.grind'), '1');
+  assert.equal(s.d.querySelector('#advDialog').open, false);
+
+  s.click('[data-grind="skills.0."] [data-grind-step="1"]');
+  assert.equal(s.value('skills.0.grind'), '2');
+  assert.equal(s.value('identity.grind'), '2');
+  assert.equal(s.value('skills.0.rank'), '2');
+  assert.equal(s.d.querySelector('#advDialog').open, true);
+  assert.match(s.d.querySelector('#advDialogMsg').textContent, /equal to or higher than 2/);
+
+  const dialog = s.d.querySelector('#advDialog');
+  dialog.close();
+  dialog.dispatchEvent(new s.w.Event('close'));
+  s.click('[data-grind="skills.0."] [data-grind-step="1"]');
+  assert.equal(s.value('skills.0.grind'), '2', 'full Skill track remains capped');
+  assert.equal(s.value('identity.grind'), '2', 'reopening does not count another hour');
+  assert.equal(dialog.open, true);
+
+  s.click('[data-adv-result="success"]');
+  assert.equal(s.value('skills.0.rank'), '3');
+  assert.equal(s.value('skills.0.grind'), '0');
+  assert.equal(s.value('identity.grind'), '2', 'Skill outcome does not erase Level progress');
+});
+
+test('Grinding queues simultaneous milestones and blocks hours while Level resolution is pending', t => {
+  const s = sheet(t);
+  s.set('identity.level', 1);
+  s.set('skills.0.rank', 1);
+
+  s.click('[data-grind="skills.0."] [data-grind-step="1"]');
+  assert.equal(s.d.querySelector('#advDialog').open, true);
+  assert.equal(s.d.querySelector('#levelUpDialog').open, false, 'only one modal opens at a time');
+
+  s.click('[data-adv-result="failure"]');
+  assert.equal(s.value('skills.0.rank'), '1');
+  assert.equal(s.value('skills.0.grind'), '0');
+  assert.equal(s.d.querySelector('#levelUpDialog').open, true, 'Level prompt follows Skill resolution');
+
+  s.click('[data-levelup-result="no"]');
+  s.click('[data-grind="skills.0."] [data-grind-step="1"]');
+  assert.equal(s.value('skills.0.grind'), '0', 'new row hour is not accepted while Level is pending');
+  assert.equal(s.value('identity.grind'), '1', 'full Level meter does not discard or invent hours');
+  assert.equal(s.d.querySelector('#levelUpDialog').open, true, 'pending Level prompt reopens');
+
+  s.w.Math.random = () => 0.999;
+  s.click('[data-levelup-result="solo"]');
+  assert.equal(s.value('identity.level'), '3');
+  assert.equal(s.value('identity.grind'), '0');
+});
+
+test('Grinding decrement, Passive Skills and the Rank 15 cap remain bounded', t => {
+  const s = sheet(t);
+  s.set('identity.level', 10);
+  s.set('skills.0.rank', 2);
+  s.click('[data-grind="skills.0."] [data-grind-step="1"]');
+  s.click('[data-grind="skills.0."] [data-grind-step="-1"]');
+  assert.equal(s.value('skills.0.grind'), '0');
+  assert.equal(s.value('identity.grind'), '0');
+
+  s.set('skills.0.checkType', 'Passive');
+  assert.equal(s.d.querySelector('[data-grind="skills.0."]').hidden, true);
+
+  s.set('attacks.0.rank', 15);
+  s.click('[data-grind="attacks.0."] [data-grind-step="1"]');
+  assert.equal(s.value('attacks.0.grind'), '0');
+  assert.equal(s.value('identity.grind'), '0');
+});
+
+test('Printing trims zero-only grinding rows, resolves tokens, and restores screen state', t => {
+  const s = sheet(t);
+  s.d.documentElement.setAttribute('data-theme', 'dark');
+  s.set('skills.0.description', 'Current Level: %LVL');
+  const printed = s.print('all');
+  assert.equal(printed.theme, 'light');
+  assert.equal(printed.skillDescription, 'Current Level: 1');
+  assert.deepEqual(printed.visibleRows, { attacks: 4, skills: 9, spells: 4 });
+
+  s.w.dispatchEvent(new s.w.Event('afterprint'));
+  assert.equal(s.value('skills.0.description'), 'Current Level: %LVL');
+  assert.equal(s.d.documentElement.getAttribute('data-theme'), 'dark');
+  const css = s.d.querySelector('style').textContent;
+  assert.match(css, /@media print[\s\S]*\.grind-btn,[\s\S]*display: none !important/);
 });
