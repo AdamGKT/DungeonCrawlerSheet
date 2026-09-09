@@ -33,6 +33,19 @@ automatically in that browser, and nothing ever leaves your machine.
   screens and in print.
 - **Expandable Skill details** — every Skill row has multiline Description,
   Rank Upgrades and Extended Notes fields without making the play view wider.
+- **Live values in text fields** — type a `%` code (for example `%STR_MOD`,
+  `%DR_TOTAL`, `%EVADE`, `%LVL`, `%MANA_CUR`, `%MOVE`) in any description, notes
+  or journal field and it shows the current value as a coloured chip while the
+  field is not focused. Your text stays fully editable and is saved, exported and
+  printed exactly as typed; empty values are dimmed and unknown codes show in
+  red. The header **?** button opens a Help dialog listing every code.
+- **Grinding counters** — every Attacks, Skills and Spells row has a −/+ grinding
+  tally beside its Rank. Each `+` counts toward the row's current Rank; reaching
+  it resets the tally to 0 and raises the Rank by one (up to 20). Every `+` also
+  advances the Identity **Level Grinding** meter; reaching the crawler's current
+  Level resets it and raises Level by one (up to 250). A milestone popup
+  announces each Rank or Level gain. The tallies are read-only apart from the
+  buttons and travel with autosave, Vault operations and JSON import/export.
 - **Dedicated Spell register** — record each Spell's type, Mana Cost, range,
   duration and cooldown, with expandable effect details, limitations, upgrades
   and notes.
@@ -71,7 +84,10 @@ automatically in that browser, and nothing ever leaves your machine.
   Level 10 setup procedure. The current Level cap is 250. Level gains on Floor 3
   or deeper award 3 Stat points, which may remain undistributed until a saferoom;
   they do not directly raise Skill Ranks. This sheet leaves advancement
-  application manual.
+  application manual. **Level Grinding** is a read-only meter that climbs by one
+  each time any Attack, Skill or Spell row is ground up (see the Grinding
+  counters feature); when it reaches the current Level it rolls over to 0 and
+  raises Level by one, up to the Level 250 cap.
 - **Mana** — Current Mana is tracked manually; Max Mana equals the crawler's
   current Enhanced Intelligence Stat by default. Optional adjustments allow a
   bonus or a fixed maximum (including zero); a fixed maximum replaces the normal
@@ -116,7 +132,9 @@ automatically in that browser, and nothing ever leaves your machine.
 ### Attacks
 Starts with 20 rows, add more as needed: Name, Rank, Hit Stat, **To Hit** (auto =
 Rank + Hit Stat Mod), Damage Dice, Damage Stat, Damage Mod and Effects. Hit Stat
-and Damage Stat are independent; damage is Damage Dice + Damage Stat Mod.
+and Damage Stat are independent; damage is Damage Dice + Damage Stat Mod. The
+Rank column also carries a −/+ grinding tally that raises the Rank automatically
+once it reaches the current Rank value.
 
 ### Damage and mitigation
 DR Total is Armor + DR Buffs, and DR reduces incoming damage first. The official
@@ -137,13 +155,15 @@ Necrotic, Piercing, Poison, Psychic, Slashing and Sonic.
 Starts with 24 rows, add more as needed: Skill Advancement mark, Name, Rank,
 Stat, automatically derived **Stat Mod**, Check Type (Unopposed / Opposed /
 Passive / Evade) and Notes & Upgrades. Rank is tracked separately from Stat Mod.
-Use a row's **Details** button for a full Skill description, Rank Upgrades and
-extended or homebrew notes.
+The Rank column carries a −/+ grinding tally that raises the Rank automatically
+once it reaches the current Rank value. Use a row's **Details** button for a full
+Skill description, Rank Upgrades and extended or homebrew notes.
 
 ### Spells
 Starts with 8 rows, add more as needed: Name, Rank, Type / Traits, **Mana Cost**,
-Range, Duration and Cooldown. Mana Cost is a text field because a Spell may have
-a fixed, variable or no Mana cost. Use a row's **Details** button for
+Range, Duration and Cooldown. The Rank column carries a −/+ grinding tally that
+raises the Rank automatically once it reaches the current Rank value. Mana Cost
+is a text field because a Spell may have a fixed, variable or no Mana cost. Use a row's **Details** button for
 Description / Effect, Base Damage / Healing, Limitations / Targeting, Rank
 Upgrades and Additional Notes. Spells remain Skills mechanically; the separate
 tab is a reference area for Spell-specific information. A Spell must also be
@@ -202,6 +222,7 @@ GitHub Pages, Netlify, a USB stick, a local folder.
 
 | Button | Action |
 | --- | --- |
+| ? (Help) | Open the Help dialog listing the `%` codes usable in text fields. |
 | Language selector | Switch the interface language. |
 | Dark / Light | Toggle the colour theme. |
 | Import | Load a previously exported `*-sheet.json` file as a new Vault crawler. |
@@ -236,6 +257,9 @@ GitHub Pages, Netlify, a USB stick, a local folder.
   older saves without those keys open with 8 blank Spell rows and one blank Pet
   entry. Version 1 attacks with a single `statA` remain
   compatible and initialize both Hit Stat and Damage Stat from that value.
+  Grinding tallies are stored per row (`*.grind`) and as `identity.grind`; saves
+  without them open at 0. `%` codes in text fields are stored as the raw text, so
+  no schema change is involved.
 
 ## Development checks
 

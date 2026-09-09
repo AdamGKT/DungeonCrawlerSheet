@@ -710,10 +710,10 @@
         color: var(--acc);
       }
       .cols-attacks {
-        grid-template-columns: var(--drag-col) 34px 1.8fr 0.55fr 0.8fr 0.8fr 0.7fr 0.75fr 0.8fr 0.6fr 0.9fr 1.6fr;
+        grid-template-columns: var(--drag-col) 34px 1.7fr 0.82fr 0.8fr 0.8fr 0.7fr 0.75fr 0.8fr 0.6fr 0.9fr 1.6fr;
       }
       .cols-skills {
-        grid-template-columns: var(--drag-col) 34px 1.6fr 0.6fr 0.85fr 0.55fr 1fr 2.2fr;
+        grid-template-columns: var(--drag-col) 34px 1.55fr 0.88fr 0.85fr 0.55fr 1fr 2.1fr;
       }
       /* drag-to-reorder handle (attacks / skills / spells / inventory rows) */
       .drag-handle {
@@ -768,6 +768,84 @@
       }
       .rcell-check {
         justify-items: center;
+      }
+      /* ---------- grinding counters ---------- */
+      .grind {
+        display: flex;
+        align-items: center;
+        gap: 3px;
+        margin-top: 2px;
+      }
+      .grind-btn {
+        flex: 0 0 auto;
+        width: 20px;
+        height: 20px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        padding: 0;
+        border: 1px solid var(--line);
+        background: var(--paper-2);
+        color: var(--ink);
+        font-family: var(--f-mono);
+        font-size: 14px;
+        line-height: 1;
+        cursor: pointer;
+        border-radius: 3px;
+      }
+      .grind-btn:hover {
+        border-color: var(--acc);
+        color: var(--acc);
+      }
+      .grind-btn:focus-visible {
+        outline: 2px solid var(--acc);
+        outline-offset: 1px;
+      }
+      input.grind-val {
+        flex: 1 1 auto;
+        width: 100%;
+        min-width: 0;
+        min-height: 22px;
+        padding: 2px 4px;
+        text-align: center;
+        border: 1px solid var(--line);
+        border-radius: 3px;
+        background: var(--paper);
+        color: var(--muted);
+        font-size: 12px;
+      }
+      .info-dot {
+        flex: 0 0 auto;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 14px;
+        height: 14px;
+        padding: 0;
+        margin-left: 5px;
+        border: 1px solid currentColor;
+        border-radius: 50%;
+        background: transparent;
+        color: var(--muted);
+        font-family: var(--f-disp);
+        font-size: 9px;
+        line-height: 1;
+        cursor: help;
+        vertical-align: middle;
+      }
+      .info-dot:hover,
+      .info-dot:focus-visible {
+        color: var(--acc);
+      }
+      .grind-msg {
+        margin: 6px 0 4px;
+        font-family: var(--f-mono);
+        font-size: 14px;
+        line-height: 1.5;
+        color: var(--ink);
+      }
+      #grindDialog .print-dialog-actions .btn {
+        grid-column: 1 / -1;
       }
       .skill-entry + .skill-entry {
         margin-top: 4px;
@@ -904,7 +982,7 @@
       .spell-summary {
         display: grid;
         grid-template-columns:
-          var(--drag-col-spell) 34px minmax(150px, 1.6fr) minmax(52px, 0.45fr)
+          var(--drag-col-spell) 34px minmax(150px, 1.6fr) minmax(74px, 0.6fr)
           minmax(110px, 1fr) minmax(82px, 0.65fr)
           minmax(88px, 0.75fr) minmax(105px, 0.9fr)
           minmax(105px, 0.9fr) auto;
@@ -948,7 +1026,7 @@
          keeps the stacked per-field labels on tablet / mobile (<= 900px) */
       .cols-spells {
         grid-template-columns:
-          var(--drag-col-spell) 34px minmax(150px, 1.6fr) minmax(52px, 0.45fr)
+          var(--drag-col-spell) 34px minmax(150px, 1.6fr) minmax(74px, 0.6fr)
           minmax(110px, 1fr) minmax(82px, 0.65fr)
           minmax(88px, 0.75fr) minmax(105px, 0.9fr)
           minmax(105px, 0.9fr) auto;
@@ -2012,6 +2090,27 @@
                     aria-label="Tutorial crawlers start at Level 1. Current Level limit: 250. Level gains may award Stat points; apply advancement manually."
                 /></label>
                 <label class="lbl"
+                  ><span
+                    ><span data-i18n="f.levelGrind">Level Grinding</span
+                    ><button
+                      type="button"
+                      class="info-dot"
+                      data-grind-info
+                      data-i18n-title="help.levelGrind"
+                      data-i18n-aria-label="help.levelGrind"
+                      title="This counter rises each time you grind a skill, spell, or attack. When it reaches your Level, it resets to 0 and your Level goes up by 1."
+                    >i</button
+                    ></span
+                  ><input
+                    data-k="identity.grind"
+                    class="grind-val"
+                    value="0"
+                    readonly
+                    tabindex="-1"
+                    data-i18n-aria-label="f.levelGrind"
+                    aria-label="Level Grinding"
+                /></label>
+                <label class="lbl"
                   ><span data-i18n="f.crawlerNumber">Crawler Number</span
                   ><input data-k="identity.crawlerNumber"
                 /></label>
@@ -2296,7 +2395,7 @@
                   aria-label="Mark this row"
                   >✔</span
                 ><span data-i18n="f.name">Name</span
-                ><span data-i18n="col.rank">Rank</span
+                ><span data-i18n="col.rankGrind">Rank / Grinding</span
                 ><span data-i18n="col.range">Range</span
                 ><span data-i18n="col.hitStat">Hit Stat</span
                 ><span class="acc" data-i18n="col.toHit">To Hit</span
@@ -2346,7 +2445,7 @@
                   aria-label="Mark for Skill Advancement"
                   >✔</span
                 ><span data-i18n="f.name">Name</span
-                ><span data-i18n="col.rank">Rank</span
+                ><span data-i18n="col.rankGrind">Rank / Grinding</span
                 ><span data-i18n="col.stat">Stat</span
                 ><span data-i18n="col.statMod">Stat Mod</span
                 ><span data-i18n="col.check">Check Type</span
@@ -2394,7 +2493,7 @@
                 >✔</span
               >
               <span data-i18n="f.name">Name</span>
-              <span data-i18n="col.rank">Rank</span>
+              <span data-i18n="col.rankGrind">Rank / Grinding</span>
               <span data-i18n="f.spellType">Type / Traits</span>
               <span data-i18n="f.manaCost">Mana Cost</span>
               <span data-i18n="f.range">Range</span>
@@ -2696,6 +2795,23 @@
             data-i18n="print.cancel"
           >
             Cancel
+          </button>
+        </div>
+      </div>
+    </dialog>
+
+    <dialog class="print-dialog" id="grindDialog">
+      <div class="print-dialog-body">
+        <div class="chip" data-i18n="grind.popupTitle">Milestone</div>
+        <p class="grind-msg" id="grindDialogMsg"></p>
+        <div class="print-dialog-actions">
+          <button
+            class="btn primary"
+            type="button"
+            data-grind-close
+            data-i18n="grind.ok"
+          >
+            OK
           </button>
         </div>
       </div>
@@ -4363,6 +4479,87 @@
           Object.assign(I18N[locale], RESOURCE_I18N[locale]);
         });
 
+        var GRIND_I18N = {
+          en: {
+            "col.grind": "Grinding",
+            "col.rankGrind": "Rank / Grinding",
+            "grind.inc": "Increase grinding",
+            "grind.dec": "Decrease grinding",
+            "f.levelGrind": "Level Grinding",
+            "help.levelGrind":
+              "This counter rises each time you grind a skill, spell, or attack. When it reaches your Level, it resets to 0 and your Level goes up by 1.",
+            "grind.popupTitle": "Milestone",
+            "grind.ok": "OK",
+            "grind.levelUp": "Congratulations! Your Level has increased!",
+            "grind.rankUp":
+              "Congratulations! Your rank in “{name}” has increased!",
+            "grind.rankUpGeneric": "Congratulations! Your rank has increased!"
+          },
+          fr: {
+            "col.grind": "Grinding",
+            "col.rankGrind": "Rang / Grinding",
+            "grind.inc": "Augmenter le grinding",
+            "grind.dec": "Diminuer le grinding",
+            "f.levelGrind": "Grinding de niveau",
+            "help.levelGrind":
+              "Ce compteur augmente chaque fois que vous grindez une compétence, un sort ou une attaque. Quand il atteint votre niveau, il revient à 0 et votre niveau augmente de 1.",
+            "grind.popupTitle": "Palier",
+            "grind.ok": "OK",
+            "grind.levelUp": "Félicitations ! Votre niveau a augmenté !",
+            "grind.rankUp":
+              "Félicitations ! Votre rang de « {name} » a augmenté !",
+            "grind.rankUpGeneric": "Félicitations ! Votre rang a augmenté !"
+          },
+          es: {
+            "col.grind": "Grindeo",
+            "col.rankGrind": "Grado / Grindeo",
+            "grind.inc": "Aumentar el grindeo",
+            "grind.dec": "Reducir el grindeo",
+            "f.levelGrind": "Grindeo de nivel",
+            "help.levelGrind":
+              "Este contador sube cada vez que grindeas una habilidad, un hechizo o un ataque. Cuando alcanza tu nivel, vuelve a 0 y tu nivel sube en 1.",
+            "grind.popupTitle": "Hito",
+            "grind.ok": "OK",
+            "grind.levelUp": "¡Felicidades! ¡Tu nivel ha aumentado!",
+            "grind.rankUp":
+              "¡Felicidades! ¡Tu grado de «{name}» ha aumentado!",
+            "grind.rankUpGeneric": "¡Felicidades! ¡Tu grado ha aumentado!"
+          },
+          de: {
+            "col.grind": "Grinding",
+            "col.rankGrind": "Rang / Grinding",
+            "grind.inc": "Grinding erhöhen",
+            "grind.dec": "Grinding verringern",
+            "f.levelGrind": "Stufen-Grinding",
+            "help.levelGrind":
+              "Dieser Zähler steigt jedes Mal, wenn du eine Fähigkeit, einen Zauber oder einen Angriff grindest. Erreicht er deine Stufe, wird er auf 0 zurückgesetzt und deine Stufe steigt um 1.",
+            "grind.popupTitle": "Meilenstein",
+            "grind.ok": "OK",
+            "grind.levelUp": "Glückwunsch! Deine Stufe ist gestiegen!",
+            "grind.rankUp":
+              "Glückwunsch! Dein Rang von „{name}“ ist gestiegen!",
+            "grind.rankUpGeneric": "Glückwunsch! Dein Rang ist gestiegen!"
+          },
+          pt: {
+            "col.grind": "Grinding",
+            "col.rankGrind": "Grau / Grinding",
+            "grind.inc": "Aumentar o grinding",
+            "grind.dec": "Reduzir o grinding",
+            "f.levelGrind": "Grinding de nível",
+            "help.levelGrind":
+              "Este contador sobe sempre que fazes grinding de uma perícia, magia ou ataque. Quando atinge o teu nível, volta a 0 e o teu nível sobe 1.",
+            "grind.popupTitle": "Marco",
+            "grind.ok": "OK",
+            "grind.levelUp": "Parabéns! O teu nível aumentou!",
+            "grind.rankUp":
+              "Parabéns! O teu grau de «{name}» aumentou!",
+            "grind.rankUpGeneric": "Parabéns! O teu grau aumentou!"
+          }
+        };
+        LANGS.forEach(function (locale) {
+          Object.assign(I18N[locale], GRIND_I18N[locale]);
+        });
+
         var BIO_I18N = {
           en: BIO,
           fr: [
@@ -4716,6 +4913,24 @@
           invCount = 0;
 
         /* ---------------- row templates ---------------- */
+        /* per-row grinding counter: readonly value bumped only by - / + */
+        function grindCellHTML(b) {
+          return (
+            '<div class="grind" data-grind="' +
+            b +
+            '" role="group" data-i18n-aria-label="col.grind" aria-label="Grinding">' +
+            '<button type="button" class="grind-btn" data-grind-step="-1" ' +
+            'data-i18n-title="grind.dec" data-i18n-aria-label="grind.dec" ' +
+            'title="Decrease grinding" aria-label="Decrease grinding">−</button>' +
+            '<input class="grind-val" data-k="' +
+            b +
+            'grind" value="0" readonly tabindex="-1" ' +
+            'data-i18n-aria-label="col.grind" aria-label="Grinding">' +
+            '<button type="button" class="grind-btn" data-grind-step="1" ' +
+            'data-i18n-title="grind.inc" data-i18n-aria-label="grind.inc" ' +
+            'title="Increase grinding" aria-label="Increase grinding">+</button></div>'
+          );
+        }
         var DRAG_HANDLE =
           '<span class="drag-handle" draggable="true" role="button" tabindex="0" ' +
           'data-i18n-title="title.dragRow" data-i18n-aria-label="title.dragRow" ' +
@@ -4733,9 +4948,11 @@
             '<div class="rcell"><span data-i18n="f.name">Name</span><input data-k="' +
             b +
             'name"></div>' +
-            '<div class="rcell"><span data-i18n="col.rank">Rank</span><input data-k="' +
+            '<div class="rcell"><span data-i18n="col.rankGrind">Rank / Grinding</span><input data-k="' +
             b +
-            'rank" class="center"></div>' +
+            'rank" class="center">' +
+            grindCellHTML(b) +
+            "</div>" +
             '<div class="rcell"><span data-i18n="col.range">Range</span><input data-k="' +
             b +
             'range" class="center"></div>' +
@@ -4802,9 +5019,11 @@
             '<div class="rcell"><span data-i18n="f.name">Name</span><input data-k="' +
             b +
             'name"></div>' +
-            '<div class="rcell"><span data-i18n="col.rank">Rank</span><input data-k="' +
+            '<div class="rcell"><span data-i18n="col.rankGrind">Rank / Grinding</span><input data-k="' +
             b +
-            'rank" class="center"></div>' +
+            'rank" class="center">' +
+            grindCellHTML(b) +
+            "</div>" +
             '<div class="rcell"><span data-i18n="col.stat">Stat</span><select data-k="' +
             b +
             'stat">' +
@@ -4854,9 +5073,11 @@
             '<label class="lbl sm spell-name"><span data-i18n="f.name">Name</span><input data-k="' +
             b +
             'name"></label>' +
-            '<label class="lbl sm"><span data-i18n="col.rank">Rank</span><input data-k="' +
+            '<label class="lbl sm spell-rank"><span data-i18n="col.rankGrind">Rank / Grinding</span><input data-k="' +
             b +
-            'rank" class="center" inputmode="numeric"></label>' +
+            'rank" class="center" inputmode="numeric">' +
+            grindCellHTML(b) +
+            "</label>" +
             '<label class="lbl sm spell-type"><span data-i18n="f.spellType">Type / Traits</span><input data-k="' +
             b +
             'type"></label>' +
@@ -5668,6 +5889,10 @@
             }
           });
 
+          $$('[data-k$=".grind"]').forEach(function (g) {
+            if (String(g.value).trim() === "") g.value = "0";
+          });
+
           renderTokenPreviews();
         }
 
@@ -5823,6 +6048,95 @@
             if (String(cl).trim() !== "") parts.push(cl);
             s.textContent = parts.join("  /  ");
           }
+        }
+
+        /* ---------------- grinding counters ---------------- */
+        var GRIND_RANK_MAX = 20,
+          GRIND_LEVEL_MAX = 250,
+          grindMsgQueue = [];
+
+        function grindInt(v) {
+          var n = parseInt(String(v == null ? "" : v).replace(/[^0-9\-]/g, ""), 10);
+          return isFinite(n) ? n : 0;
+        }
+
+        function grindPopup(msg) {
+          grindMsgQueue.push(msg);
+          if (grindMsgQueue.length === 1) grindShowNext();
+        }
+        function grindShowNext() {
+          if (!grindMsgQueue.length) return;
+          var dlg = $("#grindDialog"),
+            body = $("#grindDialogMsg");
+          if (!dlg || !dlg.showModal || !body) {
+            window.alert(grindMsgQueue.shift());
+            grindShowNext();
+            return;
+          }
+          body.textContent = grindMsgQueue[0];
+          if (!dlg.open) dlg.showModal();
+        }
+        function grindDismiss() {
+          var dlg = $("#grindDialog");
+          if (dlg && dlg.open) dlg.close();
+          else {
+            grindMsgQueue.shift();
+            grindShowNext();
+          }
+        }
+
+        /* the Level grinding meter (readonly) climbs whenever any skill /
+           spell / attack is ground up; reaching the current Level rolls over
+           into a Level gain. */
+        function bumpLevelGrind() {
+          var gEl = field("identity.grind");
+          if (!gEl) return;
+          var lvlEl = field("identity.level");
+          var levelNum = grindInt(lvlEl && lvlEl.value);
+          if (levelNum < 1) levelNum = 1;
+          var g = grindInt(gEl.value) + 1;
+          if (levelNum < GRIND_LEVEL_MAX && g >= levelNum) {
+            g = 0;
+            if (lvlEl) lvlEl.value = String(levelNum + 1);
+            grindPopup(t("grind.levelUp"));
+          }
+          gEl.value = String(g);
+        }
+
+        function bumpRowGrind(base, step) {
+          var gEl = field(base + "grind");
+          if (!gEl) return;
+          var g = grindInt(gEl.value);
+          if (step < 0) {
+            gEl.value = String(Math.max(0, g - 1));
+            recompute();
+            header();
+            save();
+            return;
+          }
+          var rankEl = field(base + "rank");
+          var baseRank = Math.max(0, grindInt(rankEl && rankEl.value));
+          var threshold = baseRank < 1 ? 1 : baseRank;
+          g += 1;
+          if (baseRank >= GRIND_RANK_MAX) {
+            g = Math.min(g, GRIND_RANK_MAX);
+          } else if (g >= threshold) {
+            g = 0;
+            if (rankEl)
+              rankEl.value = String(Math.min(baseRank + 1, GRIND_RANK_MAX));
+            var nameEl = field(base + "name");
+            var nm = String((nameEl && nameEl.value) || "").trim();
+            grindPopup(
+              nm
+                ? t("grind.rankUp").replace("{name}", nm)
+                : t("grind.rankUpGeneric"),
+            );
+          }
+          gEl.value = String(g);
+          bumpLevelGrind();
+          recompute();
+          header();
+          save();
         }
 
         /* ---------------- persistence ---------------- */
@@ -7115,6 +7429,24 @@
               if (vaultDialog && vaultDialog.open) vaultDialog.close();
               return;
             }
+            var grindStep = target.closest("[data-grind-step]");
+            if (grindStep) {
+              var grindWrap = grindStep.closest("[data-grind]");
+              if (grindWrap)
+                bumpRowGrind(
+                  grindWrap.getAttribute("data-grind"),
+                  parseInt(grindStep.getAttribute("data-grind-step"), 10),
+                );
+              return;
+            }
+            if (target.closest("[data-grind-close]")) {
+              grindDismiss();
+              return;
+            }
+            if (target.closest("[data-grind-info]")) {
+              grindPopup(t("help.levelGrind"));
+              return;
+            }
             var act = target.closest("[data-act]");
             if (!act) return;
             if (act.getAttribute("data-act") === "help") {
@@ -7142,6 +7474,13 @@
             importJSON(e.target.files[0]);
             e.target.value = "";
           });
+
+          var grindDialogEl = $("#grindDialog");
+          if (grindDialogEl)
+            grindDialogEl.addEventListener("close", function () {
+              grindMsgQueue.shift();
+              if (grindMsgQueue.length) setTimeout(grindShowNext, 160);
+            });
 
           var imgFile = $("#imgFile");
           if (imgFile)
