@@ -7085,9 +7085,13 @@
             ".skill-details, .spell-details, .companion-details, .attack-details, .inv-details",
           ).forEach(function (details) {
             var toggle = $('[aria-controls="' + details.id + '"]');
+            /* attacks / inventory: open the details whenever the row itself has
+               any data, not only when the detail fields are filled. */
+            var entry = details.closest(".attack-entry, .inv-entry");
             if (
               hasPrintValue(details) ||
-              (toggle && toggle.getAttribute("aria-expanded") === "true")
+              (toggle && toggle.getAttribute("aria-expanded") === "true") ||
+              (entry && hasPrintValue(entry))
             )
               details.setAttribute("data-print-open", "true");
           });
@@ -7733,6 +7737,20 @@
 
           wireImageBoxes();
           window.addEventListener("afterprint", cleanupPrint);
+
+          /* Printing is always done in the light theme, whatever the screen
+             theme is — covers both the print dialog and a plain Ctrl+P. */
+          var printThemeSaved = null;
+          window.addEventListener("beforeprint", function () {
+            var root = document.documentElement;
+            printThemeSaved = root.getAttribute("data-theme");
+            root.setAttribute("data-theme", "light");
+          });
+          window.addEventListener("afterprint", function () {
+            if (printThemeSaved == null) return;
+            document.documentElement.setAttribute("data-theme", printThemeSaved);
+            printThemeSaved = null;
+          });
         }
 
         /* ---------------- init ---------------- */
