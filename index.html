@@ -7263,6 +7263,7 @@
 
         function cleanupPrint() {
           document.body.classList.remove("print-all", "print-current");
+          restorePrintTokens();
           $$("[data-print-hide]").forEach(function (el) {
             el.removeAttribute("data-print-hide");
           });
@@ -7279,11 +7280,38 @@
           });
         }
 
+        /* Print with %TOKENS resolved to their live values. The raw text (kept in
+           the field, localStorage and JSON export) is stashed and restored after. */
+        function applyPrintTokens() {
+          $$("textarea[data-k]").forEach(function (ta) {
+            if (ta.hasAttribute("data-print-raw")) return;
+            var raw = ta.value;
+            if (raw.indexOf("%") < 0 || !/%[A-Z][A-Z0-9_]*/.test(raw)) return;
+            var resolved = raw.replace(TOKEN_RE, function (whole, name) {
+              if (!Object.prototype.hasOwnProperty.call(TOKEN_MAP, name))
+                return whole;
+              var v = String(TOKEN_MAP[name]());
+              return v === "" ? whole : v;
+            });
+            if (resolved === raw) return;
+            ta.setAttribute("data-print-raw", raw);
+            ta.value = resolved;
+          });
+        }
+
+        function restorePrintTokens() {
+          $$("textarea[data-print-raw]").forEach(function (ta) {
+            ta.value = ta.getAttribute("data-print-raw");
+            ta.removeAttribute("data-print-raw");
+          });
+        }
+
         function startPrint(mode) {
           var dialog = $("#printDialog");
           if (dialog && dialog.open) dialog.close();
           preparePrint(mode);
           setTimeout(function () {
+            applyPrintTokens();
             expandPrintTextareas();
             window.print();
           }, 50);
@@ -7894,6 +7922,7 @@
             var root = document.documentElement;
             printThemeSaved = root.getAttribute("data-theme");
             root.setAttribute("data-theme", "light");
+            applyPrintTokens();
           });
           window.addEventListener("afterprint", function () {
             if (printThemeSaved == null) return;
