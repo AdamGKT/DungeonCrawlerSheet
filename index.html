@@ -3281,7 +3281,7 @@
             "col.check": "Check Type",
             "col.notesUpgrades": "Notes & Upgrades",
             "check.Unopposed": "Unopposed",
-            "check.Opposed": "Opposed",
+            "check.OpposedStat": "{n}-Opposed",
             "check.Passive": "Passive",
             "check.Evade": "Evade",
             "chip.inventory": "Inventory",
@@ -3558,7 +3558,7 @@
             "col.check": "Type de test",
             "col.notesUpgrades": "Notes et améliorations",
             "check.Unopposed": "Non opposé",
-            "check.Opposed": "Opposé",
+            "check.OpposedStat": "Opposé ({n})",
             "check.Passive": "Passif",
             "check.Evade": "Esquive",
             "chip.inventory": "Inventaire",
@@ -3836,7 +3836,7 @@
             "col.check": "Tipo de tirada",
             "col.notesUpgrades": "Notas y mejoras",
             "check.Unopposed": "Sin oposición",
-            "check.Opposed": "Con oposición",
+            "check.OpposedStat": "Con oposición ({n})",
             "check.Passive": "Pasiva",
             "check.Evade": "Evasión",
             "chip.inventory": "Inventario",
@@ -4114,7 +4114,7 @@
             "col.check": "Probenart",
             "col.notesUpgrades": "Notizen & Verbesserungen",
             "check.Unopposed": "Ohne Gegner",
-            "check.Opposed": "Mit Gegner",
+            "check.OpposedStat": "Mit Gegner ({n})",
             "check.Passive": "Passiv",
             "check.Evade": "Ausweichen",
             "chip.inventory": "Inventar",
@@ -4392,7 +4392,7 @@
             "col.check": "Tipo de teste",
             "col.notesUpgrades": "Notas e melhorias",
             "check.Unopposed": "Sem oposição",
-            "check.Opposed": "Com oposição",
+            "check.OpposedStat": "Com oposição ({n})",
             "check.Passive": "Passivo",
             "check.Evade": "Esquiva",
             "chip.inventory": "Inventário",
@@ -5072,15 +5072,26 @@
             return '<option value="' + d + '">' + d + "</option>";
           })
           .join("");
-        var CHECK_OPTS = ["", "Unopposed", "Opposed", "Passive", "Evade"]
+        var CHECK_OPTS = ["", "Unopposed"]
+          .concat(
+            STATS.map(function (s) {
+              return "Opposed-" + s;
+            }),
+            ["Passive", "Evade"],
+          )
           .map(function (c) {
+            var stat = c.indexOf("Opposed-") === 0 ? c.slice(8) : "";
             return (
               '<option value="' +
               c +
               '"' +
-              (c ? ' data-i18n="check.' + c + '"' : "") +
+              (stat
+                ? ' data-i18n="check.OpposedStat" data-n="' + stat + '"'
+                : c
+                  ? ' data-i18n="check.' + c + '"'
+                  : "") +
               ">" +
-              c +
+              (stat ? stat + "-Opposed" : c) +
               "</option>"
             );
           })
@@ -6743,6 +6754,16 @@
           return flat;
         }
 
+        function migrateLegacyCheckTypes(flat) {
+          Object.keys(flat).forEach(function (k) {
+            var m = k.match(/^skills\.(\d+)\.checkType$/);
+            if (!m || flat[k] !== "Opposed") return;
+            var stat = String(flat["skills." + m[1] + ".stat"] || "");
+            flat[k] = STATS.indexOf(stat) >= 0 ? "Opposed-" + stat : "";
+          });
+          return flat;
+        }
+
         function migrateLinkedIdentity(flat) {
           [
             ["identity.race", "race.name"],
@@ -6804,8 +6825,8 @@
         function loadSheetData(d) {
           clearGrindingPrompts();
           d = d || blankSheetData("");
-          var flat = migrateLinkedIdentity(
-            migrateLegacyAttacks(d.fields || {}),
+          var flat = migrateLegacyCheckTypes(
+            migrateLinkedIdentity(migrateLegacyAttacks(d.fields || {})),
           );
           var counts = d.counts || {};
           resizeAttacks(
@@ -7189,6 +7210,7 @@
               if (!flat) flat = d;
               migrateLegacyAttacks(flat);
               migrateLinkedIdentity(flat);
+              migrateLegacyCheckTypes(flat);
               var importedData = {
                 v: 2,
                 savedAt: new Date().toISOString(),

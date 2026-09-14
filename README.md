@@ -158,8 +158,8 @@ Necrotic, Piercing, Poison, Psychic, Slashing and Sonic.
 
 ### Skills
 Starts with 24 rows, add more as needed: Skill Advancement mark, Name, Rank,
-Stat, automatically derived **Stat Mod**, Check Type (Unopposed / Opposed /
-Passive / Evade) and Notes & Upgrades. Rank is tracked separately from Stat Mod.
+Stat, automatically derived **Stat Mod**, Check Type (Unopposed / STR-, INT-,
+CON-, DEX- or CHA-Opposed / Passive / Evade) and Notes & Upgrades. Rank is tracked separately from Stat Mod.
 The Rank column carries the grinding-hour tally and Skill Advancement prompt;
 Passive Skills are excluded. Use a row's **Details** button for a full Skill
 description, Rank Upgrades and extended or homebrew notes.
