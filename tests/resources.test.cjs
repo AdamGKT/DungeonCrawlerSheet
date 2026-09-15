@@ -549,6 +549,133 @@ test('Help explains text formatting in every language', t => {
   }
 });
 
+test('Inventory items equip into one Gear Slot each and are edited from either tab', async t => {
+  const s = sheet(t);
+  const accs = Array.from({ length: 10 }, (_, i) => `acc.${i + 1}`);
+  assert.deepEqual([...s.field('inv.0.equip').options].map(o => o.value),
+    ['', 'head', 'torso', 'arms', 'hands', 'heldLeft', 'heldRight', 'heldTwoHanded', 'legs', 'feet', ...accs]);
+  assert.equal(s.d.querySelectorAll('[data-pane="gear"] [data-k]').length, 0, 'Gear tab stores nothing itself');
+  assert.equal(s.d.querySelectorAll('#gearSlots .gear-empty').length, 8, 'Two-Handed is hidden until something is equipped there');
+  assert.equal(s.d.querySelectorAll('#accRows .gear-empty').length, 10);
+
+  s.set('inv.0.item', 'Helmet');
+  s.set('inv.0.qty', 2);
+  s.set('inv.0.notes', 'Dented');
+  s.set('inv.0.extra', '+1 AC');
+  s.set('inv.0.equip', 'head');
+  const head = () => s.d.querySelector('[data-gear-toggle="head"]').closest('.gear-slot');
+  assert.equal(head().querySelector('[data-mirror="inv.0.item"]').value, 'Helmet');
+  assert.equal(head().querySelector('[data-mirror="inv.0.notes"]').value, 'Dented');
+  assert.equal(head().querySelector('[data-mirror="inv.0.extra"]').value, '+1 AC');
+  assert.equal(head().querySelector('[data-mirror$=".qty"]'), null, 'no quantity on the Gear tab');
+
+  s.change(head().querySelector('[data-mirror="inv.0.item"]'), 'Great Helm');
+  s.change(head().querySelector('[data-mirror="inv.0.extra"]'), '+2 **AC**');
+  assert.equal(s.value('inv.0.item'), 'Great Helm', 'Gear edits land on the Inventory row');
+  assert.equal(s.value('inv.0.extra'), '+2 **AC**');
+  assert.equal(head().querySelector('.ta-wrap .ta-hl').innerHTML, '+2 <strong>AC</strong>', 'formatting preview works here too');
+
+  s.click('[data-gear-toggle="head"]');
+  assert.equal(s.d.querySelector('#gear-details-head').hidden, false);
+  s.print('all');
+  assert.equal(s.d.querySelector('#gear-details-head').getAttribute('data-print-open'), 'true');
+  s.w.dispatchEvent(new s.w.Event('afterprint'));
+
+  s.set('inv.1.item', 'Crown');
+  s.set('inv.1.equip', 'head');
+  assert.equal(s.value('inv.0.equip'), '', 'a slot holds one item: the previous one is unequipped');
+  assert.equal(head().querySelector('[data-mirror="inv.1.item"]').value, 'Crown');
+  s.set('inv.0.equip', 'acc.3');
+  assert.equal(s.d.querySelector('#accRows [data-mirror="inv.0.item"]').closest('.gear-slot').querySelector('span').textContent, 'Accessory 3');
+
+  const rows = s.d.querySelectorAll('#invRows > [data-row]');
+  rows[1].querySelector('.drag-handle').dispatchEvent(new s.w.KeyboardEvent('keydown', { key: 'ArrowUp', bubbles: true }));
+  assert.equal(s.value('inv.0.item'), 'Crown');
+  assert.equal(s.value('inv.0.equip'), 'head', 'the slot follows the item when rows are reordered');
+  assert.equal(s.value('inv.1.equip'), 'acc.3');
+  assert.equal(head().querySelector('[data-mirror="inv.0.item"]').value, 'Crown');
+
+  s.flush();
+  const reloaded = sheet(t, s.storage());
+  assert.equal(reloaded.value('inv.1.equip'), 'acc.3');
+  assert.equal(reloaded.d.querySelector('#accRows [data-mirror="inv.1.item"]').value, 'Great Helm');
+  const payload = await reloaded.export();
+  assert.equal(payload.fields['inv.0.equip'], 'head');
+
+  for (const [locale, held] of [
+    ['en', 'Held (Two-Handed)'], ['fr', 'Tenu (à deux mains)'], ['es', 'Sostenido (a dos manos)'],
+    ['de', 'Gehalten (beidhändig)'], ['pt', 'Segurando (com as duas mãos)'],
+  ]) {
+    s.change(s.d.querySelector('#langSel'), locale);
+    assert.equal(s.d.querySelector('[data-k="inv.0.equip"] option[value="heldTwoHanded"]').textContent, held);
+    assert.ok(!s.d.querySelector('[data-i18n="chip.gearSlots"]').textContent.includes('/'), locale);
+    for (const el of s.d.querySelectorAll('[data-pane="gear"] [data-i18n], [data-i18n="col.equipped"]'))
+      assert.ok(!/^(gear|col|btn|f)\./.test(el.textContent), locale);
+  }
+});
+
+test('Legacy free-text Gear Slots become equipped Inventory items', async t => {
+  const s = sheet(t);
+  await s.import({ fields: {
+    'inv.0.item': 'Rope',
+    'gear.head': 'Old hat', 'gear.hands': 'Gloves', 'gear.feet': '  ', 'gear.acc.2': 'Ring',
+  } });
+  assert.equal(s.value('inv.0.item'), 'Rope');
+  assert.equal(s.value('inv.0.equip'), '');
+  assert.deepEqual([1, 2, 3].map(i => [s.value(`inv.${i}.item`), s.value(`inv.${i}.equip`)]),
+    [['Old hat', 'head'], ['Gloves', 'hands'], ['Ring', 'acc.2']]);
+  assert.equal(s.value('inv.4.item'), '', 'blank old slots are dropped');
+  assert.equal(s.d.querySelector('#accRows [data-mirror="inv.3.item"]').value, 'Ring');
+  const payload = await s.export();
+  assert.ok(!Object.keys(payload.fields).some(k => k.startsWith('gear.')), 'old keys are not saved again');
+});
+
+test('Held Two-Handed and the two single hands are mutually exclusive', t => {
+  const s = sheet(t);
+  const gearHands = () => [...s.d.querySelectorAll('#gearSlots .gear-slot')]
+    .map(el => el.querySelector('span').getAttribute('data-i18n'))
+    .filter(k => /^gear\.held/.test(k));
+  assert.deepEqual(gearHands(), ['gear.heldLeft', 'gear.heldRight'], 'empty default: two separate hands');
+
+  s.set('inv.0.item', 'Dagger');
+  s.set('inv.0.equip', 'heldLeft');
+  assert.deepEqual(gearHands(), ['gear.heldLeft', 'gear.heldRight']);
+
+  s.set('inv.1.item', 'Greatsword');
+  s.set('inv.1.equip', 'heldTwoHanded');
+  assert.equal(s.value('inv.0.equip'), '', 'equipping Two-Handed frees the Left Hand');
+  assert.deepEqual(gearHands(), ['gear.heldTwoHanded'], 'only the Two-Handed slot is shown once it holds something');
+
+  s.set('inv.2.item', 'Shield');
+  s.set('inv.2.equip', 'heldRight');
+  assert.equal(s.value('inv.1.equip'), '', 'equipping a single hand frees Two-Handed');
+  assert.deepEqual(gearHands(), ['gear.heldLeft', 'gear.heldRight'], 'back to the two separate hands');
+  assert.equal(s.d.querySelector('[data-mirror="inv.2.item"]').value, 'Shield');
+
+  s.set('inv.0.item', 'Dagger');
+  s.set('inv.0.equip', 'heldLeft');
+  assert.equal(s.value('inv.2.equip'), 'heldRight', 'the other single hand is untouched');
+});
+
+test('The Inventory × button empties the whole row and frees its Gear Slot', t => {
+  const s = sheet(t);
+  s.set('inv.0.item', 'Keep me');
+  s.set('inv.1.item', 'Torch');
+  s.set('inv.1.qty', 3);
+  s.set('inv.1.notes', 'Lit');
+  s.set('inv.1.extra', 'Burns 1 hour');
+  s.set('inv.1.equip', 'heldRight');
+  assert.equal(s.d.querySelector('[data-mirror="inv.1.item"]').value, 'Torch');
+  const rowCount = s.d.querySelectorAll('#invRows > [data-row]').length;
+  s.click('[data-inv-clear="1"]');
+  for (const k of ['item', 'qty', 'notes', 'extra', 'equip']) assert.equal(s.value(`inv.1.${k}`), '', k);
+  assert.equal(s.value('inv.0.item'), 'Keep me', 'other rows are untouched');
+  assert.equal(s.d.querySelector('[data-mirror^="inv.1."]'), null, 'the Held slot is empty again');
+  assert.equal(s.d.querySelectorAll('#invRows > [data-row]').length, rowCount, 'the row stays in place');
+  s.change(s.d.querySelector('#langSel'), 'fr');
+  assert.equal(s.d.querySelector('[data-inv-clear="1"]').getAttribute('title'), 'Vider la ligne');
+});
+
 test('Printing shows formatted text instead of raw markers and restores the editor', t => {
   const s = sheet(t);
   const ta = s.field('skills.0.description');

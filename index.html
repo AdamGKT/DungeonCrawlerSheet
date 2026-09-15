@@ -276,7 +276,8 @@
       input[data-k],
       textarea[data-k],
       select[data-k],
-      input[data-mirror] {
+      input[data-mirror],
+      textarea[data-mirror] {
         background: transparent;
         border: 0;
         border-bottom: 1px solid var(--line);
@@ -289,7 +290,8 @@
         border-radius: 0;
         min-height: 34px;
       }
-      textarea[data-k] {
+      textarea[data-k],
+      textarea[data-mirror] {
         border: 1px solid var(--line);
         resize: vertical;
         font-family: var(--f-body);
@@ -299,7 +301,8 @@
       input[data-k]:focus,
       textarea[data-k]:focus,
       select[data-k]:focus,
-      input[data-mirror]:focus {
+      input[data-mirror]:focus,
+      textarea[data-mirror]:focus {
         border-color: var(--acc);
         background: var(--focus-bg);
       }
@@ -314,7 +317,7 @@
         text-transform: none;
         letter-spacing: normal;
       }
-      .ta-wrap > textarea[data-k] {
+      .ta-wrap > textarea {
         position: relative;
         z-index: 1;
       }
@@ -343,7 +346,7 @@
       .ta-wrap:not(.showing-hl) > .ta-hl {
         display: none;
       }
-      .ta-wrap.showing-hl > textarea[data-k] {
+      .ta-wrap.showing-hl > textarea {
         color: transparent;
       }
       .var-chip {
@@ -937,6 +940,25 @@
         border-color: var(--acc);
         color: var(--acc);
       }
+      .inv-entry .inv-notes-cell {
+        grid-template-columns: minmax(0, 1fr) auto auto;
+      }
+      .inv-clear {
+        min-height: 36px;
+        min-width: 36px;
+        padding: 0 8px;
+        border: 1px solid var(--line);
+        background: var(--paper-2);
+        color: var(--muted);
+        font-size: 18px;
+        line-height: 1;
+        cursor: pointer;
+      }
+      .inv-clear:hover,
+      .inv-clear:focus-visible {
+        border-color: var(--hp-lost);
+        color: var(--hp-lost);
+      }
       .skill-details {
         display: grid;
         grid-template-columns: 2fr 1.25fr 1.25fr;
@@ -994,6 +1016,17 @@
         .row.cols-skills .drag-handle,
         .row.cols-inv .drag-handle {
           display: none;
+        }
+        /* inventory: Item / Equipped / Qty on one line, Notes on the next */
+        .head.cols-inv,
+        .row.cols-inv {
+          grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr) 52px;
+        }
+        .head.cols-inv > .rh-drag {
+          display: none;
+        }
+        .cols-inv > :last-child {
+          grid-column: 1 / -1;
         }
         .card.scrollx {
           overflow-x: visible;
@@ -1349,7 +1382,7 @@
         }
       }
       .cols-inv {
-        grid-template-columns: var(--drag-col) 2fr 0.6fr 3fr;
+        grid-template-columns: var(--drag-col) 2fr 1.1fr 0.6fr 3fr;
       }
       .dmg-cell {
         display: flex;
@@ -1398,17 +1431,17 @@
         }
       }
 
-      .acc-row {
-        display: grid;
-        grid-template-columns: 26px 1fr;
-        gap: 6px;
-        align-items: center;
-      }
-      .acc-row .n {
-        font-family: var(--f-mono);
-        font-size: 11px;
+      /* Gear tab: one block per slot, showing the equipped Inventory item */
+      .gear-empty {
+        min-height: 34px;
+        padding: 7px 6px;
+        border-bottom: 1px dashed var(--line);
         color: var(--faint);
-        text-align: right;
+        font-family: var(--f-mono);
+        font-size: 13px;
+      }
+      .inv-details.gear-details {
+        margin: 4px 0 0;
       }
 
       /* ---------- journal ---------- */
@@ -1843,6 +1876,7 @@
         .companion-remove,
         .attack-toggle,
         .inv-toggle,
+        .inv-clear,
         .grind-btn,
         .print-dialog,
         .resource-controls,
@@ -2013,6 +2047,7 @@
         .fmt-bar {
           display: none !important;
         }
+        .ta-wrap.showing-hl > textarea[data-mirror],
         .ta-wrap.showing-hl > textarea[data-k] {
           display: none !important;
         }
@@ -2703,6 +2738,7 @@
               <div class="head cols-inv">
                 <span class="rh-drag" aria-hidden="true"></span
                 ><span data-i18n="col.item">Item</span
+                ><span data-i18n="col.equipped">Equipped</span
                 ><span data-i18n="col.qty">Qty</span
                 ><span data-i18n="col.notes">Notes</span>
               </div>
@@ -2728,10 +2764,10 @@
                 data-i18n="chip.gearSlots"
                 data-i18n-title="title.gearSlots"
                 data-i18n-aria-label="title.gearSlots"
-                title="Record the item currently occupying each Gear Slot. Equipped Gear may grant its listed benefits."
-                aria-label="Record the item currently occupying each Gear Slot. Equipped Gear may grant its listed benefits."
+                title="Items equipped from the Inventory. Pick a slot in the Inventory's Equipped column; edits made here update that Inventory item."
+                aria-label="Items equipped from the Inventory. Pick a slot in the Inventory's Equipped column; edits made here update that Inventory item."
               >
-                Gear Slots / Tattoos / Patches
+                Gear Slots
               </div>
               <div class="grid" style="gap: 12px" id="gearSlots"></div>
             </div>
@@ -2741,8 +2777,8 @@
                 data-i18n="chip.accessories"
                 data-i18n-title="title.accessories"
                 data-i18n-aria-label="title.accessories"
-                title="Each field represents one Accessory Gear Slot. Crawlers normally have up to 10."
-                aria-label="Each field represents one Accessory Gear Slot. Crawlers normally have up to 10."
+                title="Accessory Gear Slots filled from the Inventory. Crawlers normally have up to 10."
+                aria-label="Accessory Gear Slots filled from the Inventory. Crawlers normally have up to 10."
               >
                 Accessories (Max 10)
               </div>
@@ -3106,7 +3142,10 @@
           { key: "head", label: "Head" },
           { key: "torso", label: "Torso" },
           { key: "arms", label: "Arms" },
-          { key: "hands", label: "Hands / Holding" },
+          { key: "hands", label: "Hands" },
+          { key: "heldLeft", label: "Held (Left Hand)" },
+          { key: "heldRight", label: "Held (Right Hand)" },
+          { key: "heldTwoHanded", label: "Held (Two-Handed)" },
           { key: "legs", label: "Legs" },
           { key: "feet", label: "Feet" },
         ];
@@ -3287,6 +3326,7 @@
             "btn.hideAttackDetails": "Hide",
             "btn.invDetails": "Details",
             "btn.hideInvDetails": "Hide",
+            "btn.clearInv": "Clear row",
             "title.dragRow": "Drag to reorder (or focus and use Arrow Up / Down)",
             "btn.removeImg": "Remove image",
             "btn.theme.dark": "Dark",
@@ -3306,9 +3346,9 @@
             "title.hotlist":
               "10 quick-access slots. A slot can hold up to 999 of the same item by name.",
             "title.gearSlots":
-              "Record the item currently occupying each Gear Slot. Equipped Gear may grant its listed benefits.",
+              "Items equipped from the Inventory. Pick a slot in the Inventory's Equipped column; edits made here update that Inventory item.",
             "title.accessories":
-              "Each field represents one Accessory Gear Slot. Crawlers normally have up to 10.",
+              "Accessory Gear Slots filled from the Inventory. Crawlers normally have up to 10.",
             "title.level":
               "Tutorial crawlers start at Level 1. Current Level limit: 250. Level gains may award Stat points; apply advancement manually.",
             "title.floor":
@@ -3401,14 +3441,20 @@
             "col.item": "Item",
             "col.qty": "Qty",
             "col.notes": "Notes",
-            "chip.gearSlots": "Gear Slots / Tattoos / Patches",
+            "col.equipped": "Equipped",
+            "chip.gearSlots": "Gear Slots",
             "chip.accessories": "Accessories (Max 10)",
             "gear.head": "Head",
             "gear.torso": "Torso",
             "gear.arms": "Arms",
-            "gear.hands": "Hands / Held",
+            "gear.hands": "Hands",
+            "gear.heldLeft": "Held (Left Hand)",
+            "gear.heldRight": "Held (Right Hand)",
+            "gear.heldTwoHanded": "Held (Two-Handed)",
             "gear.legs": "Legs",
             "gear.feet": "Feet",
+            "gear.acc": "Accessory {n}",
+            "gear.empty": "Empty",
             "jnav.popularity": "Popularity & Trauma",
             "jnav.race": "Race & Class",
             "jnav.affiliations": "Clubs & Kills",
@@ -3504,6 +3550,8 @@
             "confirm.reset": "Reset the entire sheet? This cannot be undone.",
             "confirm.removeCompanion":
               "Remove this companion? Its recorded details will be lost.",
+            "confirm.clearInv":
+              "Clear this Inventory row? Its item, quantity, notes and details will be erased.",
           },
           fr: {
             "hdr.kicker": "Dossier Crawler",
@@ -3573,6 +3621,7 @@
             "btn.hideAttackDetails": "Masquer",
             "btn.invDetails": "Détails",
             "btn.hideInvDetails": "Masquer",
+            "btn.clearInv": "Vider la ligne",
             "title.dragRow": "Glisser pour réorganiser (ou focus puis flèches Haut / Bas)",
             "btn.removeImg": "Retirer l'image",
             "btn.theme.dark": "Sombre",
@@ -3593,9 +3642,9 @@
             "title.hotlist":
               "10 emplacements d'accès rapide. Un emplacement peut contenir jusqu'à 999 objets identiques portant le même nom.",
             "title.gearSlots":
-              "Notez l'objet qui occupe actuellement chaque emplacement d'équipement. L'équipement porté peut accorder les avantages indiqués.",
+              "Objets équipés depuis l'Inventaire. Choisissez l'emplacement dans la colonne Équipé de l'Inventaire ; les modifications faites ici mettent à jour l'objet de l'Inventaire.",
             "title.accessories":
-              "Chaque champ représente un emplacement d'accessoire. Les Crawlers en ont normalement jusqu'à 10.",
+              "Emplacements d'accessoire remplis depuis l'Inventaire. Les Crawlers en ont normalement jusqu'à 10.",
             "title.level":
               "Les Crawlers du tutoriel commencent au niveau 1. Limite actuelle : 250. Les gains de niveau peuvent accorder des points de caractéristique ; appliquez l'avancement manuellement.",
             "title.floor":
@@ -3688,14 +3737,20 @@
             "col.item": "Objet",
             "col.qty": "Qté",
             "col.notes": "Notes",
-            "chip.gearSlots": "Emplacements d'équipement / Tatouages / Patchs",
+            "col.equipped": "Équipé",
+            "chip.gearSlots": "Emplacements d'équipement",
             "chip.accessories": "Accessoires (max 10)",
             "gear.head": "Tête",
             "gear.torso": "Torse",
             "gear.arms": "Bras",
-            "gear.hands": "Mains / Tenu",
+            "gear.hands": "Mains",
+            "gear.heldLeft": "Tenu (main gauche)",
+            "gear.heldRight": "Tenu (main droite)",
+            "gear.heldTwoHanded": "Tenu (à deux mains)",
             "gear.legs": "Jambes",
             "gear.feet": "Pieds",
+            "gear.acc": "Accessoire {n}",
+            "gear.empty": "Vide",
             "jnav.popularity": "Popularité et traumatismes",
             "jnav.race": "Race et classe",
             "jnav.affiliations": "Clubs et éliminations",
@@ -3792,6 +3847,8 @@
               "Remettre toute la fiche à zéro ? Cette action est irréversible.",
             "confirm.removeCompanion":
               "Supprimer ce compagnon ? Les informations enregistrées seront perdues.",
+            "confirm.clearInv":
+              "Vider cette ligne d'inventaire ? L'objet, la quantité, les notes et les détails seront effacés.",
           },
           es: {
             "hdr.kicker": "Expediente Crawler",
@@ -3861,6 +3918,7 @@
             "btn.hideAttackDetails": "Ocultar",
             "btn.invDetails": "Detalles",
             "btn.hideInvDetails": "Ocultar",
+            "btn.clearInv": "Vaciar fila",
             "title.dragRow": "Arrastra para reordenar (o enfoca y usa Flecha Arriba / Abajo)",
             "btn.removeImg": "Quitar la imagen",
             "btn.theme.dark": "Oscuro",
@@ -3881,9 +3939,9 @@
             "title.hotlist":
               "10 espacios de acceso rápido. Un espacio puede contener hasta 999 objetos iguales con el mismo nombre.",
             "title.gearSlots":
-              "Anota el objeto que ocupa actualmente cada ranura de equipo. El equipo equipado puede otorgar sus beneficios indicados.",
+              "Objetos equipados desde el Inventario. Elige la ranura en la columna Equipado del Inventario; los cambios hechos aquí actualizan ese objeto del Inventario.",
             "title.accessories":
-              "Cada campo representa una ranura de accesorio. Los Crawlers normalmente tienen hasta 10.",
+              "Ranuras de accesorio ocupadas desde el Inventario. Los Crawlers normalmente tienen hasta 10.",
             "title.level":
               "Los Crawlers del tutorial comienzan en nivel 1. Límite actual: 250. Subir de nivel puede otorgar puntos de característica; aplica el avance manualmente.",
             "title.floor":
@@ -3976,14 +4034,20 @@
             "col.item": "Objeto",
             "col.qty": "Cant.",
             "col.notes": "Notas",
-            "chip.gearSlots": "Ranuras de equipo / Tatuajes / Parches",
+            "col.equipped": "Equipado",
+            "chip.gearSlots": "Ranuras de equipo",
             "chip.accessories": "Accesorios (máx 10)",
             "gear.head": "Cabeza",
             "gear.torso": "Torso",
             "gear.arms": "Brazos",
-            "gear.hands": "Manos / Sostenido",
+            "gear.hands": "Manos",
+            "gear.heldLeft": "Sostenido (mano izquierda)",
+            "gear.heldRight": "Sostenido (mano derecha)",
+            "gear.heldTwoHanded": "Sostenido (a dos manos)",
             "gear.legs": "Piernas",
             "gear.feet": "Pies",
+            "gear.acc": "Accesorio {n}",
+            "gear.empty": "Vacío",
             "jnav.popularity": "Popularidad y traumas",
             "jnav.race": "Raza y clase",
             "jnav.affiliations": "Clubes y muertes",
@@ -4080,6 +4144,8 @@
               "¿Reiniciar toda la hoja? Esta acción es irreversible.",
             "confirm.removeCompanion":
               "¿Eliminar este compañero? Se perderán sus datos guardados.",
+            "confirm.clearInv":
+              "¿Vaciar esta fila del inventario? Se borrarán el objeto, la cantidad, las notas y los detalles.",
           },
           de: {
             "hdr.kicker": "Crawler-Dossier",
@@ -4149,6 +4215,7 @@
             "btn.hideAttackDetails": "Ausblenden",
             "btn.invDetails": "Details",
             "btn.hideInvDetails": "Ausblenden",
+            "btn.clearInv": "Zeile leeren",
             "title.dragRow": "Zum Umsortieren ziehen (oder fokussieren und Pfeil hoch / runter)",
             "btn.removeImg": "Bild entfernen",
             "btn.theme.dark": "Dunkel",
@@ -4169,9 +4236,9 @@
             "title.hotlist":
               "10 Schnellzugriffsplätze. Ein Platz kann bis zu 999 gleichnamige Gegenstände enthalten.",
             "title.gearSlots":
-              "Trage den Gegenstand ein, der den jeweiligen Ausrüstungsplatz belegt. Angelegte Ausrüstung kann ihre aufgeführten Vorteile gewähren.",
+              "Aus dem Inventar angelegte Gegenstände. Wähle den Platz in der Inventarspalte „Angelegt“; Änderungen hier aktualisieren den Inventargegenstand.",
             "title.accessories":
-              "Jedes Feld stellt einen Accessoire-Ausrüstungsplatz dar. Crawler haben normalerweise bis zu 10.",
+              "Accessoire-Ausrüstungsplätze aus dem Inventar. Crawler haben normalerweise bis zu 10.",
             "title.level":
               "Tutorial-Crawler beginnen auf Stufe 1. Aktuelle Stufengrenze: 250. Stufenaufstiege können Attributspunkte gewähren; wende den Aufstieg manuell an.",
             "title.floor":
@@ -4264,14 +4331,20 @@
             "col.item": "Gegenstand",
             "col.qty": "Anz.",
             "col.notes": "Notizen",
-            "chip.gearSlots": "Ausrüstungsplätze / Tattoos / Patches",
+            "col.equipped": "Angelegt",
+            "chip.gearSlots": "Ausrüstungsplätze",
             "chip.accessories": "Accessoires (max. 10)",
             "gear.head": "Kopf",
             "gear.torso": "Torso",
             "gear.arms": "Arme",
-            "gear.hands": "Hände / Gehalten",
+            "gear.hands": "Hände",
+            "gear.heldLeft": "Gehalten (linke Hand)",
+            "gear.heldRight": "Gehalten (rechte Hand)",
+            "gear.heldTwoHanded": "Gehalten (beidhändig)",
             "gear.legs": "Beine",
             "gear.feet": "Füße",
+            "gear.acc": "Accessoire {n}",
+            "gear.empty": "Leer",
             "jnav.popularity": "Popularität & Trauma",
             "jnav.race": "Volk & Klasse",
             "jnav.affiliations": "Clubs & Kills",
@@ -4368,6 +4441,8 @@
               "Den gesamten Bogen zurücksetzen? Diese Aktion ist unwiderruflich.",
             "confirm.removeCompanion":
               "Diesen Begleiter entfernen? Seine gespeicherten Angaben gehen verloren.",
+            "confirm.clearInv":
+              "Diese Inventarzeile leeren? Gegenstand, Anzahl, Notizen und Details werden gelöscht.",
           },
           pt: {
             "hdr.kicker": "Dossiê Crawler",
@@ -4437,6 +4512,7 @@
             "btn.hideAttackDetails": "Ocultar",
             "btn.invDetails": "Detalhes",
             "btn.hideInvDetails": "Ocultar",
+            "btn.clearInv": "Limpar linha",
             "title.dragRow": "Arraste para reordenar (ou foque e use Seta para Cima / Baixo)",
             "btn.removeImg": "Remover a imagem",
             "btn.theme.dark": "Escuro",
@@ -4457,9 +4533,9 @@
             "title.hotlist":
               "10 espaços de acesso rápido. Um espaço pode conter até 999 itens iguais com o mesmo nome.",
             "title.gearSlots":
-              "Registre o item que ocupa atualmente cada espaço de equipamento. Equipamentos em uso podem conceder os benefícios indicados.",
+              "Itens equipados a partir do Inventário. Escolha o espaço na coluna Equipado do Inventário; as alterações feitas aqui atualizam esse item do Inventário.",
             "title.accessories":
-              "Cada campo representa um espaço de Acessório. Crawlers normalmente têm até 10.",
+              "Espaços de Acessório preenchidos a partir do Inventário. Crawlers normalmente têm até 10.",
             "title.level":
               "Crawlers do tutorial começam no nível 1. Limite atual: 250. Ganhos de nível podem conceder pontos de atributo; aplique o avanço manualmente.",
             "title.floor":
@@ -4552,14 +4628,20 @@
             "col.item": "Item",
             "col.qty": "Qtd",
             "col.notes": "Notas",
-            "chip.gearSlots": "Espaços de equipamento / Tatuagens / Emblemas",
+            "col.equipped": "Equipado",
+            "chip.gearSlots": "Espaços de equipamento",
             "chip.accessories": "Acessórios (máx 10)",
             "gear.head": "Cabeça",
             "gear.torso": "Torso",
             "gear.arms": "Braços",
-            "gear.hands": "Mãos / Segurando",
+            "gear.hands": "Mãos",
+            "gear.heldLeft": "Segurando (mão esquerda)",
+            "gear.heldRight": "Segurando (mão direita)",
+            "gear.heldTwoHanded": "Segurando (com as duas mãos)",
             "gear.legs": "Pernas",
             "gear.feet": "Pés",
+            "gear.acc": "Acessório {n}",
+            "gear.empty": "Vazio",
             "jnav.popularity": "Popularidade e traumas",
             "jnav.race": "Raça e classe",
             "jnav.affiliations": "Clubes e mortes",
@@ -4656,6 +4738,8 @@
               "Redefinir toda a ficha? Esta ação é irreversível.",
             "confirm.removeCompanion":
               "Remover este companheiro? Os dados registrados serão perdidos.",
+            "confirm.clearInv":
+              "Limpar esta linha do inventário? O item, a quantidade, as notas e os detalhes serão apagados.",
           },
         };
 
@@ -5152,7 +5236,7 @@
                 : "btn.attackDetails",
             );
           });
-          $$("[data-inv-toggle]").forEach(function (el) {
+          $$("[data-inv-toggle], [data-gear-toggle]").forEach(function (el) {
             el.textContent = t(
               el.getAttribute("aria-expanded") === "true"
                 ? "btn.hideInvDetails"
@@ -5195,6 +5279,36 @@
           var a = [];
           for (var k = 0; k < n; k++) a.push(k + from);
           return a;
+        }
+        /* every slot an Inventory item can occupy (its Equipped column) */
+        var EQUIP_SLOTS = GEAR_SLOTS.map(function (g) {
+          return g.key;
+        }).concat(
+          range(10, 1).map(function (i) {
+            return "acc." + i;
+          }),
+        );
+        // Translated label for a slot, as `data-i18n…>text` (caller closes the tag).
+        function gearSlotLabel(slot) {
+          var acc = slot.indexOf("acc.") === 0;
+          var key = acc ? "gear.acc" : "gear." + slot;
+          var n = acc ? slot.slice(4) : "";
+          return (
+            ' data-i18n="' +
+            key +
+            '"' +
+            (acc ? ' data-n="' + n + '"' : "") +
+            ">" +
+            esc(t(key).replace("{n}", n))
+          );
+        }
+        function equipOptsHTML() {
+          return (
+            '<option value="">—</option>' +
+            EQUIP_SLOTS.map(function (s) {
+              return '<option value="' + s + '"' + gearSlotLabel(s) + "</option>";
+            }).join("")
+          );
         }
         var STAT_OPTS =
           '<option value=""></option>' +
@@ -5626,6 +5740,13 @@
             '<input data-k="' +
             b +
             'item">' +
+            '<select data-k="' +
+            b +
+            'equip" data-i18n-aria-label="col.equipped" aria-label="' +
+            esc(t("col.equipped")) +
+            '">' +
+            equipOptsHTML() +
+            "</select>" +
             '<input data-k="' +
             b +
             'qty" class="center">' +
@@ -5635,7 +5756,14 @@
             i +
             '" aria-expanded="false" aria-controls="inv-details-' +
             i +
-            '" data-i18n="btn.invDetails">Details</button></div>' +
+            '" data-i18n="btn.invDetails">Details</button>' +
+            '<button class="inv-clear" type="button" data-inv-clear="' +
+            i +
+            '" data-i18n-title="btn.clearInv" data-i18n-aria-label="btn.clearInv" title="' +
+            esc(t("btn.clearInv")) +
+            '" aria-label="' +
+            esc(t("btn.clearInv")) +
+            '">×</button></div>' +
             "</div>" +
             '<div class="inv-details" id="inv-details-' +
             i +
@@ -5827,29 +5955,7 @@
           ensureCompanions(DEFAULT_COMPANIONS);
           ensureInv(DEFAULT_INV);
 
-          $("#gearSlots").innerHTML = GEAR_SLOTS.map(function (g) {
-            return (
-              '<label class="lbl"><span data-i18n="gear.' +
-              g.key +
-              '">' +
-              g.label +
-              '</span><input data-k="gear.' +
-              g.key +
-              '"></label>'
-            );
-          }).join("");
-
-          $("#accRows").innerHTML = range(10, 1)
-            .map(function (i) {
-              return (
-                '<div class="acc-row"><span class="n">' +
-                i +
-                '</span><input data-k="gear.acc.' +
-                i +
-                '"></div>'
-              );
-            })
-            .join("");
+          renderGear();
 
           $("#jnav").innerHTML = JOURNAL_NAV.map(function (j) {
             return (
@@ -5955,6 +6061,134 @@
               "</button>"
             );
           }).join("");
+        }
+
+        /* ---------------- gear (fed by the Inventory) ---------------- */
+        /* The Gear tab lists the Inventory items whose Equipped column names a
+           slot. Its fields are mirrors (data-mirror) of that Inventory row, so
+           an edit made here is stored on — and shown in — the Inventory. */
+        var gearSig = null,
+          gearOpen = {};
+        function equippedBySlot() {
+          var bySlot = {};
+          $$('#invRows [data-k$=".equip"]').forEach(function (el) {
+            if (el.value && bySlot[el.value] == null)
+              bySlot[el.value] = el.getAttribute("data-k").split(".")[1];
+          });
+          return bySlot;
+        }
+        function gearSlotHTML(slot, idx) {
+          var html = '<div class="lbl gear-slot"><span' + gearSlotLabel(slot) + "</span>";
+          if (idx == null)
+            return (
+              html +
+              '<div class="gear-empty" data-i18n="gear.empty">' +
+              esc(t("gear.empty")) +
+              "</div></div>"
+            );
+          var b = "inv." + idx + ".";
+          var id = "gear-details-" + slot.replace(".", "-");
+          var open = !!gearOpen[slot];
+          var mirror = function (k, label) {
+            return (
+              '<input data-mirror="' +
+              b +
+              k +
+              '" data-i18n-ph="' +
+              label +
+              '" data-i18n-aria-label="' +
+              label +
+              '" placeholder="' +
+              esc(t(label)) +
+              '" aria-label="' +
+              esc(t(label)) +
+              '">'
+            );
+          };
+          return (
+            html +
+            mirror("item", "col.item") +
+            '<div class="inv-notes-cell">' +
+            mirror("notes", "col.notes") +
+            '<button class="inv-toggle" type="button" data-gear-toggle="' +
+            slot +
+            '" aria-expanded="' +
+            open +
+            '" aria-controls="' +
+            id +
+            '">' +
+            esc(t(open ? "btn.hideInvDetails" : "btn.invDetails")) +
+            "</button></div>" +
+            '<div class="inv-details gear-details" id="' +
+            id +
+            '"' +
+            (open ? "" : " hidden") +
+            '><label class="lbl"><span data-i18n="f.invExtra">' +
+            esc(t("f.invExtra")) +
+            '</span><textarea data-mirror="' +
+            b +
+            'extra"></textarea></label></div></div>'
+          );
+        }
+        // Rebuilt only when which item sits in which slot changes, so typing
+        // in a Gear field never loses focus; values are synced by recompute().
+        /* The two single-hand slots and the two-handed slot are mutually
+           exclusive: only one of that trio is ever shown/held at a time.
+           With nothing equipped the default is the two separate hands. */
+        var HELD_SINGLE = ["heldLeft", "heldRight"],
+          HELD_TWO = "heldTwoHanded";
+        // Slot keys to render in order, collapsing the held trio to whichever
+        // side is actually in use.
+        function gearDisplaySlots(bySlot) {
+          var out = [];
+          GEAR_SLOTS.forEach(function (g) {
+            if (g.key === HELD_TWO || g.key === "heldRight") return;
+            if (g.key === "heldLeft") {
+              if (bySlot[HELD_TWO] != null) out.push(HELD_TWO);
+              else out.push("heldLeft", "heldRight");
+              return;
+            }
+            out.push(g.key);
+          });
+          return out;
+        }
+        function renderGear() {
+          var bySlot = equippedBySlot();
+          var sig = EQUIP_SLOTS.map(function (s) {
+            return bySlot[s] == null ? "" : bySlot[s];
+          }).join(",");
+          if (sig === gearSig) return;
+          gearSig = sig;
+          $("#gearSlots").innerHTML = gearDisplaySlots(bySlot)
+            .map(function (slot) {
+              return gearSlotHTML(slot, bySlot[slot]);
+            })
+            .join("");
+          $("#accRows").innerHTML = range(10, 1)
+            .map(function (i) {
+              return gearSlotHTML("acc." + i, bySlot["acc." + i]);
+            })
+            .join("");
+        }
+        /* One item per slot: equipping an item frees that slot from any other.
+           Held Two-Handed also conflicts with either single-hand slot and
+           vice versa — a crawler can't hold a one-handed item and a
+           two-handed one in the same pair of hands. */
+        function releaseEquipSlot(el) {
+          if (!el.value || !/^inv\.\d+\.equip$/.test(el.getAttribute("data-k")))
+            return;
+          var conflicts =
+            el.value === HELD_TWO
+              ? HELD_SINGLE.concat(HELD_TWO)
+              : HELD_SINGLE.indexOf(el.value) >= 0
+                ? [el.value, HELD_TWO]
+                : [el.value];
+          $$('#invRows [data-k$=".equip"]').forEach(function (other) {
+            if (other !== el && conflicts.indexOf(other.value) >= 0) {
+              other.value = "";
+              other.removeAttribute("data-dirty");
+            }
+          });
         }
 
         /* ---------------- field access ---------------- */
@@ -6262,7 +6496,7 @@
         }
 
         function enhanceTextareas() {
-          $$("textarea[data-k]").forEach(function (ta) {
+          $$("textarea[data-k], textarea[data-mirror]").forEach(function (ta) {
             if (ta === document.activeElement) return;
             var p = ta.parentNode;
             if (!p) return;
@@ -6302,7 +6536,7 @@
 
         // `force` also renders the focused field (used while printing).
         function renderTokenPreview(wrap, force) {
-          var ta = wrap.querySelector("textarea[data-k]");
+          var ta = wrap.querySelector("textarea");
           var hl = wrap.querySelector(".ta-hl");
           if (!ta || !hl) return;
           var html =
@@ -6519,6 +6753,7 @@
           if (dex) setC(dex, num("stats.DEX.mod"));
           var dr = $('[data-c="def.drTotal"]');
           if (dr) setC(dr, defenseNum("def.armor") + defenseNum("def.drBuffs"));
+          renderGear();
           $$("[data-mirror]").forEach(function (el) {
             var v = String(val(el.getAttribute("data-mirror")));
             if (el.value !== v) el.value = v;
@@ -7258,6 +7493,30 @@
           return flat;
         }
 
+        /* Gear Slots used to be free-text fields (gear.head, gear.acc.1, …).
+           Each old entry becomes an Inventory item equipped in that slot. */
+        function migrateLegacyGear(flat) {
+          var next = maxIndex(flat, "inv.") + 1;
+          var taken = {};
+          Object.keys(flat).forEach(function (k) {
+            if (/^inv\.\d+\.equip$/.test(k)) taken[flat[k]] = true;
+          });
+          EQUIP_SLOTS.forEach(function (slot) {
+            var k = "gear." + slot;
+            if (!Object.prototype.hasOwnProperty.call(flat, k)) return;
+            var item = String(flat[k]).trim();
+            delete flat[k];
+            if (!item) return;
+            var b = "inv." + next++ + ".";
+            flat[b + "item"] = item;
+            if (!taken[slot]) {
+              flat[b + "equip"] = slot;
+              taken[slot] = true;
+            }
+          });
+          return flat;
+        }
+
         function ensureFromData(flat, counts) {
           counts = counts || {};
           ensureAttacks(
@@ -7296,8 +7555,10 @@
         function loadSheetData(d) {
           clearGrindingPrompts();
           d = d || blankSheetData("");
-          var flat = migrateLegacyCheckTypes(
-            migrateLinkedIdentity(migrateLegacyAttacks(d.fields || {})),
+          var flat = migrateLegacyGear(
+            migrateLegacyCheckTypes(
+              migrateLinkedIdentity(migrateLegacyAttacks(d.fields || {})),
+            ),
           );
           var counts = d.counts || {};
           resizeAttacks(
@@ -7682,6 +7943,7 @@
               migrateLegacyAttacks(flat);
               migrateLinkedIdentity(flat);
               migrateLegacyCheckTypes(flat);
+              migrateLegacyGear(flat);
               var importedData = {
                 v: 2,
                 savedAt: new Date().toISOString(),
@@ -7721,7 +7983,7 @@
 
         /* ---------------- printing ---------------- */
         function hasPrintValue(root) {
-          return $$("[data-k]", root).some(function (el) {
+          return $$("[data-k], [data-mirror]", root).some(function (el) {
             var key = el.getAttribute("data-k") || "";
             /* grinding counters default to "0" — never treat them as content */
             if (key.slice(-5) === "grind") return false;
@@ -7855,7 +8117,7 @@
         /* Print with %TOKENS resolved to their live values. The raw text (kept in
            the field, localStorage and JSON export) is stashed and restored after. */
         function applyPrintTokens() {
-          $$("textarea[data-k]").forEach(function (ta) {
+          $$("textarea[data-k], textarea[data-mirror]").forEach(function (ta) {
             if (ta.hasAttribute("data-print-raw")) return;
             var raw = ta.value;
             if (raw.indexOf("%") < 0 || !/%[A-Z][A-Z0-9_]*/.test(raw)) return;
@@ -8022,6 +8284,21 @@
           return rows[order.indexOf(from)];
         }
 
+        /* Inventory "×": empties every field of the row (which also frees any
+           Gear Slot it held). The row itself stays in place. */
+        function clearInvRow(row) {
+          if (!row) return;
+          if (hasPrintValue(row) && !window.confirm(t("confirm.clearInv")))
+            return;
+          $$("[data-k]", row).forEach(function (el) {
+            el.value = "";
+            el.removeAttribute("data-dirty");
+          });
+          recompute();
+          header();
+          save();
+        }
+
         function removeCompanionRow(row) {
           var container = $("#companionRows");
           var rows = siblingRows(container);
@@ -8156,19 +8433,20 @@
             if (!el) return;
             sanitizeAIFavor(el);
             if (e.isTrusted) el.setAttribute("data-dirty", "1");
+            releaseEquipSlot(el);
             recompute();
             header();
             save();
           });
           document.addEventListener("focusin", function (e) {
             var ta = e.target;
-            if (!ta || !ta.matches || !ta.matches("textarea[data-k]")) return;
+            if (!ta || !ta.matches || !ta.matches("textarea[data-k], textarea[data-mirror]")) return;
             var w = ta.closest(".ta-wrap");
             if (w) w.classList.remove("showing-hl");
           });
           document.addEventListener("focusout", function (e) {
             var ta = e.target;
-            if (!ta || !ta.matches || !ta.matches("textarea[data-k]")) return;
+            if (!ta || !ta.matches || !ta.matches("textarea[data-k], textarea[data-mirror]")) return;
             var w = ta.closest(".ta-wrap");
             if (w) renderTokenPreview(w);
           });
@@ -8177,7 +8455,7 @@
           document.addEventListener("keydown", function (e) {
             if (!(e.ctrlKey || e.metaKey) || e.altKey) return;
             var ta = e.target;
-            if (!ta || !ta.matches || !ta.matches("textarea[data-k]")) return;
+            if (!ta || !ta.matches || !ta.matches("textarea[data-k], textarea[data-mirror]")) return;
             var key = String(e.key || "").toLowerCase();
             var type = e.shiftKey ? (key === "x" ? "s" : null) : FMT_KEYS[key];
             if (!type) return;
@@ -8194,7 +8472,7 @@
             var btn = e.target.closest && e.target.closest(".fmt-bar [data-fmt]");
             if (!btn) return;
             e.preventDefault();
-            var ta = btn.closest(".ta-wrap").querySelector("textarea[data-k]");
+            var ta = btn.closest(".ta-wrap").querySelector("textarea");
             if (ta) applyFormat(ta, btn.getAttribute("data-fmt"));
           });
           document.addEventListener("change", function (e) {
@@ -8357,6 +8635,28 @@
                 invDetails.hidden = !openingInv;
                 invToggle.setAttribute("aria-expanded", String(openingInv));
                 invToggle.textContent = openingInv
+                  ? t("btn.hideInvDetails")
+                  : t("btn.invDetails");
+              }
+              return;
+            }
+            var invClear = target.closest("[data-inv-clear]");
+            if (invClear) {
+              clearInvRow(invClear.closest(".inv-entry"));
+              return;
+            }
+            var gearToggle = target.closest("[data-gear-toggle]");
+            if (gearToggle) {
+              var gearDetails = $(
+                "#" + gearToggle.getAttribute("aria-controls"),
+              );
+              if (gearDetails) {
+                var openingGear = gearDetails.hidden;
+                gearDetails.hidden = !openingGear;
+                gearOpen[gearToggle.getAttribute("data-gear-toggle")] =
+                  openingGear;
+                gearToggle.setAttribute("aria-expanded", String(openingGear));
+                gearToggle.textContent = openingGear
                   ? t("btn.hideInvDetails")
                   : t("btn.invDetails");
               }
