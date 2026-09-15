@@ -2911,6 +2911,14 @@
           >
             Not yet
           </button>
+          <button
+            class="btn danger"
+            type="button"
+            data-levelup-result="reset"
+            data-i18n="levelup.reset"
+          >
+            Cancel and reset to 0
+          </button>
         </div>
       </div>
     </dialog>
@@ -4631,7 +4639,8 @@
             "levelup.yes": "Yes — level up",
             "levelup.solo":
               "I'm my team's only lowest-level member — gain 1d2 Levels",
-            "levelup.no": "Not yet"
+            "levelup.no": "Not yet",
+            "levelup.reset": "Cancel and reset to 0"
           },
           fr: {
             "col.grind": "Grinding",
@@ -4661,7 +4670,8 @@
             "levelup.yes": "Oui — monter de niveau",
             "levelup.solo":
               "Je suis le seul plus bas niveau de mon équipe — gagner 1d2 niveaux",
-            "levelup.no": "Pas encore"
+            "levelup.no": "Pas encore",
+            "levelup.reset": "Annuler et remettre à 0"
           },
           es: {
             "col.grind": "Grindeo",
@@ -4691,7 +4701,8 @@
             "levelup.yes": "Sí — subir de nivel",
             "levelup.solo":
               "Soy el único de menor nivel de mi equipo — ganar 1d2 niveles",
-            "levelup.no": "Todavía no"
+            "levelup.no": "Todavía no",
+            "levelup.reset": "Cancelar y reiniciar a 0"
           },
           de: {
             "col.grind": "Grinding",
@@ -4721,7 +4732,8 @@
             "levelup.yes": "Ja — aufsteigen",
             "levelup.solo":
               "Ich bin das einzige niedrigststufige Mitglied meines Teams — 1W2 Stufen",
-            "levelup.no": "Noch nicht"
+            "levelup.no": "Noch nicht",
+            "levelup.reset": "Abbrechen und auf 0 zurücksetzen"
           },
           pt: {
             "col.grind": "Grinding",
@@ -4751,7 +4763,8 @@
             "levelup.yes": "Sim — subir de nível",
             "levelup.solo":
               "Sou o único membro de nível mais baixo da equipa — ganhar 1d2 níveis",
-            "levelup.no": "Ainda não"
+            "levelup.no": "Ainda não",
+            "levelup.reset": "Cancelar e repor a 0"
           }
         };
         LANGS.forEach(function (locale) {
@@ -6434,6 +6447,10 @@
                 ? t("grind.levelUpN").replace("{n}", String(gained))
                 : t("grind.levelUp"),
             );
+          } else if (result === "reset") {
+            /* skip this Level gain: empty the meter without changing the Level */
+            var resetEl = field("identity.grind");
+            if (resetEl) resetEl.value = "0";
           }
           recompute();
           header();
