@@ -465,3 +465,104 @@ test('Printing trims zero-only grinding rows, resolves tokens, and restores scre
   const css = s.d.querySelector('style').textContent;
   assert.match(css, /@media print[\s\S]*\.grind-btn,[\s\S]*display: none !important/);
 });
+
+test('Text fields render bold, italic, underline and strike while keeping the typed text', t => {
+  const s = sheet(t);
+  const raw = '**Bold** *it* __under__ ~~gone~~ **%LVL**';
+  s.set('skills.0.description', raw);
+  const wrap = s.field('skills.0.description').closest('.ta-wrap');
+  assert.ok(wrap.classList.contains('showing-hl'));
+  assert.equal(wrap.querySelector('.ta-hl').innerHTML,
+    '<strong>Bold</strong> <em>it</em> <u>under</u> <s>gone</s> <strong><span class="var-chip">1</span></strong>');
+  assert.equal(s.value('skills.0.description'), raw, 'markers are saved as typed');
+  for (const literal of ['2 * 3 * 4', '1d6*2 or 1d8*2', '** not bold**', 'unclosed **bold', 'snake_case_name']) {
+    s.set('skills.0.description', literal);
+    assert.equal(wrap.classList.contains('showing-hl'), false, literal);
+  }
+  s.set('skills.0.description', '***both*** __%LVL__\n**no\nspan**');
+  assert.equal(wrap.querySelector('.ta-hl').innerHTML,
+    '<strong><em>both</em></strong> <u><span class="var-chip">1</span></u>\n**no\nspan**');
+});
+
+test('Formatting shortcuts and the B/I/U/S bar toggle markers around the selection', t => {
+  const s = sheet(t);
+  const ta = s.field('skills.0.description');
+  const key = (k, extra = {}) => ta.dispatchEvent(new s.w.KeyboardEvent('keydown',
+    { key: k, ctrlKey: true, bubbles: true, cancelable: true, ...extra }));
+  s.set('skills.0.description', 'Deal fire damage');
+  ta.focus();
+  ta.setSelectionRange(5, 9);
+  key('b');
+  assert.equal(ta.value, 'Deal **fire** damage');
+  assert.deepEqual([ta.selectionStart, ta.selectionEnd], [7, 11], 'the word stays selected');
+  key('i');
+  assert.equal(ta.value, 'Deal ***fire*** damage');
+  key('b');
+  assert.equal(ta.value, 'Deal *fire* damage');
+  key('X', { shiftKey: true });
+  assert.equal(ta.value, 'Deal *~~fire~~* damage');
+  const bar = ta.closest('.ta-wrap').querySelector('.fmt-bar');
+  assert.deepEqual([...bar.querySelectorAll('[data-fmt]')].map(b => b.textContent), ['B', 'I', 'U', 'S']);
+  bar.querySelector('[data-fmt="s"]').click();
+  assert.equal(ta.value, 'Deal *fire* damage');
+  bar.querySelector('[data-fmt="i"]').click();
+  assert.equal(ta.value, 'Deal fire damage');
+
+  ta.setSelectionRange(ta.value.length, ta.value.length);
+  key('u');
+  assert.equal(ta.value, 'Deal fire damage____');
+  assert.equal(ta.selectionStart, ta.value.length - 2, 'caret between the markers');
+  key('u');
+  assert.equal(ta.value, 'Deal fire damage');
+
+  s.set('skills.0.description', 'First line\n\n  Second line  ');
+  ta.setSelectionRange(0, ta.value.length);
+  key('b');
+  assert.equal(ta.value, '**First line**\n\n  **Second line**  ');
+  key('b');
+  assert.equal(ta.value, 'First line\n\n  Second line  ');
+  s.flush();
+  assert.equal(s.value('skills.0.description'), 'First line\n\n  Second line  ');
+});
+
+test('Help explains text formatting in every language', t => {
+  const s = sheet(t);
+  const nav = s.w.navigator;
+  const mac = /Mac|iPhone|iPad|iPod/.test(nav.platform || nav.userAgent || '');
+  const keys = mac ? ['⌘B', '⌘I', '⌘U', '⌘⇧X'] : ['Ctrl+B', 'Ctrl+I', 'Ctrl+U', 'Ctrl+Shift+X'];
+  s.change(s.d.querySelector('#langSel'), 'fr');
+  s.click('[data-act="help"]');
+  assert.equal(s.d.querySelector('#helpDialog').open, true);
+  assert.equal(s.d.querySelector('[data-i18n="help.fmt.heading"]').textContent, 'Mise en forme du texte');
+  const list = s.d.querySelector('#helpFmtList');
+  assert.deepEqual([...list.querySelectorAll('code')].map(c => c.textContent), ['**texte**', '*texte*', '__texte__', '~~texte~~']);
+  assert.deepEqual([...list.querySelectorAll('kbd')].map(k => k.textContent), keys);
+  assert.deepEqual([...list.querySelectorAll('.help-tok-desc > *')].map(el => [el.tagName, el.textContent]),
+    [['STRONG', 'Gras'], ['EM', 'Italique'], ['U', 'Souligné'], ['S', 'Barré']]);
+  const bold = s.d.querySelector('.fmt-bar [data-fmt="b"]');
+  assert.equal(bold.getAttribute('title'), `Gras (${keys[0]})`);
+  for (const locale of ['en', 'es', 'de', 'pt']) {
+    s.change(s.d.querySelector('#langSel'), locale);
+    for (const el of s.d.querySelectorAll('[data-i18n^="help.fmt."]')) assert.ok(!el.textContent.startsWith('help.'), locale);
+    assert.ok(!list.textContent.includes('fmt.'), locale);
+    assert.ok(!bold.getAttribute('title').startsWith('fmt.'), locale);
+  }
+});
+
+test('Printing shows formatted text instead of raw markers and restores the editor', t => {
+  const s = sheet(t);
+  const ta = s.field('skills.0.description');
+  s.set('skills.0.description', 'Hit **hard** at %LVL');
+  const wrap = ta.closest('.ta-wrap');
+  ta.focus();
+  assert.equal(wrap.classList.contains('showing-hl'), false, 'raw markers while editing');
+  s.print('all');
+  assert.equal(wrap.classList.contains('showing-hl'), true);
+  assert.equal(wrap.querySelector('.ta-hl').innerHTML, 'Hit <strong>hard</strong> at 1');
+  s.w.dispatchEvent(new s.w.Event('afterprint'));
+  assert.equal(ta.value, 'Hit **hard** at %LVL');
+  assert.equal(wrap.classList.contains('showing-hl'), false, 'focused field is editable again');
+  const css = s.d.querySelector('style').textContent;
+  assert.match(css, /@media print[\s\S]*\.ta-wrap\.showing-hl > textarea\[data-k\] \{\s*display: none !important/);
+  assert.match(css, /@media print[\s\S]*\.fmt-bar \{\s*display: none !important/);
+});

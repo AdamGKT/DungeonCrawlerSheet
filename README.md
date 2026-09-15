@@ -40,6 +40,14 @@ automatically in that browser, and nothing ever leaves your machine.
   exactly as typed. Printing resolves known codes to their current values; empty
   values are dimmed and unknown codes remain unchanged. The header **?** button
   opens a Help dialog listing every code.
+- **Text formatting** — in any multiline text field (descriptions, notes,
+  journal…), select text and click **B**, *I*, U or S in the small bar shown
+  above the focused field, or press Ctrl/⌘ + B, I, U, or Ctrl/⌘ + Shift + X
+  for strikethrough. The markers are plain text — `**bold**`, `*italic*`,
+  `__underline__`, `~~strike~~` — so they can also be typed by hand. They stay
+  visible while editing and are rendered as soon as the field loses focus (and
+  when printing); pressing the same button again removes them. Formatting
+  applies line by line. Saved and exported text is exactly what was typed.
 - **Grinding counters** — every Attacks, Skills and Spells row has a −/+ grinding
   tally beside its Rank. Each `+` records one productive grinding hour for the
   row and the Identity **Level Grinding** meter. At the row's current Rank, the
@@ -227,7 +235,7 @@ GitHub Pages, Netlify, a USB stick, a local folder.
 
 | Button | Action |
 | --- | --- |
-| ? (Help) | Open the Help dialog listing the `%` codes usable in text fields. |
+| ? (Help) | Open the Help dialog: text formatting (bold, italic, underline, strikethrough) and the `%` codes usable in text fields. |
 | Language selector | Switch the interface language. |
 | Dark / Light | Toggle the colour theme. |
 | Import | Load a previously exported `*-sheet.json` file as a new Vault crawler. |

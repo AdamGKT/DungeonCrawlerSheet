@@ -16,7 +16,7 @@
     <meta name="apple-mobile-web-app-title" content="DCC Sheet" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
-      href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700&family=Barlow:wght@400;500&family=JetBrains+Mono:wght@400;600&display=swap"
+      href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700&family=Barlow:ital,wght@0,400;0,500;0,700;1,400;1,700&family=JetBrains+Mono:wght@400;600&display=swap"
       rel="stylesheet"
     />
     <style>
@@ -304,8 +304,9 @@
         background: var(--focus-bg);
       }
 
-      /* %TOKEN preview inside description textareas — a coloured overlay that
-         shows resolved values while the field is not focused (see renderTokenPreviews). */
+      /* %TOKEN and **formatting** preview inside textareas — an overlay that
+         shows resolved values and styled text while the field is not focused
+         (see renderTokenPreviews / richTextHtml). */
       .ta-wrap {
         display: block;
         position: relative;
@@ -372,6 +373,58 @@
       :root[data-theme="dark"] .var-chip.var-unknown {
         color: #f87171;
         background: rgba(248, 113, 113, 0.14);
+      }
+      .ta-hl strong {
+        font-weight: 700;
+      }
+      .ta-hl u {
+        text-underline-offset: 2px;
+      }
+      /* B / I / U / S bar shown above a textarea while it is focused. */
+      .fmt-bar {
+        position: absolute;
+        right: 0;
+        bottom: 100%;
+        z-index: 5;
+        display: none;
+        gap: 2px;
+        margin-bottom: 3px;
+        padding: 2px;
+        background: var(--panel);
+        border: 1px solid var(--line);
+        border-radius: 4px;
+      }
+      .ta-wrap:focus-within > .fmt-bar {
+        display: flex;
+      }
+      .fmt-bar button {
+        width: 28px;
+        height: 26px;
+        padding: 0;
+        border: 0;
+        border-radius: 3px;
+        background: transparent;
+        color: var(--ink);
+        font-family: var(--f-body);
+        font-size: 14px;
+        line-height: 1;
+        cursor: pointer;
+      }
+      .fmt-bar button:hover {
+        background: var(--focus-bg);
+        color: var(--acc);
+      }
+      .fmt-bar [data-fmt="b"] {
+        font-weight: 700;
+      }
+      .fmt-bar [data-fmt="i"] {
+        font-style: italic;
+      }
+      .fmt-bar [data-fmt="u"] {
+        text-decoration: underline;
+      }
+      .fmt-bar [data-fmt="s"] {
+        text-decoration: line-through;
       }
       input[data-c] {
         color: var(--ink);
@@ -1586,6 +1639,15 @@
       :root[data-theme="dark"] .help-tok-codes code {
         background: #2a2620;
       }
+      .help-tok-codes kbd {
+        font-family: var(--f-mono);
+        font-size: 12px;
+        color: var(--ink);
+        border: 1px solid var(--line);
+        border-bottom-width: 2px;
+        border-radius: 4px;
+        padding: 1px 6px;
+      }
       .help-tok-desc {
         font-size: 13px;
         color: var(--ink);
@@ -1946,12 +2008,31 @@
         .inv-details[data-print-open="true"] {
           display: grid !important;
         }
-        /* Print the raw text (with %TOKENS); the coloured overlay is screen-only. */
-        .ta-wrap > .ta-hl {
+        /* Fields with formatting (or unresolved %TOKENS) print their rendered
+           overlay in plain ink, flowing to full height, instead of the raw text. */
+        .fmt-bar {
           display: none !important;
         }
         .ta-wrap.showing-hl > textarea[data-k] {
-          color: #111 !important;
+          display: none !important;
+        }
+        .ta-wrap.showing-hl > .ta-hl {
+          position: static;
+          overflow: visible;
+          min-height: 34px;
+          color: #111;
+          border-color: #777;
+        }
+        .ta-hl .var-chip {
+          padding: 0;
+          font: inherit;
+          opacity: 1;
+          color: inherit !important;
+          background: none !important;
+        }
+        .tbl .ta-hl {
+          font-size: 9px;
+          padding: 4px;
         }
       }
     </style>
@@ -2809,6 +2890,20 @@
       <div class="print-dialog-body">
         <div class="chip" data-i18n="help.title">Help &amp; shortcuts</div>
         <div class="help-section">
+          <div class="sub-rule" data-i18n="help.fmt.heading">
+            Text formatting
+          </div>
+          <div class="hint" data-i18n="help.fmt.intro">
+            In any text field, select some text, then click B, I, U or S above
+            the field, or use the keyboard shortcut.
+          </div>
+          <div class="help-token-list" id="helpFmtList"></div>
+          <div class="hint" data-i18n="help.fmt.note">
+            The symbols stay visible while you type; the formatted text shows
+            as soon as you leave the field.
+          </div>
+        </div>
+        <div class="help-section">
           <div class="sub-rule" data-i18n="help.tokens.heading">
             Live values in text fields
           </div>
@@ -3171,6 +3266,16 @@
             "help.tok.lvlFloor": "Level / Floor",
             "help.tok.mana": "Mana — maximum / current",
             "help.tok.moveStep": "Move / Step distance",
+            "help.fmt.heading": "Text formatting",
+            "help.fmt.intro":
+              "In any text field, select some text, then click B, I, U or S in the small bar shown above the field, or use the keyboard shortcut. You can also type the symbols around the text yourself.",
+            "help.fmt.note":
+              "The symbols stay visible while you type; the formatted text shows as soon as you leave the field. Use the same button or shortcut again to remove the formatting. Formatting applies line by line, and styles can be combined, e.g. __**text**__.",
+            "help.fmt.sample": "text",
+            "fmt.b": "Bold",
+            "fmt.i": "Italic",
+            "fmt.u": "Underline",
+            "fmt.s": "Strikethrough",
             "help.close": "Close",
             "btn.reset": "Reset",
             "btn.addRow": "+ Add row",
@@ -3447,6 +3552,16 @@
             "help.tok.lvlFloor": "Niveau / Étage",
             "help.tok.mana": "Mana — maximum / actuel",
             "help.tok.moveStep": "Distance de Vitesse / Pas",
+            "help.fmt.heading": "Mise en forme du texte",
+            "help.fmt.intro":
+              "Dans n'importe quel champ de texte, sélectionnez du texte puis cliquez sur B, I, U ou S dans la petite barre affichée au-dessus du champ, ou utilisez le raccourci clavier. Vous pouvez aussi taper vous-même les symboles autour du texte.",
+            "help.fmt.note":
+              "Les symboles restent visibles pendant la saisie ; le texte mis en forme s'affiche dès que vous quittez le champ. Utilisez à nouveau le même bouton ou raccourci pour retirer la mise en forme. La mise en forme s'applique ligne par ligne et les styles se combinent, par ex. __**texte**__.",
+            "help.fmt.sample": "texte",
+            "fmt.b": "Gras",
+            "fmt.i": "Italique",
+            "fmt.u": "Souligné",
+            "fmt.s": "Barré",
             "help.close": "Fermer",
             "btn.reset": "Réinitialiser",
             "btn.addRow": "+ Ajouter une ligne",
@@ -3725,6 +3840,16 @@
             "help.tok.lvlFloor": "Nivel / Piso",
             "help.tok.mana": "Maná — máximo / actual",
             "help.tok.moveStep": "Distancia de Velocidad / Paso",
+            "help.fmt.heading": "Formato del texto",
+            "help.fmt.intro":
+              "En cualquier campo de texto, selecciona texto y pulsa B, I, U o S en la pequeña barra que aparece encima del campo, o usa el atajo de teclado. También puedes escribir tú mismo los símbolos alrededor del texto.",
+            "help.fmt.note":
+              "Los símbolos siguen visibles mientras escribes; el texto con formato aparece en cuanto sales del campo. Usa de nuevo el mismo botón o atajo para quitar el formato. El formato se aplica línea por línea y los estilos se pueden combinar, p. ej. __**texto**__.",
+            "help.fmt.sample": "texto",
+            "fmt.b": "Negrita",
+            "fmt.i": "Cursiva",
+            "fmt.u": "Subrayado",
+            "fmt.s": "Tachado",
             "help.close": "Cerrar",
             "btn.reset": "Reiniciar",
             "btn.addRow": "+ Añadir fila",
@@ -4003,6 +4128,16 @@
             "help.tok.lvlFloor": "Stufe / Ebene",
             "help.tok.mana": "Mana — Maximum / aktuell",
             "help.tok.moveStep": "Tempo / Schritt (Distanz)",
+            "help.fmt.heading": "Textformatierung",
+            "help.fmt.intro":
+              "Markiere in einem beliebigen Textfeld Text und klicke dann in der kleinen Leiste über dem Feld auf B, I, U oder S, oder nutze das Tastenkürzel. Du kannst die Zeichen auch selbst um den Text herum eingeben.",
+            "help.fmt.note":
+              "Die Zeichen bleiben beim Tippen sichtbar; der formatierte Text erscheint, sobald du das Feld verlässt. Dieselbe Schaltfläche oder dasselbe Kürzel entfernt die Formatierung wieder. Die Formatierung gilt zeilenweise, und Stile lassen sich kombinieren, z. B. __**Text**__.",
+            "help.fmt.sample": "Text",
+            "fmt.b": "Fett",
+            "fmt.i": "Kursiv",
+            "fmt.u": "Unterstrichen",
+            "fmt.s": "Durchgestrichen",
             "help.close": "Schließen",
             "btn.reset": "Zurücksetzen",
             "btn.addRow": "+ Zeile hinzufügen",
@@ -4281,6 +4416,16 @@
             "help.tok.lvlFloor": "Nível / Andar",
             "help.tok.mana": "Mana — máximo / atual",
             "help.tok.moveStep": "Distância de Deslocamento / Passo",
+            "help.fmt.heading": "Formatação do texto",
+            "help.fmt.intro":
+              "Em qualquer campo de texto, seleciona texto e clica em B, I, U ou S na pequena barra que aparece por cima do campo, ou usa o atalho de teclado. Também podes escrever tu mesmo os símbolos à volta do texto.",
+            "help.fmt.note":
+              "Os símbolos continuam visíveis enquanto escreves; o texto formatado aparece assim que sais do campo. Usa novamente o mesmo botão ou atalho para remover a formatação. A formatação aplica-se linha a linha e os estilos podem ser combinados, por ex. __**texto**__.",
+            "help.fmt.sample": "texto",
+            "fmt.b": "Negrito",
+            "fmt.i": "Itálico",
+            "fmt.u": "Sublinhado",
+            "fmt.s": "Riscado",
             "help.close": "Fechar",
             "btn.reset": "Redefinir",
             "btn.addRow": "+ Adicionar linha",
@@ -5024,6 +5169,8 @@
             renderVault();
           }
           renderHelpTokens();
+          renderHelpFormats();
+          updateFmtTitles();
           renderHealth();
           renderMana();
           header();
@@ -5949,28 +6096,168 @@
           MOVE: function () { return String(val("def.move")).trim(); },
           STEP: function () { return String(val("def.step")).trim(); },
         };
-        var TOKEN_RE = /%([A-Z][A-Z0-9_]*)/g;
+        // Stops before a double/trailing "_" so __%LVL__ underlines the chip.
+        var TOKEN_RE = /%([A-Z][A-Z0-9]*(?:_[A-Z0-9]+)*)/g;
 
-        function tokenizeToHtml(raw) {
-          var out = "",
-            last = 0,
+        function tokenChip(name, whole) {
+          if (!Object.prototype.hasOwnProperty.call(TOKEN_MAP, name))
+            return '<span class="var-chip var-unknown">' + esc(whole) + "</span>";
+          var v = String(TOKEN_MAP[name]());
+          return v === ""
+            ? '<span class="var-chip var-empty">' + esc(whole) + "</span>"
+            : '<span class="var-chip">' + esc(v) + "</span>";
+        }
+
+        /* ---------------- inline formatting in textareas ---------------- */
+        // **bold**, *italic*, __underline__ and ~~strike~~ render in the same
+        // overlay as %TOKENS. The markers stay in the raw text (localStorage /
+        // JSON export) and are only hidden in the preview. A span never crosses
+        // a line break and its markers must hug the text; a single * also needs
+        // a word boundary, so "2 * 3" or "1d6*2 or 1d8*2" stay literal.
+        var FMT_TYPES = ["b", "i", "u", "s"];
+        var FMT_MARK = { b: "**", i: "*", u: "__", s: "~~" };
+        var FMT_TAG = { b: "strong", i: "em", u: "u", s: "s" };
+        var FMT_LABEL = { b: "B", i: "I", u: "U", s: "S" };
+        var FMT_WORD = /[0-9A-Za-zÀ-ɏ]/;
+        var FMT_SPACE = /\s/;
+        var IS_MAC = /Mac|iPhone|iPad|iPod/.test(
+          navigator.platform || navigator.userAgent || "",
+        );
+
+        function fmtShortcut(f) {
+          if (f === "s") return IS_MAC ? "⌘⇧X" : "Ctrl+Shift+X";
+          return (IS_MAC ? "⌘" : "Ctrl+") + FMT_LABEL[f];
+        }
+
+        function fmtTypeAt(raw, i) {
+          var c = raw.charAt(i),
+            d = raw.charAt(i + 1);
+          if (c === "*") return d === "*" ? "b" : "i";
+          if (c === "_" && d === "_") return "u";
+          if (c === "~" && d === "~") return "s";
+          return null;
+        }
+
+        // Matched marker pairs {type, os, oe, cs, ce}; %TOKEN ranges are skipped.
+        function fmtPairs(raw, toks) {
+          var pairs = [],
+            open = [],
+            ti = 0,
+            i = 0;
+          while (i < raw.length) {
+            if (ti < toks.length && i >= toks[ti].s) {
+              i = Math.max(i, toks[ti++].e);
+              continue;
+            }
+            if (raw.charAt(i) === "\n") {
+              open = [];
+              i++;
+              continue;
+            }
+            var type = fmtTypeAt(raw, i);
+            if (!type) {
+              i++;
+              continue;
+            }
+            var len = FMT_MARK[type].length,
+              before = raw.charAt(i - 1),
+              after = raw.charAt(i + len),
+              word = type === "i",
+              closed = false;
+            if (
+              before &&
+              !FMT_SPACE.test(before) &&
+              !(word && FMT_WORD.test(after))
+            ) {
+              for (var k = open.length - 1; k >= 0; k--) {
+                if (open[k].type !== type) continue;
+                if (open[k].e < i) {
+                  pairs.push({
+                    type: type,
+                    os: open[k].s,
+                    oe: open[k].e,
+                    cs: i,
+                    ce: i + len,
+                  });
+                  open.splice(k, 1);
+                  closed = true;
+                }
+                break;
+              }
+            }
+            if (
+              !closed &&
+              after &&
+              !FMT_SPACE.test(after) &&
+              !(word && FMT_WORD.test(before))
+            )
+              open.push({ type: type, s: i, e: i + len });
+            i += len;
+          }
+          return pairs;
+        }
+
+        // Overlay HTML for a textarea value, or "" when it holds neither
+        // %TOKENS nor formatting (the plain textarea then shows as is).
+        function richTextHtml(raw) {
+          if (!/[%*_~]/.test(raw)) return "";
+          var toks = [],
             m;
           TOKEN_RE.lastIndex = 0;
-          while ((m = TOKEN_RE.exec(raw))) {
-            out += esc(raw.slice(last, m.index));
-            if (!Object.prototype.hasOwnProperty.call(TOKEN_MAP, m[1])) {
-              out +=
-                '<span class="var-chip var-unknown">' + esc(m[0]) + "</span>";
-            } else {
-              var v = String(TOKEN_MAP[m[1]]());
-              out +=
-                v === ""
-                  ? '<span class="var-chip var-empty">' + esc(m[0]) + "</span>"
-                  : '<span class="var-chip">' + esc(v) + "</span>";
-            }
-            last = m.index + m[0].length;
+          while ((m = TOKEN_RE.exec(raw)))
+            toks.push({
+              s: m.index,
+              e: m.index + m[0].length,
+              html: tokenChip(m[1], m[0]),
+            });
+          var pairs = fmtPairs(raw, toks);
+          if (!toks.length && !pairs.length) return "";
+          var hidden = {},
+            edges = {};
+          pairs.forEach(function (p) {
+            var k;
+            for (k = p.os; k < p.oe; k++) hidden[k] = true;
+            for (k = p.cs; k < p.ce; k++) hidden[k] = true;
+            (edges[p.oe] = edges[p.oe] || []).push([p.type, 1]);
+            (edges[p.cs] = edges[p.cs] || []).push([p.type, -1]);
+          });
+          var depth = { b: 0, i: 0, u: 0, s: 0 },
+            open = [],
+            out = "",
+            ti = 0,
+            i = 0;
+          function step(e) {
+            depth[e[0]] += e[1];
           }
-          out += esc(raw.slice(last));
+          // Close only the tags whose span ended (and those opened inside
+          // them), then open the styles that just started — keeps nesting valid.
+          function sync() {
+            var k = 0;
+            while (k < open.length && depth[open[k]] > 0) k++;
+            while (open.length > k) out += "</" + FMT_TAG[open.pop()] + ">";
+            FMT_TYPES.forEach(function (f) {
+              if (depth[f] > 0 && open.indexOf(f) < 0) {
+                open.push(f);
+                out += "<" + FMT_TAG[f] + ">";
+              }
+            });
+          }
+          while (i < raw.length) {
+            (edges[i] || []).forEach(step);
+            if (hidden[i]) {
+              i++;
+              continue;
+            }
+            sync();
+            if (ti < toks.length && toks[ti].s === i) {
+              out += toks[ti].html;
+              i = toks[ti++].e;
+            } else {
+              out += esc(raw.charAt(i));
+              i++;
+            }
+          }
+          while (open.length) out += "</" + FMT_TAG[open.pop()] + ">";
           return out;
         }
 
@@ -5988,30 +6275,175 @@
             hl.className = "ta-hl";
             hl.setAttribute("aria-hidden", "true");
             wrap.appendChild(hl);
+            var bar = document.createElement("div");
+            bar.className = "fmt-bar";
+            bar.innerHTML = FMT_TYPES.map(function (f) {
+              return (
+                '<button type="button" tabindex="-1" data-fmt="' +
+                f +
+                '">' +
+                FMT_LABEL[f] +
+                "</button>"
+              );
+            }).join("");
+            wrap.appendChild(bar);
+            updateFmtTitles(bar);
           });
         }
 
-        function renderTokenPreview(wrap) {
+        function updateFmtTitles(root) {
+          $$("[data-fmt]", root).forEach(function (btn) {
+            var f = btn.getAttribute("data-fmt"),
+              label = t("fmt." + f);
+            btn.setAttribute("title", label + " (" + fmtShortcut(f) + ")");
+            btn.setAttribute("aria-label", label);
+          });
+        }
+
+        // `force` also renders the focused field (used while printing).
+        function renderTokenPreview(wrap, force) {
           var ta = wrap.querySelector("textarea[data-k]");
           var hl = wrap.querySelector(".ta-hl");
           if (!ta || !hl) return;
-          var raw = ta.value;
-          if (
-            ta === document.activeElement ||
-            raw.indexOf("%") < 0 ||
-            !/%[A-Z][A-Z0-9_]*/.test(raw)
-          ) {
+          var html =
+            ta === document.activeElement && !force
+              ? ""
+              : richTextHtml(ta.value);
+          if (!html) {
             wrap.classList.remove("showing-hl");
             return;
           }
-          hl.innerHTML = tokenizeToHtml(raw);
+          if (hl.dcHtml !== html) {
+            hl.innerHTML = html;
+            hl.dcHtml = html;
+          }
           hl.scrollTop = ta.scrollTop;
           wrap.classList.add("showing-hl");
         }
 
-        function renderTokenPreviews() {
+        function renderTokenPreviews(force) {
           enhanceTextareas();
-          $$(".ta-wrap").forEach(renderTokenPreview);
+          $$(".ta-wrap").forEach(function (w) {
+            renderTokenPreview(w, force);
+          });
+        }
+
+        // Is the `type` marker right before (dir < 0) or after (dir > 0) pos?
+        // A run of "*" counts as bold when 2+ long, as italic when 1 or 3.
+        function fmtHas(v, pos, dir, type) {
+          var m = FMT_MARK[type];
+          if (m.charAt(0) !== "*")
+            return dir < 0
+              ? v.slice(Math.max(0, pos - 2), pos) === m
+              : v.substr(pos, 2) === m;
+          var n = 0;
+          while (v.charAt(dir < 0 ? pos - 1 - n : pos + n) === "*") n++;
+          return type === "b" ? n >= 2 : n === 1 || n === 3;
+        }
+
+        // Toggle `type` on the selection [a, b) of v, line by line. Returns the
+        // new value and selection plus the [from, to) span of v that changed
+        // and its replacement `text`, or null when there is nothing to do.
+        function toggleFormatText(v, a, b, type) {
+          var m = FMT_MARK[type],
+            L = m.length,
+            edits = [],
+            segs = [];
+          if (a === b) {
+            if (fmtHas(v, a, -1, type) && fmtHas(v, a, 1, type))
+              edits.push({ p: a - L, d: 2 * L, t: "" });
+            else edits.push({ p: a, d: 0, t: m + m });
+          } else {
+            var s0 = a;
+            for (var k = a; k <= b; k++) {
+              if (k < b && v.charAt(k) !== "\n") continue;
+              var s = s0,
+                e = k;
+              while (s < e && FMT_SPACE.test(v.charAt(s))) s++;
+              while (e > s && FMT_SPACE.test(v.charAt(e - 1))) e--;
+              if (e > s) segs.push({ s: s, e: e });
+              s0 = k + 1;
+            }
+            if (!segs.length) return null;
+            // Where a line's markers already sit: -1 = just outside the
+            // selected text, 1 = just inside it; null when not formatted.
+            var sides = function (g) {
+              var l = fmtHas(v, g.s, -1, type) ? -1 : fmtHas(v, g.s, 1, type) ? 1 : 0;
+              var r = fmtHas(v, g.e, 1, type) ? 1 : fmtHas(v, g.e, -1, type) ? -1 : 0;
+              var inside = (l > 0 ? L : 0) + (r < 0 ? L : 0);
+              return l && r && g.e - g.s > inside ? { l: l, r: r } : null;
+            };
+            var unwrap = segs.every(sides);
+            segs.forEach(function (g) {
+              var w = sides(g);
+              if (unwrap)
+                edits.push(
+                  { p: w.l < 0 ? g.s - L : g.s, d: L, t: "" },
+                  { p: w.r > 0 ? g.e : g.e - L, d: L, t: "" },
+                );
+              else if (!w)
+                edits.push({ p: g.s, d: 0, t: m }, { p: g.e, d: 0, t: m });
+            });
+          }
+          // Map a selection end through the edits. `after`: an insertion
+          // exactly at x lands before it. One line keeps just the text
+          // selected; several lines keep their markers inside the selection
+          // so the same shortcut toggles them back off.
+          function map(x, after) {
+            var out = x;
+            edits.forEach(function (ed) {
+              if (!ed.d) {
+                if (ed.p < x || (ed.p === x && after)) out += ed.t.length;
+              } else if (ed.p + ed.d <= x) out -= ed.d;
+              else if (ed.p < x) out -= x - ed.p;
+            });
+            return out;
+          }
+          var multi = segs.length > 1;
+          var value = v;
+          for (var j = edits.length - 1; j >= 0; j--)
+            value =
+              value.slice(0, edits[j].p) +
+              edits[j].t +
+              value.slice(edits[j].p + edits[j].d);
+          var last = edits[edits.length - 1],
+            from = edits[0].p,
+            to = last.p + last.d,
+            caret = a === b && !edits[0].d ? a + L : null;
+          return {
+            value: value,
+            start: caret != null ? caret : map(a, !multi),
+            end: caret != null ? caret : map(b, multi),
+            from: from,
+            to: to,
+            text: value.slice(from, to + value.length - v.length),
+          };
+        }
+
+        function applyFormat(ta, type) {
+          if (ta.readOnly || ta.disabled) return;
+          if (document.activeElement !== ta) ta.focus();
+          var r = toggleFormatText(
+            ta.value,
+            ta.selectionStart,
+            ta.selectionEnd,
+            type,
+          );
+          if (!r) return;
+          // execCommand keeps the browser's undo history (Ctrl+Z) working.
+          ta.setSelectionRange(r.from, r.to);
+          var done = false;
+          try {
+            done =
+              typeof document.execCommand === "function" &&
+              document.execCommand(r.text ? "insertText" : "delete", false, r.text);
+          } catch (err) {}
+          if (!done || ta.value !== r.value) {
+            ta.value = r.value;
+            ta.setAttribute("data-dirty", "1");
+            ta.dispatchEvent(new Event("input", { bubbles: true }));
+          }
+          ta.setSelectionRange(r.start, r.end);
         }
 
         var HELP_TOKEN_GROUPS = [
@@ -6044,6 +6476,28 @@
               '</div><div class="help-tok-desc">' +
               esc(t(g.key)) +
               "</div></div>"
+            );
+          }).join("");
+        }
+
+        function renderHelpFormats() {
+          var host = $("#helpFmtList");
+          if (!host) return;
+          var sample = t("help.fmt.sample");
+          host.innerHTML = FMT_TYPES.map(function (f) {
+            var tag = FMT_TAG[f];
+            return (
+              '<div class="help-tok-row"><div class="help-tok-codes"><code>' +
+              esc(FMT_MARK[f] + sample + FMT_MARK[f]) +
+              "</code><kbd>" +
+              esc(fmtShortcut(f)) +
+              '</kbd></div><div class="help-tok-desc"><' +
+              tag +
+              ">" +
+              esc(t("fmt." + f)) +
+              "</" +
+              tag +
+              "></div></div>"
             );
           }).join("");
         }
@@ -7395,6 +7849,7 @@
             span.textContent = span.getAttribute("data-print-label");
             span.removeAttribute("data-print-label");
           });
+          renderTokenPreviews();
         }
 
         /* Print with %TOKENS resolved to their live values. The raw text (kept in
@@ -7717,6 +8172,31 @@
             var w = ta.closest(".ta-wrap");
             if (w) renderTokenPreview(w);
           });
+          // Formatting shortcuts: Ctrl/⌘ + B / I / U, Ctrl/⌘ + Shift + X.
+          var FMT_KEYS = { b: "b", i: "i", u: "u" };
+          document.addEventListener("keydown", function (e) {
+            if (!(e.ctrlKey || e.metaKey) || e.altKey) return;
+            var ta = e.target;
+            if (!ta || !ta.matches || !ta.matches("textarea[data-k]")) return;
+            var key = String(e.key || "").toLowerCase();
+            var type = e.shiftKey ? (key === "x" ? "s" : null) : FMT_KEYS[key];
+            if (!type) return;
+            e.preventDefault();
+            applyFormat(ta, type);
+          });
+          // B / I / U / S bar: mousedown is cancelled so the textarea keeps its
+          // focus and selection.
+          document.addEventListener("mousedown", function (e) {
+            if (e.target.closest && e.target.closest(".fmt-bar"))
+              e.preventDefault();
+          });
+          document.addEventListener("click", function (e) {
+            var btn = e.target.closest && e.target.closest(".fmt-bar [data-fmt]");
+            if (!btn) return;
+            e.preventDefault();
+            var ta = btn.closest(".ta-wrap").querySelector("textarea[data-k]");
+            if (ta) applyFormat(ta, btn.getAttribute("data-fmt"));
+          });
           document.addEventListener("change", function (e) {
             if (e.target.closest && e.target.closest("[data-k]")) {
               recompute();
@@ -7962,6 +8442,7 @@
             if (act.getAttribute("data-act") === "help") {
               var helpDialog = $("#helpDialog");
               renderHelpTokens();
+              renderHelpFormats();
               if (helpDialog && helpDialog.showModal) helpDialog.showModal();
               return;
             }
@@ -8041,6 +8522,7 @@
             printThemeSaved = root.getAttribute("data-theme");
             root.setAttribute("data-theme", "light");
             applyPrintTokens();
+            renderTokenPreviews(true);
           });
           window.addEventListener("afterprint", function () {
             if (printThemeSaved == null) return;
